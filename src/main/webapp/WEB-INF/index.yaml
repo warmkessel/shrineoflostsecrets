@@ -1,0 +1,18 @@
+indexes:
+- kind: Event
+  properties:
+  - name: World
+  - name: Relm
+  - name: EventDate
+  - name: TAGS
+
+- kind: Event
+  properties:
+  - name: World
+  - name: Relm
+  - name: EventDate
+
+- kind: Event
+  properties:
+  - name: Tags
+  - name: EventDate
