@@ -16,6 +16,7 @@ long endDate = Constants.ENDOFTIME;
 String world = Constants.HOME;
 String relm = Constants.MEN;
 String user = Constants.UNIVERSALUSER;
+String error = AIConstants.AIERROR;
 Set<String> tag = new HashSet<String>();
 
 if (null != request.getParameter(JspConstants.START) && request.getParameter(JspConstants.START).length() > 0) {
@@ -57,6 +58,7 @@ if (null != request.getParameter(JspConstants.INSTURCTION)
 	instruction = (String) request.getParameter(JspConstants.INSTURCTION);
 } else {
 	if (null != request.getParameter(JspConstants.COMMAND) && request.getParameter(JspConstants.COMMAND).length() > 0) {
+		error = input; 
 		String command = (String) request.getParameter(JspConstants.COMMAND);
 		switch (command) {
 			case "AITAGS":
@@ -94,4 +96,4 @@ if (null != request.getParameter(JspConstants.INSTURCTION)
 		}
 	}
 }
-%><%=AIManager.editText(input, instruction)%>
+%><%=AIManager.editText(input, instruction, error)%>

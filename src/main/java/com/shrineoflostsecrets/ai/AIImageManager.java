@@ -12,7 +12,7 @@ import com.google.appengine.api.urlfetch.HTTPRequest;
 import com.google.appengine.api.urlfetch.HTTPResponse;
 import com.google.appengine.api.urlfetch.URLFetchService;
 import com.google.appengine.api.urlfetch.URLFetchServiceFactory;
-import com.shrineoflostsecrets.constants.AIConstants;
+import com.shrineoflostsecrets.constants.*;
 
 public class  AIImageManager{
 
@@ -28,7 +28,7 @@ public class  AIImageManager{
 		try {
 
 			// Encode the API key in Base64 format and set it as Authorization header
-			String apiKey = AIConstants.API_KEY;
+			String apiKey = AIKey.API_KEY;
 			String auth = "Bearer " + apiKey;
 
 

@@ -1,7 +1,6 @@
 package com.shrineoflostsecrets.constants;
 
 public class AIConstants {
-	public static final String API_KEY = "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";	
 	public static final String FANTISYTOKEN = "Do not reference any real people or places, style:in a style of detailed world-building, use of archaic language, epic storytelling, poetic quality, complex sentence structures and rich imagery.  Tone:honor, duty, sacrifice, the struggle between good and evil, simple joys of life, grand and mythic, deeply human and empathetic.";	
 	public static final String AITITLE = "generate a title";	
 //	public static final String AITAGS = "Rewrite a given text by removing all function and preposition words.";	
@@ -18,4 +17,7 @@ public class AIConstants {
 	public static final String AIGENERATEEVENT = "Imagine an event:  Some possible events are listed:  Marriage - with the names of the bride and groom, Death with full name and cause (Very common), Birth with the Child full name and the Mother full name and Fathers full name, Person moves or leaves,  A child becomes and adult and takes up a profession,  Business is established or closed  in the Village. (rare), Wandering brigands set up camp(rare)";
 	public static final String AIIMAGE = "Generate an detailed drawing of: ";	
 
+	public static final String AIERROR = "The spirits are resless, ask your qustions again.";	
+
+	
 }

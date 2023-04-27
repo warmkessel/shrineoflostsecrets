@@ -9,7 +9,7 @@ import com.google.appengine.api.urlfetch.HTTPRequest;
 import com.google.appengine.api.urlfetch.HTTPResponse;
 import com.google.appengine.api.urlfetch.URLFetchService;
 import com.google.appengine.api.urlfetch.URLFetchServiceFactory;
-import com.shrineoflostsecrets.constants.AIConstants;
+import com.shrineoflostsecrets.constants.*;
 
 public class AIManager {
 	private static final Logger log = Logger.getLogger(AIManager.class.getName());
@@ -17,18 +17,18 @@ public class AIManager {
 	public static String removeUnusal(String input) {
 		return input.replaceAll("\r", ". ").replaceAll("\n", "").replaceAll("'", "\'").replaceAll("\"", "\\\\\"");
 	}
-	public static String editText(String input, String instruction) {
-		return extactText(edit(input, instruction));
+	public static String editText(String input, String instruction, String errorMessage) {
+		return extactText(edit(input, instruction), errorMessage);
 	}
 
-	public static String edit(String input, String instruction) {
+	public static String edit(String input, String instruction ) {
 		String theReturn = "";
 		input = removeUnusal(input);
 
 		try {
 
 			// Encode the API key in Base64 format and set it as Authorization header
-			String apiKey = AIConstants.API_KEY;
+			String apiKey = AIKey.API_KEY;
 			String auth = "Bearer " + apiKey;
 
 //            curl https://api.openai.com/v1/chat/completions \
@@ -71,7 +71,7 @@ public class AIManager {
 		return theReturn;
 	}
 
-	public static String extactText(String jsonStr) {
+	public static String extactText(String jsonStr, String errorMessage) {
 		String theReturn = "";
 		try {
 			if (jsonStr.startsWith("{")) {
@@ -90,6 +90,11 @@ public class AIManager {
 		} catch (JSONException e) {
 			log.info("jsonStr" + jsonStr);
 			e.printStackTrace();
+		}
+		finally{
+			if( theReturn.length() == 0) {
+				theReturn = errorMessage;
+			}		
 		}
 		return theReturn;
 	}

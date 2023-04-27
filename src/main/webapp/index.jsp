@@ -1,4 +1,5 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
 <%@ page import="com.shrineoflostsecrets.util.*"%>
 <%@ page import="java.util.*"%>
 <%@ page import="com.shrineoflostsecrets.entity.Event"%>
@@ -7,6 +8,9 @@
 <%@ page import="com.shrineoflostsecrets.constants.*"%>
 
 <%
+String userAgent = request.getHeader("User-Agent");
+boolean isMobile = userAgent.matches(".*Mobile.*");
+
 String id = null;
 Set<String> tag = new HashSet<String>();
 long startDate = SOLSCalendarConstants.BEGININGOFTHEAGEOFMAN;
@@ -14,7 +18,6 @@ long endDate = SOLSCalendarConstants.MIDPOINTOFMAN;
 String world = Constants.HOME;
 String relm = Constants.MEN;
 String user = Constants.UNIVERSALUSER;
-
 if (null != request.getParameter(JspConstants.RELM) && request.getParameter(JspConstants.RELM).length() > 0) {
 	relm = (String) request.getParameter(JspConstants.RELM);
 }
@@ -42,15 +45,12 @@ if (null != request.getParameter(JspConstants.END) && request.getParameter(JspCo
 SOLSCalendar startCal = new SOLSCalendar(startDate);
 SOLSCalendar endCal = new SOLSCalendar(endDate);
 endCal = startCal.endMustBeAfter(endCal);
-startCal.getScale(endCal);
+//startCal.getScale(endCal);
 SOLSCalendar.Scale scale = startCal.getScale(endCal);
-
 //if(SOLSCalendar.Scale.YEAR.equals(scale) || SOLSCalendar.Scale.DECKADE.equals(scale) || SOLSCalendar.Scale.CENTURY.equals(scale)){
-	//startCal = startCal.justYear();
+//startCal = startCal.justYear();
 //	endCal = endCal.justYear();
 //}
-
-
 %><!DOCTYPE html>
 <html lang="en">
 <head>
@@ -61,7 +61,6 @@ SOLSCalendar.Scale scale = startCal.getScale(endCal);
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
-
   gtag('config', 'G-N2VTBWYNCJ');
 </script>
 <meta charset="utf-8">
@@ -81,21 +80,80 @@ SOLSCalendar.Scale scale = startCal.getScale(endCal);
 <script
 	src="https://cdnjs.cloudflare.com/ajax/libs/d3-cloud/1.2.5/d3.layout.cloud.min.js"></script>
 
+<script>
+window.onload = function() {
+	var modal = document.getElementById('modal')
+	var home = document.getElementById('home')
+	
+	var isShownText = "isShown18";			
+	var checkbox = document.getElementById('showAgain');
+	var isShown = getCookie(isShownText);		      
+	
+	if (!isShown) {
+		modal.classList.remove("modal");
+		modal.classList.add("modal-dialog-centered");
+		//(365 * 24 * 60 * 60 * 1000
+		setCookie(isShownText, "welcomeDisplayed", new Date().getTime() + (365 * 24 * 60 * 60 * 1000));
+	}
+	modal.addEventListener('click', function(e) {							
+			if (checkbox.checked) {
+				setCookie(isShownText, "welcomeDisplayed", new Date().getTime() + (60 * 60 * 1000));
+			}
+		
+	});
+	home.addEventListener('click', function(e) {
+		if (e.target === home) {					
+			dismissWelcome();
+		}
+	});
+}
+function dismissWelcome(){
+	modal.classList.add("modal");
+	modal.classList.remove("modal-dialog-centered");
+	return false;
+}
+
+function setCookie(name, value, date) {
+	var expires = "";
+	if (date) {
+		expires = "; expires=" + date;
+	}
+	document.cookie = name + "=" + (value || "") + expires + "; path=/";
+}
+
+function getCookie(name) {
+	var nameEQ = name + "=";
+	var ca = document.cookie.split(';');
+	for (var i = 0; i < ca.length; i++) {
+		var c = ca[i];
+		while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+		if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+	}
+	return null;
+} 
+		</script>
+
 <style>
-.word-cloud {
-	width: 512px;
+.word-cloud { <%if (isMobile) {%> width:400px;
+	height: 1000px;
+	<%}
+
+else {%>
+	width: 1000px;
 	height: 512px;
+	<%}%>
 }
 </style>
 
 </head>
 <body data-spy="scroll" data-target=".navbar" data-offset="40" id="home">
-
 	<!-- First Navigation -->
 	<nav class="navbar nav-first navbar-dark bg-dark">
 		<div class="container">
-			<a class="navbar-brand" href="#"> <img
-				src="assets/imgs/logo-sm.jpg" alt="Shrine of Lost Secrets">
+			<a class="navbar-brand"
+				href="<%=URLBuilder.buildRequest(request, JspConstants.INDEX, startCal, endCal, world, relm, user, tag,
+		JspConstants.PRAYANCHOR, "#")%>">
+				<img src="assets/imgs/logo-sm.jpg" alt="Shrine of Lost Secrets">
 			</a>
 			<ul class="navbar-nav ml-auto">
 				<li class="nav-item"><a class="nav-link text-primary"
@@ -118,22 +176,64 @@ SOLSCalendar.Scale scale = startCal.getScale(endCal);
 			<div class="collapse navbar-collapse" id="navbarSupportedContent">
 				<ul class="navbar-nav mr-auto">
 					<li class="nav-item"><a class="nav-link"
-						href="#<%=JspConstants.PRAYANCHOR%>">Pray at the Shrine</a></li>
+						href="<%=URLBuilder.buildRequest(request, JspConstants.INDEX, startCal, endCal, world, relm, user, tag,
+		JspConstants.PRAYANCHOR)%>">Pray
+							at the Shrine</a></li>
 					<li class="nav-item"><a class="nav-link"
-						href="#<%=JspConstants.HELPANCHOR%>">Ask for Help</a></li>
+						href="<%=URLBuilder.buildRequest(request, JspConstants.INDEX, startCal, endCal, world, relm, user, tag,
+		JspConstants.HELPANCHOR)%>">Ask
+							for Help</a></li>
 					<li class="nav-item"><a class="nav-link"
-						href="#<%=JspConstants.CONTACTANCHOR%>">Make an offering</a></li>
+						href="<%=URLBuilder.buildRequest(request, JspConstants.GETSTARTED, startCal, endCal, world, relm, user, tag,
+		JspConstants.PRAYANCHOR)%>">Get
+							Started</a></li>
 					<li class="nav-item"><a class="nav-link"
-						href="#<%=JspConstants.CONTACTANCHOR%>">Contact Us</a></li>
+						href="<%=URLBuilder.buildRequest(request, JspConstants.INDEX, startCal, endCal, world, relm, user, tag,
+		JspConstants.CONTACTANCHOR)%>">Make
+							an offering</a></li>
+					<li class="nav-item"><a class="nav-link"
+						href="<%=URLBuilder.buildRequest(request, JspConstants.INDEX, startCal, endCal, world, relm, user, tag,
+		JspConstants.CONTACTANCHOR)%>">Contact
+							Us</a></li>
 				</ul>
 				<ul class="navbar-nav ml-auto">
 					<li class="nav-item"><a href="login.html"
-						class="btn btn-primary btn-sm">Login</a></li>
+						class="btn btn-primary btn-sm"
+						onclick="alert('Pardon our dust. We are still working on this feature'); return false;">Login</a>
+					</li>
 				</ul>
 			</div>
 		</div>
 	</nav>
 	<!-- End Of Second Navigation -->
+	<div class="container">
+		<div id=modal class="modal">
+			<div class="modal-content">
+				<div class="modal-header">Welcome!</div>
+				<div class="modal-body"></div>
+				<p>Greetings! It appears that this might be your first time
+					visiting our site. Allow me to offer my assistance to help you get
+					started. Please keep in mind that you can always access the "Get
+					Started" option located at the top of every page for further
+					guidance. Let me know if there is anything I can do to make your
+					experience here more useful.
+				<p>
+					<a
+						href="<%=URLBuilder.buildRequest(request, JspConstants.GETSTARTED, startCal, endCal, world, relm, user, tag,
+		JspConstants.PRAYANCHOR)%>">Yes,
+						Lets get started. Thanks</a>
+				</p>
+
+				<p>
+					<a href="#" onClick="dismissWelcome()" id="noThanks">I know my
+						way around. Thanks</a>
+				</p>
+				<label> <input type="checkbox" id="showAgain"> Show
+					this again later.
+				</label>
+			</div>
+		</div>
+	</div>
 	<!-- Page Header -->
 	<header class="header">
 		<div class="overlay">
@@ -149,29 +249,30 @@ SOLSCalendar.Scale scale = startCal.getScale(endCal);
 	<!-- Pray Section -->
 	<section id="<%=JspConstants.PRAYANCHOR%>">
 		<div class="container">
-			<h6 class="section-subtitle text-center">Time</h6>
+			<h6 class="section-subtitle text-center">
+				Time -
+				<%=scale%></h6>
 			<h3 class="section-title mb-6 pb-3 text-center">
 				<a
-					href="<%=URLBuilder.buildRequest(request, JspConstants.INDEX, startCal.backward(scale), endCal, world, relm,
-		user, tag, JspConstants.PRAYANCHOR)%>"><i
+					href="<%=URLBuilder.buildRequest(request, JspConstants.INDEX, startCal.backward(scale), endCal, world, relm, user, tag,
+		JspConstants.PRAYANCHOR)%>"><i
 					class="fa fa-angle-down" style="font-size: 24x"></i></a>
 				<%=startCal.getDisplayDate()%><a
-					href="<%=URLBuilder.buildRequest(request, JspConstants.INDEX, startCal.forward(scale), endCal, world, relm,
-		user, tag, JspConstants.PRAYANCHOR)%>"><i
-					class="fa fa-angle-up" style="font-size: 24px"></i></a>
-					-
-					<a
-					href="<%=URLBuilder.buildRequest(request, JspConstants.INDEX, startCal, endCal.backward(scale), world, relm,
-		user, tag, JspConstants.PRAYANCHOR)%>"><i
+					href="<%=URLBuilder.buildRequest(request, JspConstants.INDEX, startCal.forward(scale), endCal, world, relm, user, tag,
+		JspConstants.PRAYANCHOR)%>"><i
+					class="fa fa-angle-up" style="font-size: 24px"></i></a> - <a
+					href="<%=URLBuilder.buildRequest(request, JspConstants.INDEX, startCal, endCal.backward(scale), world, relm, user, tag,
+		JspConstants.PRAYANCHOR)%>"><i
 					class="fa fa-angle-down" style="font-size: 24x"></i></a>
 				<%=endCal.getDisplayDate()%><a
-					href="<%=URLBuilder.buildRequest(request, JspConstants.INDEX, startCal, endCal.forward(scale), world, relm,
-		user, tag, JspConstants.PRAYANCHOR)%>"><i
+					href="<%=URLBuilder.buildRequest(request, JspConstants.INDEX, startCal, endCal.forward(scale), world, relm, user, tag,
+		JspConstants.PRAYANCHOR)%>"><i
 					class="fa fa-angle-up" style="font-size: 24px"></i></a>
 			</h3>
 			<div id="timeline" class=""
-				style="height: 100px; width: 1000px;position:relative; display: block; clear: both:content;margin-bottom:50px;">
-			<hr style="height:2px;background-color:black;border:0; margin-top:25px;margin-bottom:25px;margin-left:0px;margin-right:0px;position:relative;top:50px;">
+				style="height: 100px; position: relative; display: block; margin-bottom: 50px; padding-left: 10px; padding-right: 10px;">
+				<hr
+					style="height: 2px; background-color: black; border: 0; margin-top: 25px; margin-bottom: 25px; margin-left: 0px; margin-right: 0px; position: relative; top: 50px;">
 			</div>
 
 			<script>
@@ -198,7 +299,7 @@ SOLSCalendar.Scale scale = startCal.getScale(endCal);
 		const anchorElement = document.createElement("a");
 		anchorElement.href = anchor;
 		anchorElement.style.position = "absolute";
-		anchorElement.style.left="-33px";
+		anchorElement.style.left="-20px";
 		anchorElement.style.top = "33px";
 		anchorElement.style.height = "75px";
 		anchorElement.style.width = "33px";
@@ -220,11 +321,10 @@ SOLSCalendar.Scale scale = startCal.getScale(endCal);
 		textElement.style.position = "relative";
 		textElement.style.fontSize = "small";
 		textElement.innerHTML = text;
-
 		const anchorElement = document.createElement("a");
 		anchorElement.href = anchor;
 		anchorElement.style.position = "absolute";
-		anchorElement.style.left= timelineElement.offsetWidth + 2 + "px";
+		anchorElement.style.left= timelineElement.offsetWidth -8 + "px";
 		anchorElement.style.top = "33px";
 		anchorElement.style.height = "75px";
 		anchorElement.style.width = "33px";
@@ -233,6 +333,12 @@ SOLSCalendar.Scale scale = startCal.getScale(endCal);
 		timelineElement.appendChild(anchorElement);
   }
   const flagSet = {};
+  function placeFlagLocation(element, position) {
+	  const timelineWidth = timelineElement.offsetWidth;
+	  const flagLeft = (position/100) * timelineWidth;
+	  element.style.left = (flagLeft) + "px";
+
+  }
   function placeFlag(tip, anchor,  position) {
 	  if (!flagSet[position]) {
 		  flagSet[position] = true;
@@ -242,11 +348,11 @@ SOLSCalendar.Scale scale = startCal.getScale(endCal);
 		  icon.style.fontSize = "33px"; 
 		  const timelineWidth = timelineElement.offsetWidth;
 		  const flagWidth = icon.offsetWidth;
-		  const leftEdge = startDate;
-		  const rightEdge = endDate;
-		  const flagPosition = position;
+//		  const leftEdge = startDate;
+//		  const rightEdge = endDate;
+//		  const flagPosition = position;
 	
-		  const flagLeft = (flagPosition/100) * timelineWidth;
+		  const flagLeft = (position/100) * timelineWidth;
 	
 		  const anchorElement = document.createElement("a");
 		  anchorElement.setAttribute("title", tip); // add tooltip to icon element
@@ -255,9 +361,11 @@ SOLSCalendar.Scale scale = startCal.getScale(endCal);
 		  anchorElement.style.position = "absolute";
 		  anchorElement.style.float = "left";
 		  anchorElement.style.bottom = "50px";
-		  anchorElement.style.left = (flagLeft) + "px";
+		  placeFlagLocation(anchorElement, position);
+		  //anchorElement.style.left = (flagLeft) + "px";
 		  anchorElement.appendChild(icon);
 		  timelineElement.appendChild(anchorElement);
+		  return anchorElement;
 	  }
 	}
   
@@ -299,50 +407,50 @@ SOLSCalendar.Scale scale = startCal.getScale(endCal);
 	    
 		timelineElement.appendChild(div);
     }
-	placeForwardArrow("<%=startCal.getDisplayDate()%>","<%=startCal.getShortDisplayDate()%>", "<%=URLBuilder.buildRequest(request, JspConstants.INDEX, startCal.backward(startCal.getElapsedTime(endCal)), endCal.backward(startCal.getElapsedTime(endCal)), world, relm,
-			user, tag, JspConstants.PRAYANCHOR)%>")
-	placeBackwardArrow("<%=endCal.getDisplayDate()%>","<%=endCal.getShortDisplayDate()%>", "<%=URLBuilder.buildRequest(request, JspConstants.INDEX, startCal.forward(startCal.getElapsedTime(endCal)), endCal.forward(startCal.getElapsedTime(endCal)), world, relm,
-			user, tag, JspConstants.PRAYANCHOR)%>")	
-  <%
-	if(SOLSCalendar.Scale.CENTURY.equals(scale)){
-		
-	}
-	else if(SOLSCalendar.Scale.DECKADE.equals(scale)){
-			SOLSCalendar futureYear = startCal.forwardYear().justYear();
-			double rangeLength = Double.valueOf(startCal.getElapsedTime(endCal));
-			double dayOffset = startCal.getDayOfYear();
-			double yearOffset = SOLSCalendarConstants.LENGTHOFYEAR;
-			while(yearOffset - dayOffset < rangeLength){	
-			%>
-			placeArrow("<%=futureYear.getDisplayDate()%>", "<%=futureYear.getYear()%>", <%= Math.round((yearOffset/ rangeLength - (dayOffset / rangeLength))*100)%>)
-			<%
-				futureYear = futureYear.forwardYear();
-			yearOffset = yearOffset + SOLSCalendarConstants.LENGTHOFYEAR;
-				}
-		}
-	else if(SOLSCalendar.Scale.MONTH.equals(scale) || SOLSCalendar.Scale.SEASON.equals(scale) || SOLSCalendar.Scale.YEAR.equals(scale) || SOLSCalendar.Scale.DAY.equals(scale)){
-		SOLSCalendar futureMonth = startCal.forwardMonth().justMonth();
-		double rangeLength = Double.valueOf(startCal.getElapsedTime(endCal));
-		double dayOffset = startCal.getDayOfMonth();
-		double monthOffset = SOLSCalendarConstants.LENTHOFALUNARMONTH;
-		while(monthOffset - dayOffset < rangeLength){
-			if(0 == futureMonth.getMonth()){%>
-				placeArrow("<%=futureMonth.getDisplayDate()%>", "<%=futureMonth.getMonthName()%>, <%=futureMonth.getYear()%>", <%= Math.round((monthOffset/ rangeLength - (dayOffset / rangeLength))*100)%>)
-			<% } else{%>
-				placeArrow("<%=futureMonth.getDisplayDate()%>", "<%=futureMonth.getMonthName()%>", <%= Math.round((monthOffset/ rangeLength - (dayOffset / rangeLength))*100)%>)
+	placeForwardArrow("<%=startCal.getDisplayDate()%>","<%=startCal.getShortDisplayDate()%>", "<%=URLBuilder.buildRequest(request, JspConstants.INDEX, startCal.backward(startCal.getElapsedTime(endCal)),
+		endCal.backward(startCal.getElapsedTime(endCal)), world, relm, user, tag, JspConstants.PRAYANCHOR)%>")
+	placeBackwardArrow("<%=endCal.getDisplayDate()%>","<%=endCal.getShortDisplayDate()%>", "<%=URLBuilder.buildRequest(request, JspConstants.INDEX, startCal.forward(startCal.getElapsedTime(endCal)),
+		endCal.forward(startCal.getElapsedTime(endCal)), world, relm, user, tag, JspConstants.PRAYANCHOR)%>")	
+  <%if (SOLSCalendar.Scale.CENTURY.equals(scale)) {
+	SOLSCalendar futureYear = startCal.forwardCentury().justCentury();
+	double rangeLength = Double.valueOf(startCal.getElapsedTime(endCal));
+	double dayOffset = startCal.getDayOfCentury();
+	double yearOffset = SOLSCalendarConstants.LENGTHOFCENTURY;
+	while (yearOffset - dayOffset < rangeLength) {%>
+		placeArrow("<%=futureYear.getDisplayDate()%>", "<%=futureYear.getYear()%>", <%=Math.round((yearOffset / rangeLength - (dayOffset / rangeLength)) * 100)%>)
+		<%futureYear = futureYear.forwardCentury();
+yearOffset = yearOffset + SOLSCalendarConstants.LENGTHOFCENTURY;
+}
+} else if (SOLSCalendar.Scale.DECADE.equals(scale)) {
+SOLSCalendar futureYear = startCal.forwardDecade().justDecade();
+double rangeLength = Double.valueOf(startCal.getElapsedTime(endCal));
+double dayOffset = startCal.getDayOfDecade();
+double yearOffset = SOLSCalendarConstants.LENGTHOFDECADE;
+while (yearOffset - dayOffset < rangeLength) {%>
+			placeArrow("<%=futureYear.getDisplayDate()%>", "<%=futureYear.getYear()%>", <%=Math.round((yearOffset / rangeLength - (dayOffset / rangeLength)) * 100)%>)
+			<%futureYear = futureYear.forwardDecade();
+yearOffset = yearOffset + SOLSCalendarConstants.LENGTHOFDECADE;
+}
+} else if (SOLSCalendar.Scale.MONTH.equals(scale) || SOLSCalendar.Scale.SEASON.equals(scale)
+		|| SOLSCalendar.Scale.YEAR.equals(scale) || SOLSCalendar.Scale.DAY.equals(scale)) {
+SOLSCalendar futureMonth = startCal.forwardMonth().justMonth();
+double rangeLength = Double.valueOf(startCal.getElapsedTime(endCal));
+double dayOffset = startCal.getDayOfMonth();
+double monthOffset = SOLSCalendarConstants.LENTHOFALUNARMONTH;
+while (monthOffset - dayOffset < rangeLength) {
+if (0 == futureMonth.getMonth()) {%>
+				placeArrow("<%=futureMonth.getDisplayDate()%>", "<%=futureMonth.getMonthName()%>, <%=futureMonth.getYear()%>", <%=Math.round((monthOffset / rangeLength - (dayOffset / rangeLength)) * 100)%>)
+			<%} else if (rangeLength <= SOLSCalendarConstants.LENGTHOFYEAR * 3) {%>
+				placeArrow("<%=futureMonth.getDisplayDate()%>", "<%=futureMonth.getMonthName()%>", <%=Math.round((monthOffset / rangeLength - (dayOffset / rangeLength)) * 100)%>)
 			<%}
-			futureMonth = futureMonth.forwardMonth();
-			monthOffset = monthOffset + SOLSCalendarConstants.LENTHOFALUNARMONTH;
-			}
-	}
- %>
- console.log("Scale: <%=scale%>"); 
-
+futureMonth = futureMonth.forwardMonth();
+monthOffset = monthOffset + SOLSCalendarConstants.LENTHOFALUNARMONTH;
+}
+}%>
 /* placeArrow("testa", "",  100)
 placeArrow("testb",  "", 0)
 placeFlag("testflaga", "", 100);
 placeFlag("testflagb", "", 0); */
-
 </script>
 		</div>
 		<div class="container">
@@ -352,7 +460,6 @@ placeFlag("testflagb", "", 0); */
 						<%
 						if (tag.size() > 0) {
 							Iterator<String> it = tag.iterator();
-
 							while (it.hasNext()) {
 								Set<String> newTag = new HashSet<String>();
 								newTag.addAll(tag);
@@ -376,16 +483,31 @@ placeFlag("testflagb", "", 0); */
 						}
 						%>
 					</div>
+					<%
+					if (isMobile) {
+					%>
 					<div class="col-md-6 mb-4">
-						<div id="word-cloud"></div>
-					</div>
-					<script>
+						<%} else {%>
+						<div class="col-md-12 mb-4">
+							<%
+							}
+							%>
+
+							<div id="word-cloud"></div>
+						</div>
+						<script>
   fetch('<%=URLBuilder.buildRequest(request, JspConstants.TAG, startCal, endCal, world, relm, user, tag)%>')
     .then(response => response.json())
     .then(data => {
-      var width = 512;
-      var height = 512;
+    	<%if (isMobile) {%>
+    	var width = 400;
+        var height = 1000;
 
+    	<%} else {%>
+    	var width = 1000;
+        var height = 512;
+    	<%}%>
+    	
       var layout = d3.layout.cloud()
         .size([width, height])
         .words(data.map(function(d) {
@@ -395,9 +517,7 @@ placeFlag("testflagb", "", 0); */
         .rotate(function() { return ~~(Math.random() * 2) * 90; })
         .fontSize(function(d) { return d.size; })
         .on("end", draw);
-
       layout.start();
-
       function draw(words) {
         d3.select("#word-cloud").append("svg")
           .attr("width", layout.size()[0])
@@ -424,6 +544,7 @@ placeFlag("testflagb", "", 0); */
     });
 </script>
 
+					</div>
 				</div>
 			</div>
 		</div>
@@ -464,7 +585,8 @@ placeFlag("testflagb", "", 0); */
 	<!-- Menu Section -->
 	<section class="has-img-bg" id="insite">
 		<div class="container">
-			<h6 class="section-subtitle text-center">The oracle responds:</h6>
+			<h6 class="section-subtitle text-center">The oracle entices you
+				to glimpse a vision:</h6>
 			<h3 class="section-title mb-6 text-center">Oracle Summary</h3>
 			<div class="card bg-light">
 				<div class="card-body px-4 pb-4 text-center">
@@ -560,7 +682,8 @@ placeFlag("testflagb", "", 0); */
 	<!-- Team Section -->
 	<section class="has-img-bg">
 		<div class="container">
-			<h6 class="section-subtitle text-center">The oracle responds:</h6>
+			<h6 class="section-subtitle text-center">The Oracle discerns the
+				intricacies within:</h6>
 			<h3 class="section-title mb-6 text-center">Details</h3>
 			<div class="card bg-light">
 				<div class="card-body px-4 pb-4 text-center">
@@ -573,8 +696,8 @@ placeFlag("testflagb", "", 0); */
 						%>
 						<div class="col-md-6 my-4">
 							<a
-								href="<%=URLBuilder.buildRequest(request, JspConstants.DETAILS, startCal, endCal.backwardYear(), world, relm,
-		user, tag, "", JspConstants.ID + "=" + event.getKeyString())%>"
+								href="<%=URLBuilder.buildRequest(request, JspConstants.DETAILS, startCal, endCal, world, relm, user, tag, "",
+		JspConstants.ID + "=" + event.getKeyString())%>"
 								target="_blank"
 								class="pb-3 mx-3 d-block text-dark text-decoration-none border border-left-0 border-top-0 border-right-0">
 								<div class="d-flex">
@@ -582,15 +705,15 @@ placeFlag("testflagb", "", 0); */
 										<p class="mt-1 mb-0"><%=event.getShortDesc()%></p>
 									</div>
 									<h6 class="float-right text-primary">Details</h6>
-							  	<% if(50 > entities.size()){%>
+									<%
+									if (50 > entities.size()) {
+									%>
 									<script>
-									placeFlag("<%=event.getTitle()%>", "<%=URLBuilder.buildRequest(request, JspConstants.DETAILS, startCal, endCal.backwardYear(), world, relm,
-							  				user, tag, "", JspConstants.ID + "=" + event.getKeyString())%>", <%
-		double totalDays = Double.valueOf(startCal.getElapsedTime(endCal));
-		double elapseDays = Double.valueOf(event.getEventCalendar().getElapsedTime(endCal));
-		%><%= 100 - Math.round((elapseDays / totalDays) * 100) %>)
+									placeFlag("<%=event.getTitle()%>", "<%=URLBuilder.buildRequest(request, JspConstants.DETAILS, startCal, endCal, world, relm, user, tag, "",
+		JspConstants.ID + "=" + event.getKeyString())%>", <%double totalDays = Double.valueOf(startCal.getElapsedTime(endCal));
+double elapseDays = Double.valueOf(event.getEventCalendar().getElapsedTime(endCal));%><%=100 - Math.round((elapseDays / totalDays) * 100)%>)
   								</script>
-								  	<%}%>
+									<%}%>
 								</div>
 							</a>
 						</div>
@@ -632,18 +755,40 @@ placeFlag("testflagb", "", 0); */
 					<div class="card">
 						<div class="card-body">
 							<div class="media align-items-center mb-3">
+								<img class="mr-3" src="assets/imgs/avatar-2.jpg"
+									alt="Shrine of Lost Secrets  Landing page">
+								<div class="media-body">
+									<h6 class="mt-1 mb-0">Acolyte: Tag Cloud</h6>
+									<small class="text-muted mb-0">Use the Tag Cloud to
+										examine important elements.</small>
+								</div>
+							</div>
+							<p class="mb-0">
+								<b>Tags</b> that are more significant will be displayed larger
+								in the Tag Cloud. If you click on a <b>tag</b>, it will be added
+								to the list of selected tags, which will then limit the details
+								displayed to only those associated with all of the selected
+								tags. If you wish to remove a tag from the list, simply click on
+								the <i class="fa fa-window-close" aria-hidden="true"></i> icon.
+							</p>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-4 my-3 my-md-0">
+					<div class="card">
+						<div class="card-body">
+							<div class="media align-items-center mb-3">
 								<img class="mr-3" src="assets/imgs/avatar-1.jpg"
 									alt="Shrine of Lost Secrets Landing page">
 								<div class="media-body">
 									<h6 class="mt-1 mb-0">Acolyte: Time Control</h6>
 									<small class="text-muted mb-0">You can use the Up and
-										Down arrows near the Time to adjust the current time.</small>
+										Down arrows near the Time to adjust the Start and End time.</small>
 								</div>
 							</div>
 							<p class="mb-0">
-								Using the <i class="fa fa-angle-double-up"
-									style="font-size: 48px"></i> and <i
-									class="fa fa-angle-double-down" style="font-size: 48px"></i>
+								Using the <i class="fa fa-angle-down" style="font-size: 48px"></i>
+								and <i class="fa fa-angle-up" style="font-size: 48px"></i>
 								arrows, you can adjust the current time and explore various
 								periods in time. This allows you to delve into the origins of a
 								person or place, as well as venture into the future to gain
@@ -657,21 +802,21 @@ placeFlag("testflagb", "", 0); */
 					<div class="card">
 						<div class="card-body">
 							<div class="media align-items-center mb-3">
-								<img class="mr-3" src="assets/imgs/avatar-2.jpg"
-									alt="Shrine of Lost Secrets  Landing page">
+								<img class="mr-3" src="assets/imgs/avatar-7.jpg"
+									alt="Shrine of Lost Secrets Landing page">
 								<div class="media-body">
-									<h6 class="mt-1 mb-0">Acolyte: Tag Cloud</h6>
-									<small class="text-muted mb-0">Use the Tag Cloud to
-										examine important elements.</small>
+									<h6 class="mt-1 mb-0">Acolyte: Time Control</h6>
+									<small class="text-muted mb-0">You can use the Left and
+										Right arrows near the Time Bar to move forward or backward in
+										time</small>
 								</div>
 							</div>
 							<p class="mb-0">
-								Tags that are more significant will be displayed larger in the
-								tag cloud. If you click on a tag, it will be added to the list
-								of selected tags, which will then limit the details displayed to
-								only those associated with the selected tags. If you wish to
-								remove a tag from the list, simply click on the <i
-									class="fa fa-window-close" aria-hidden="true"></i> icon.
+								Using the <i class="fa fa-arrow-left" style="font-size: 48px"></i>
+								and <i class="fa fa-arrow-right" style="font-size: 48px"></i>
+								arrows, you have the ability to modify the current time and
+								explore different periods in history by moving either forward or
+								backward in time.
 							</p>
 						</div>
 					</div>
@@ -722,31 +867,34 @@ placeFlag("testflagb", "", 0); */
 								<img class="mr-3" src="assets/imgs/avatar-5.jpg"
 									alt="Shrine of Lost Secrets Landing page">
 								<div class="media-body">
-									<h6 class="mt-1 mb-0">Acolyte: Add an event.</h6>
+									<h6 class="mt-1 mb-0">Acolyte: Add and Delete an event.</h6>
 									<small class="text-muted mb-0">Can be found at the end
 										of the Oracle Summary</small>
 								</div>
 							</div>
-							<p class="mb-0">You can add event(s) that will only affect
-								your time-line.
+							<p class="mb-0">You can add event(s) or delete event(s) that
+								will only affect your time-line.</p>
 						</div>
 					</div>
 				</div>
-			</div>
-			<div class="col-md-4 my-3 my-md-0">
-				<div class="card">
-					<div class="card-body">
-						<div class="media align-items-center mb-3">
-							<img class="mr-3" src="assets/imgs/avatar-6.jpg"
-								alt="Shrine of Lost Secrets Landing page">
-							<div class="media-body">
-								<h6 class="mt-1 mb-0">Acolyte: Delete an Event</h6>
-								<small class="text-muted mb-0">Can be found in the
-									Details page</small>
+				<div class="col-md-4 my-3 my-md-0">
+					<div class="card">
+						<div class="card-body">
+							<div class="media align-items-center mb-3">
+								<img class="mr-3" src="assets/imgs/avatar-6.jpg"
+									alt="Shrine of Lost Secrets Landing page">
+								<div class="media-body">
+									<h6 class="mt-1 mb-0">Acolyte: Verisimilitude</h6>
+									<small class="text-muted mb-0">The appearance of being
+										real.</small>
+								</div>
 							</div>
+							<p class="mb-0">As you explore the depths of the Shrine,
+								immerse your players in a world of vivid detail. If you find
+								that the Shrine lacks specific information, seize the
+								opportunity to craft and incorporate your own creative elements
+								within its framework.</p>
 						</div>
-						<p class="mb-0">You can delete event(s) that will only affect
-							your time-line.
 					</div>
 				</div>
 			</div>
@@ -765,13 +913,16 @@ placeFlag("testflagb", "", 0); */
 						class="w-100 rounded shadow">
 				</div>
 				<div class="col-md-6">
-					<form>
+					<form action="mailto:info@shrineoflostsecrets.com?body="
+						method="post" enctype="text/plain">
+						<input type="hidden" name="page url"
+							value="<%=request.getRequestURI() + (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>">
 						<div class="form-group">
-							<input type="text" class="form-control" id="exampleInputEmail1"
-								aria-describedby="emailHelp" placeholder="Your Name"> <input
-								type="text" class="form-control" id="exampleInputEmail1"
+							<input type="text" class="form-control" id="name"
+								aria-describedby="emailHelp" placeholder="Your Name" name="name">
+							<input type="text" class="form-control" id="message"
 								aria-describedby="emailHelp"
-								placeholder="Your comment or Question">
+								placeholder="Your comment or Question" name="message">
 						</div>
 						<button type="submit" class="btn btn-primary btn-block">Share
 							your thoughts</button>
@@ -796,9 +947,16 @@ placeFlag("testflagb", "", 0); */
 						alt="Shrine of Lost Secrets" class="mb-0">
 				</div>
 				<div class="col-md-9 text-md-right">
-					<a href="#pray" class="px-3"><small class="font-weight-bold">Pray</small></a>
-					<a href="#help" class="px-3"><small class="font-weight-bold">Help</small></a>
-					<a href="#contact" class="pl-3"><small class="font-weight-bold">Contact</small></a>
+					<a
+						href="<%=URLBuilder.buildRequest(request, JspConstants.INDEX, startCal, endCal, world, relm, user, tag,
+		JspConstants.PRAYANCHOR)%>"
+						class="px-3"><small class="font-weight-bold">Pray</small></a> <a
+						href="<%=URLBuilder.buildRequest(request, JspConstants.INDEX, startCal, endCal, world, relm, user, tag,
+		JspConstants.HELPANCHOR)%>"
+						class="px-3"><small class="font-weight-bold">Help</small></a> <a
+						href="<%=URLBuilder.buildRequest(request, JspConstants.INDEX, startCal, endCal, world, relm, user, tag,
+		JspConstants.CONTACTANCHOR)%>"
+						class="pl-3"><small class="font-weight-bold">Contact</small></a>
 				</div>
 			</div>
 		</div>
@@ -819,12 +977,8 @@ placeFlag("testflagb", "", 0); */
 				</div>
 				<div class="d-none d-md-block">
 					<h6 class="small mb-0">
-						<a href="javascript:void(0)" class="px-2"><i
-							class="ti-facebook"></i></a> <a href="javascript:void(0)"
-							class="px-2"><i class="ti-twitter"></i></a> <a
-							href="javascript:void(0)" class="px-2"><i
-							class="ti-instagram"></i></a> <a href="javascript:void(0)"
-							class="px-2"><i class="ti-google"></i></a>
+						<a href="https://www.facebook.com/groups/915527066379136/"
+							class="px-2"><i class="ti-facebook"></i></a>
 					</h6>
 				</div>
 			</div>
@@ -839,8 +993,5 @@ placeFlag("testflagb", "", 0); */
 
 	<!-- bootstrap affix -->
 	<script src="assets/vendors/bootstrap/bootstrap.affix.js"></script>
-
 </body>
 </html>
-
-

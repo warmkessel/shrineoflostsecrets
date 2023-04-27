@@ -220,7 +220,7 @@ public class Event extends BaseEntity {
 			return false;
 		}
 		Event other = (Event) obj;
-		return this.title.equals(other.title);
+		return this.getKey().equals(other.getKey());
 	}
 
 	@Override

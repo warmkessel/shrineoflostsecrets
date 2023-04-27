@@ -28,7 +28,7 @@ public class SOLSCalendar {
 		MONTH,
 	    SEASON,
 	    YEAR,
-	    DECKADE,
+	    DECADE,
 	    CENTURY
 	}
 	
@@ -36,7 +36,11 @@ public class SOLSCalendar {
 
 
 	private final long time;
+	private Long centry = null;
+	private Long decade = null;
 	private Long year = null;
+	private Long dayofcentury = null;
+	private Long dayofdecade = null;
 	private Long dayofyear = null;
 	private Integer season = null;
 	private Integer dayofSeason = null;
@@ -74,6 +78,18 @@ public class SOLSCalendar {
 	public SOLSCalendar forwardYear() {
 		return forward(SOLSCalendarConstants.LENGTHOFYEAR);
 	}
+	public SOLSCalendar forwardDecade() {
+		return forward(SOLSCalendarConstants.LENGTHOFDECADE);
+	}
+	public SOLSCalendar backwardDecade() {
+		return backward(SOLSCalendarConstants.LENGTHOFDECADE);
+	}
+	public SOLSCalendar forwardCentury() {
+		return forward(SOLSCalendarConstants.LENGTHOFCENTURY);
+	}
+	public SOLSCalendar backwardCentury() {
+		return backward(SOLSCalendarConstants.LENGTHOFCENTURY);
+	}
 	public SOLSCalendar forward(Scale scale) {
 		return forward(scale, true);
 	}
@@ -95,14 +111,14 @@ public class SOLSCalendar {
 		else if(Scale.YEAR.equals(scale)) {
 			theAmount = SOLSCalendarConstants.LENGTHOFYEAR;
 		}
-		else if(Scale.DECKADE.equals(scale)) {
+		else if(Scale.DECADE.equals(scale)) {
 			theAmount = SOLSCalendarConstants.LENGTHOFDECADE;
 		}
 		else if(Scale.CENTURY.equals(scale)) {
 			theAmount = SOLSCalendarConstants.LENGTHOFCENTURY;
 		}
 		if(!forward) {
-			theAmount = -theAmount;
+			theAmount = -theAmount/2;
 		}
 		return forward(theAmount);
 	}
@@ -112,6 +128,12 @@ public class SOLSCalendar {
 	
 	public SOLSCalendar backward(long amount) {
 		return forward(-amount);
+	}
+	public SOLSCalendar justCentury() {
+		return new SOLSCalendar(getTime() - getDayOfCentury());
+	}
+	public SOLSCalendar justDecade() {
+		return new SOLSCalendar(getTime() - getDayOfDecade());
 	}
 	public SOLSCalendar justYear() {
 		return new SOLSCalendar(getTime() - getDayOfYear());
@@ -126,17 +148,54 @@ public class SOLSCalendar {
 	public long getTime() {
 		return time;
 	}
+	public long getCentury() {
+		if (null == centry) {
+			centry = Math.floorDiv(getTime(), SOLSCalendarConstants.LENGTHOFCENTURY);
+		}
+//		Math.floorMod(getTime(), SOLSCalendarConstants.LENGTHOFDECADE);
+
+		return centry;
+
+	}
+	public long getDecade() {
+		if (null == decade) {
+			decade = Math.floorDiv(getTime(), SOLSCalendarConstants.LENGTHOFDECADE);
+		}
+//		Math.floorMod(getTime(), SOLSCalendarConstants.LENGTHOFDECADE);
+
+		return decade;
+
+	}
 
 	public long getYear() {
 		if (null == year) {
 			year = Math.floorDiv(getTime(), SOLSCalendarConstants.LENGTHOFYEAR);
 		}
-		Math.floorMod(getTime(), SOLSCalendarConstants.LENTHOFALUNARMONTH);
+//		Math.floorMod(getTime(), SOLSCalendarConstants.LENTHOFALUNARMONTH);
 
 		return year;
 
 	}
 
+	
+	public int getDayOfCentury() {
+		if (null == dayofcentury) {
+			dayofcentury = new Long(Math.floorMod(Math.abs(getTime()), SOLSCalendarConstants.LENGTHOFCENTURY));
+		}
+		return dayofcentury.intValue();
+
+	}
+	
+	
+	public int getDayOfDecade() {
+		if (null == dayofdecade) {
+			dayofdecade = new Long(Math.floorMod(Math.abs(getTime()), SOLSCalendarConstants.LENGTHOFDECADE));
+		}
+
+		return dayofdecade.intValue();
+
+	}
+	
 	public int getDayOfYear() {
 
 		if (null == dayofyear) {
@@ -211,7 +270,7 @@ public class SOLSCalendar {
 			return Scale.CENTURY;
 		} 
 		else if(getElapsedTime(endCal) > SOLSCalendarConstants.LENGTHOFDECADE) {
-			return Scale.DECKADE;
+			return Scale.DECADE;
 		}
 		else if(getElapsedTime(endCal) > SOLSCalendarConstants.LENGTHOFYEAR) {
 			return Scale.YEAR;
@@ -255,4 +314,23 @@ public class SOLSCalendar {
 		}
 		
 	}
+	@Override
+	public boolean equals(Object obj) {
+	    if (obj == this) {
+	        return true;
+	    }
+
+	    if (!(obj instanceof SOLSCalendar)) {
+	        return false;
+	    }
+
+	    SOLSCalendar other = (SOLSCalendar) obj;
+	    return this.getTime() == other.getTime();
+	}
+
+	@Override
+	public int hashCode() {
+	    return Long.hashCode(getTime());
+	}
+	
 }

@@ -2,16 +2,19 @@ package com.shrineoflostsecrets.constants;
 
 public class JspConstants {
 	public static final String INDEX = "/index.jsp";
+	public static final String PIVACY = "/privacy.jsp";
 	public static final String PRAY = "/pray.jsp";
 	public static final String TAG = "/tags.jsp";
 	public static final String IMAGE = "/image.jsp";
 	public static final String DETAILS = "/details.jsp";
 	public static final String EVENTLIST = "/eventList.jsp";
 	public static final String EVENTDETAILS = "/eventDetails.jsp";
+	public static final String GETSTARTED = "/getStarted.jsp";
 
 	
 	public static final String DIRTY = "dirty";
 	public static final String EDIT = "edit";
+	public static final String SAVE = "save";
 	
 	
 	public static final String ID = "id";
@@ -25,6 +28,7 @@ public class JspConstants {
 //	public static final String KINGDOM = "kingdom";
 	public static final String USER = "user";
 	public static final String TAGS = "tags";
+	public static final String TAGINPUT = "tag";
 
 	public static final String SUMMARY = "summary";
 	public static final String SUMMARYPEOPLE = "people";

@@ -1,7 +1,6 @@
 package com.shrineoflostsecrets.util;
 
-import java.util.Iterator;
-import java.util.Set;
+import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -9,6 +8,19 @@ import com.shrineoflostsecrets.constants.JspConstants;
 
 public class URLBuilder {
 
+	
+	
+	public static String buildRequest(HttpServletRequest request, String page, SOLSCalendar calStart, SOLSCalendar calEnd,
+			String world, String relm, String User, String tagString, String anchor) {
+		Set<String> tag = new HashSet<String>();
+		String[] theArray = tagString.split(" ");
+		for(int x=0; x < theArray.length; x++) {
+			tag.add(theArray[x]);
+		}
+		return buildRequest(request, page, calStart, calEnd,
+				world, relm, User, tag, anchor, null);
+	}
+	
 	
 	public static String buildRequest(HttpServletRequest request, String page, SOLSCalendar calStart, SOLSCalendar calEnd,
 			String world, String relm, String User, Set<String> tag) {
