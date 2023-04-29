@@ -17,16 +17,13 @@ import com.google.cloud.datastore.Value;
 import com.shrineoflostsecrets.constants.BaseEntityConstants;
 import com.google.cloud.Timestamp;
 
-public abstract class BaseEntity implements Comparable<Event>, Serializable {
+public  abstract class BaseEntity implements  Serializable {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 7160882192926634429L;
 //	private static final Logger log = Logger.getLogger(BaseEntity.class.getName());
 
-
-
-	public abstract int compareTo(Event other);
 
 	private Key key = null;
 //	private boolean deleted = false;
@@ -55,7 +52,7 @@ public abstract class BaseEntity implements Comparable<Event>, Serializable {
 		result = 31 * result + updatedDate.hashCode();
 		return result;
 	}
-	public void loadEvent(Entity entity) {		  
+	public void loadFromEntity(Entity entity) {		  
 		if(null != entity) {
 			setKey(entity.getKey());
 			setDeleted(entity.getList(BaseEntityConstants.DELETED));
@@ -63,10 +60,11 @@ public abstract class BaseEntity implements Comparable<Event>, Serializable {
 			setUpdatedDate(entity.getTimestamp(BaseEntityConstants.UPDATEDDATE));
 		}	
 	}
-
+	public abstract String getEventKind();
+	
 	public Key getKey() {
 		 if(null == key) {
-			 KeyFactory keyFactory = getDatastore().newKeyFactory().setKind("Event");  
+			 KeyFactory keyFactory = getDatastore().newKeyFactory().setKind(getEventKind());  
 			 key = getDatastore().allocateId(keyFactory.newKey());
 		 }
 		return key;
@@ -92,7 +90,13 @@ public abstract class BaseEntity implements Comparable<Event>, Serializable {
 			return String.join(" ", deletedStrings);
 		}
 	}
-	public boolean isDeleted(String userId) {
+	public boolean isDeleted(DungonMaster dm) {
+		return isDeleted(dm.getKeyLong());
+	}
+	private boolean isDeleted(Long userId) {
+		return isDeleted(userId.toString());
+	}
+	private boolean isDeleted(String userId) {
 		return (null != getDeleted() && (getDeleted().contains(StringValue.of(userId))));
 	}
 
@@ -102,6 +106,13 @@ public abstract class BaseEntity implements Comparable<Event>, Serializable {
 		}
 		return deleted;
 	}
+	public void setUnDeleted(DungonMaster dm) {     
+		setUnDeleted(dm.getKeyLong());	
+	}	
+	public void setUnDeleted(Long userId) {     
+		setUnDeleted(userId.toString());	
+	}	
+	
 	public void setUnDeleted(String userId) {     
 		setUnDeleted(StringValue.newBuilder(userId).build());	
 	}	
@@ -110,7 +121,17 @@ public abstract class BaseEntity implements Comparable<Event>, Serializable {
 	    updatedDeletedList.remove(userId);
 	    setDeleted(updatedDeletedList);
 	}
-	public void setDeleted(String userId) {     
+	
+	public void setDeleted(DungonMaster dm) {
+		setDeleted(dm.getKeyLong());
+	}
+	
+	public void setDeleted(Long userId) {     
+		setDeleted(userId.toString());
+	}
+	
+	
+	private void setDeleted(String userId) {     
 		setDeleted(StringValue.newBuilder(userId).build());	
 	}	
 	public void setDeleted(Value<?> userId) {     

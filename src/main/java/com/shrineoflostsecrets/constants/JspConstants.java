@@ -12,6 +12,13 @@ public class JspConstants {
 	public static final String GETSTARTED = "/getStarted.jsp";
 
 	
+	
+	
+	public static final String DEFAULTFAGCOLOR = "#886433";
+	public static final String PERSONALFAGCOLOR = "black";
+	public static final String FOCUSFLAGCOLOR = "red";
+
+	
 	public static final String DIRTY = "dirty";
 	public static final String EDIT = "edit";
 	public static final String SAVE = "save";
@@ -36,6 +43,7 @@ public class JspConstants {
 	public static final String TAG1 = "tag1";
 
 	
+	public static final String PROMOTE= "promote";
 	public static final String TITLE = "title";
 	public static final String COMPACTDESC = "compactDesc";
 	public static final String SHORTDESC = "shortDesc";

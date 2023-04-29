@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-//import java.util.logging.Logger;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import com.shrineoflostsecrets.constants.Constants;
@@ -17,7 +17,7 @@ import com.google.cloud.datastore.Key;
 import com.google.cloud.datastore.ListValue;
 import com.google.cloud.datastore.StringValue;
 import com.google.cloud.datastore.Value;
-public class Event extends BaseEntity {
+public class Event extends BaseEntity implements Comparable<Event> {
 
 	
 
@@ -25,11 +25,11 @@ public class Event extends BaseEntity {
 	 * 
 	 */
 	private static final long serialVersionUID = -361472214131790072L;
-	// private static final Logger log = Logger.getLogger(Event.class.getName());
+	 private static final Logger log = Logger.getLogger(Event.class.getName());
 
 	private boolean bookmarked = false;
 
-	private int userId = 0;
+	private long userId = 0;
 	private int revision = 0;
 	private String world = "";
 	private String relm = "";
@@ -73,11 +73,11 @@ public class Event extends BaseEntity {
 		this.bookmarked = bookmarked;
 	}
 
-	public int getUserId() {
+	public long getUserId() {
 		return userId;
 	}
 
-	public void setUserId(int userId) {
+	public void setUserId(long userId) {
 		this.userId = userId;
 	}
 
@@ -227,7 +227,7 @@ public class Event extends BaseEntity {
 	public int hashCode() {
 		int result = super.hashCode();
 		result = 31 * result + (bookmarked ? 1 : 0);
-		result = 31 * result + userId;
+		result = 31 * result + new Long(userId).intValue();
 		result = 31 * result + revision;
 		result = 31 * result + world.hashCode();
 		//result = 31 * result + kingdom.hashCode();
@@ -268,15 +268,23 @@ public class Event extends BaseEntity {
 	public void loadEvent(Key key) {
 		// log.info("key " + key.toString());
 		Entity event = getDatastore().get(key);
-		loadEvent(event);
+		loadFromEntity(event);
 
 	}
 
-	public void loadEvent(Entity entity) {
-		super.loadEvent(entity);
+	public void loadFromEntity(Entity entity) {
+		super.loadFromEntity(entity);
 		if (null != entity) {
 			setBookmarked(entity.getBoolean(EventConstants.BOOKMARKED));
-			setUserId(new Long(entity.getLong(EventConstants.USERID)).intValue());
+			long userid = entity.getLong(EventConstants.USERID);
+//			log.info("userid:" + userid);
+			
+		
+			setUserId(entity.getLong(EventConstants.USERID));
+			
+//			log.info("getUserId:" + getUserId());
+
+			
 			setRevision(new Long(entity.getLong(EventConstants.REVISION)).intValue());
 			setWorld(entity.getString(EventConstants.WORLD));
 			setRelm(entity.getString(EventConstants.RELM));
@@ -312,5 +320,7 @@ public class Event extends BaseEntity {
 			return this.title.compareTo(other.title);
 		}
 	}
-
+	public String getEventKind() {
+		return EventConstants.EVENT;
+	}
 }

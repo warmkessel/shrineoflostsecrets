@@ -4,16 +4,17 @@
 <%@ page import="com.shrineoflostsecrets.util.*"%>
 <%@ page import="java.util.*"%>
 <%@ page import="java.net.*"%>
-<%@ page import="com.shrineoflostsecrets.entity.Event"%>
-<%@ page import="com.shrineoflostsecrets.datastore.EventsList"%>
+<%@ page import="com.shrineoflostsecrets.entity.*"%>
+<%@ page import="com.shrineoflostsecrets.datastore.*"%>
 <%@ page import="com.google.cloud.datastore.*"%>
 <%@ page import="com.shrineoflostsecrets.ai.*"%>
+<%@ page import="com.google.appengine.api.users.*" %>
+
 <!DOCTYPE html>
 <html>
 <head>
 <!-- Google tag (gtag.js) -->
-<script async
-	src="https://www.googletagmanager.com/gtag/js?id=G-N2VTBWYNCJ"></script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-N2VTBWYNCJ"></script>
 <script>
 	window.dataLayer = window.dataLayer || [];
 	function gtag() {
@@ -23,10 +24,12 @@
 	gtag('config', 'G-N2VTBWYNCJ');
 </script>
 <%
+UserService userService = UserServiceFactory.getUserService();
+User currentUser = userService.getCurrentUser();
+DungonMaster dm = DungonMasterList.getDungonMaster(currentUser);
+
 long endDate = 0;
 long startDate = 0;
-String user = Constants.UNIVERSALUSER;
-
 String world = (String) request.getParameter(JspConstants.WORLD);
 String relm = (String) request.getParameter(JspConstants.RELM);
 Set<String> tag = new HashSet<String>();
@@ -69,7 +72,7 @@ SOLSCalendar endCal = new SOLSCalendar(endDate);
 	<nav class="navbar nav-first navbar-dark bg-dark">
 		<div class="container">
 			<a class="navbar-brand"
-				href="<%=URLBuilder.buildRequest(request, JspConstants.INDEX, startCal, endCal, world, relm, user, tag,
+				href="<%=URLBuilder.buildRequest(request, JspConstants.INDEX, startCal, endCal, world, relm, tag,
 		JspConstants.PRAYANCHOR, "#")%>">
 				<img src="assets/imgs/logo-sm.jpg" alt="Shrine of Lost Secrets">
 			</a>
@@ -94,30 +97,35 @@ SOLSCalendar endCal = new SOLSCalendar(endDate);
 			<div class="collapse navbar-collapse" id="navbarSupportedContent">
 				<ul class="navbar-nav mr-auto">
 					<li class="nav-item"><a class="nav-link"
-						href="<%=URLBuilder.buildRequest(request, JspConstants.INDEX, startCal, endCal, world, relm, user, tag,
+						href="<%=URLBuilder.buildRequest(request, JspConstants.INDEX, startCal, endCal, world, relm, tag,
 		JspConstants.PRAYANCHOR)%>">Pray
 							at the Shrine</a></li>
 					<li class="nav-item"><a class="nav-link"
-						href="<%=URLBuilder.buildRequest(request, JspConstants.INDEX, startCal, endCal, world, relm, user, tag,
+						href="<%=URLBuilder.buildRequest(request, JspConstants.INDEX, startCal, endCal, world, relm, tag,
 		JspConstants.HELPANCHOR)%>">Ask
 							for Help</a></li>
 					<li class="nav-item"><a class="nav-link"
-						href="<%=URLBuilder.buildRequest(request, JspConstants.GETSTARTED, startCal, endCal, world, relm, user, tag,
+						href="<%=URLBuilder.buildRequest(request, JspConstants.GETSTARTED, startCal, endCal, world, relm, tag,
 		JspConstants.PRAYANCHOR)%>">Get
 							Started</a></li>
 					<li class="nav-item"><a class="nav-link"
-						href="<%=URLBuilder.buildRequest(request, JspConstants.INDEX, startCal, endCal, world, relm, user, tag,
+						href="<%=URLBuilder.buildRequest(request, JspConstants.INDEX, startCal, endCal, world, relm, tag,
 		JspConstants.CONTACTANCHOR)%>">Make
 							an offering</a></li>
 					<li class="nav-item"><a class="nav-link"
-						href="<%=URLBuilder.buildRequest(request, JspConstants.INDEX, startCal, endCal, world, relm, user, tag,
+						href="<%=URLBuilder.buildRequest(request, JspConstants.INDEX, startCal, endCal, world, relm, tag,
 		JspConstants.CONTACTANCHOR)%>">Contact
 							Us</a></li>
 				</ul>
 				<ul class="navbar-nav ml-auto">
-					<li class="nav-item"><a href="login.html"
-						class="btn btn-primary btn-sm"
-						onclick="alert('Pardon our dust. We are still working on this feature'); return false;">Login</a>
+					<li class="nav-item">
+					<%if (currentUser != null) { %>
+						<a href="<%= userService.createLogoutURL(URLBuilder.buildRequest(request, JspConstants.PIVACY, startCal, endCal, world, relm, tag,"", ""))%>"
+						class="btn btn-primary btn-sm">Welcome <%=currentUser.getNickname() %></a>
+					<%}else { %>
+					<a href="<%= userService.createLoginURL(URLBuilder.buildRequest(request, JspConstants.PIVACY, startCal, endCal, world, relm, tag,"", ""))%>"
+						class="btn btn-primary btn-sm">Login</a>
+					<%}%>			
 					</li>
 				</ul>
 			</div>
@@ -218,11 +226,11 @@ Thank you for using shrineoflostsecrets.com
 						alt="Shrine of Lost Secrets" class="mb-0">
 				</div>
 				<div class="col-md-9 text-md-right">
-					<a href="<%=URLBuilder.buildRequest(request, JspConstants.INDEX, startCal, endCal, world, relm, user, tag,
+					<a href="<%=URLBuilder.buildRequest(request, JspConstants.INDEX, startCal, endCal, world, relm, tag,
 		JspConstants.PRAYANCHOR)%>" class="px-3"><small class="font-weight-bold">Pray</small></a>
-					<a href="<%=URLBuilder.buildRequest(request, JspConstants.INDEX, startCal, endCal, world, relm, user, tag,
+					<a href="<%=URLBuilder.buildRequest(request, JspConstants.INDEX, startCal, endCal, world, relm, tag,
 		JspConstants.HELPANCHOR)%>" class="px-3"><small class="font-weight-bold">Help</small></a>
-					<a href="<%=URLBuilder.buildRequest(request, JspConstants.INDEX, startCal, endCal, world, relm, user, tag,
+					<a href="<%=URLBuilder.buildRequest(request, JspConstants.INDEX, startCal, endCal, world, relm, tag,
 		JspConstants.CONTACTANCHOR)%>" class="pl-3"><small class="font-weight-bold">Contact</small></a>
 				</div>
 			</div>
@@ -237,16 +245,16 @@ Thank you for using shrineoflostsecrets.com
 				<div class="col">
 					<p class="mb-0 small">
 						&copy;
-						<script>
-							document.write(new Date().getFullYear())
-						</script>
-						, James Warmkessel All rights reserved
+						<script>document.write(new Date().getFullYear())</script>
+						, James Warmkessel All rights reserved <%= Constants.VERSION %>
 					</p>
 				</div>
 				<div class="d-none d-md-block">
 					<h6 class="small mb-0">
-						<a href="https://www.facebook.com/groups/915527066379136/" class="px-2"><i
-							class="ti-facebook"></i></a>
+						<a href="https://www.facebook.com/groups/915527066379136/"      
+							class="px-2" target="_blank"><i class="ti-facebook"></i></a>
+						<a href="https://twitter.com/shrinesecrets"                     
+							class="px-2" target="_blank"><i class="ti-twitter"></i></a> 
 					</h6>
 				</div>
 			</div>

@@ -12,13 +12,15 @@ import com.google.cloud.datastore.StructuredQuery.PropertyFilter;
 import com.google.common.collect.Lists;
 import com.shrineoflostsecrets.constants.Constants;
 import com.shrineoflostsecrets.constants.EventConstants;
+import com.shrineoflostsecrets.entity.DungonMaster;
 import com.shrineoflostsecrets.util.SOLSCalendar;
 
 public class EventsList {
-	public static List<Entity> listEvents(SOLSCalendar startCal, SOLSCalendar endCal, String world, String relm, String userId,Set<String> tag) {
-		return listEvents(startCal.getTime(), endCal.getTime(), world, relm, userId, tag);
+	
+	public static List<Entity> listEvents(SOLSCalendar startCal, SOLSCalendar endCal, String world, String relm, DungonMaster theMaster, Set<String> tag) {
+		return listEvents(startCal.getTime(), endCal.getTime(), world, relm, theMaster.getKeyLong(), tag);
 	}
-	public static List<Entity> listEvents(long startTime, long endTime, String world, String relm, String userId,
+	private static List<Entity> listEvents(long startTime, long endTime, String world, String relm, long userId,
 			Set<String> tag) {
 		Datastore datastore = DatastoreOptions.getDefaultInstance().getService();
 		Query<Entity> query = null;
@@ -34,21 +36,27 @@ public class EventsList {
 		List<Entity> entities = Lists.newArrayList(results);
 
 		Iterator<Entity> it = entities.iterator();
-
-		StringValue du0 = StringValue.of(Constants.UNIVERSALUSER);
-		StringValue du1 = StringValue.of(userId);
+		
+		StringValue du0 = StringValue.of(new Long(Constants.UNIVERSALUSER).toString());
+		StringValue du1 = StringValue.of(new Long(userId).toString());
 
 		while (it.hasNext()) {
 			Entity ent = (Entity) it.next();
-			List<? extends Value<?>> list = ent.getList(EventConstants.DELETED);
-			if (list.size() > 0 && (list.contains(du0) || list.contains(du1))) {
+			long eventUserID = ent.getLong(EventConstants.USERID);
+			if(Constants.UNIVERSALUSER != eventUserID && userId != eventUserID){
 				 it.remove(); 
+			}
+			else {
+				List<? extends Value<?>> list = ent.getList(EventConstants.DELETED);
+				if (list.size() > 0 && (list.contains(du0) || list.contains(du1))) {
+					 it.remove(); 
+				}
 			}
 		}
 		return entities;
 	}
 
-	private static Query<Entity> buildquery(long startTime, long endTime, String world, String relm, String userId) {
+	private static Query<Entity> buildquery(long startTime, long endTime, String world, String relm, long userId) {
 		// Define a query to retrieve all entities of kind "Event" with specified
 		// filters and ordering
 		Query<Entity> query = Query.newEntityQueryBuilder().setKind(EventConstants.EVENT)
@@ -61,7 +69,7 @@ public class EventsList {
 
 	}
 
-	private static Query<Entity> buildquery(long startTime, long endTime, String world, String relm, String userId,
+	private static Query<Entity> buildquery(long startTime, long endTime, String world, String relm, long userId,
 			Set<String> tag) {
 		String[] tagArray = tag.toArray(new String[tag.size()]);
 

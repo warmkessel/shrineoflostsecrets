@@ -1,21 +1,22 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ page import="com.shrineoflostsecrets.entity.Event"%>
-<%@ page import="com.shrineoflostsecrets.datastore.EventsList"%>
+<%@ page import="com.shrineoflostsecrets.entity.*"%>
+<%@ page import="com.shrineoflostsecrets.datastore.*"%>
 <%@ page import="java.util.List"%>
 <%@ page import="com.google.cloud.datastore.*"%>
-<%@ page import="com.shrineoflostsecrets.constants.Constants"%>
-<%@ page import="com.shrineoflostsecrets.constants.JspConstants"%>
-<%@ page import="com.shrineoflostsecrets.util.SOLSCalendar"%>
-<%@ page import="com.shrineoflostsecrets.util.TagRepo"%>
+<%@ page import="com.shrineoflostsecrets.constants.*"%>
+<%@ page import="com.shrineoflostsecrets.util.*"%>
 <%@ page import="java.util.*"%>
+<%@ page import="com.google.appengine.api.users.*" %>
 
 <%
-//5635008819625984l
+UserService userService = UserServiceFactory.getUserService();
+User currentUser = userService.getCurrentUser();
+DungonMaster dm = DungonMasterList.getDungonMaster(currentUser);
+
 long startDate = Constants.BEGININGOFTIME;
 long endDate = Constants.ENDOFTIME;
 String world = Constants.HOME;
 String relm = Constants.MEN;
-String user = Constants.UNIVERSALUSER;
 Set<String> tag = new HashSet<String>();
 
 
@@ -35,21 +36,23 @@ if (null != request.getParameter(JspConstants.TAGS) && request.getParameter(JspC
 	List<String> list = Arrays.asList(request.getParameterValues(JspConstants.TAGS));
 	tag.addAll(list);	
 }
-if (null != request.getParameter(JspConstants.USER) && request.getParameter(JspConstants.USER).length() > 0) {
-	user = (String) request.getParameter(JspConstants.USER);
-}
 
-	List<Entity> entities = EventsList.listEvents(startDate, endDate, world, relm, user, tag);
+SOLSCalendar startCal = new SOLSCalendar(startDate);
+SOLSCalendar endCal = new SOLSCalendar(endDate);
+endCal = startCal.endMustBeAfter(endCal);
+
+	List<Entity> entities = EventsList.listEvents(startCal, endCal, world, relm, dm, tag);
+	
 	TagRepo repo = new TagRepo(entities.size());
 	// Loop through the list of entities and print their property values
 		for (Entity entity : entities) {
-			Event event = new Event();
-			event.loadEvent(entity);
-			repo.addTags(event.getTags());
+	Event event = new Event();
+	event.loadFromEntity(entity);
+	repo.addTags(event.getTags());
 		}
 		Iterator<String> it = tag.iterator();
 		while(it.hasNext()){
-			repo.getRepo().remove(it.next());
+	repo.getRepo().remove(it.next());
 
 		}
-		%><%=repo.toJSON() %>
+%><%=repo.toJSON() %>

@@ -1,6 +1,9 @@
 package com.shrineoflostsecrets.constants;
 
 public class EventConstants extends BaseEntityConstants{
+	public static final String EVENT = "Event";
+
+	
 	public static final String IMAGES = "Images";
 
 	public static final String LONGDESC = "LongDesc";
@@ -28,8 +31,6 @@ public class EventConstants extends BaseEntityConstants{
 	public static final String BOOKMARKED = "Bookmarked";
 
 	public static final String UPDATEDDATE = "UpdatedDate";
-
-	public static final String EVENT = "Event";
 
 	public static final String DELETED = "Deleted";
 
