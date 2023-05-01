@@ -1,3 +1,11 @@
+<%@ page import="java.util.Properties"%>
+<%@ page import="javax.mail.Message"%>
+<%@ page import="javax.mail.MessagingException"%>
+<%@ page import="javax.mail.Session"%>
+<%@ page import="javax.mail.Transport"%>
+<%@ page import="javax.mail.internet.AddressException"%>
+<%@ page import="javax.mail.internet.InternetAddress"%>
+<%@ page import="javax.mail.internet.MimeMessage"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ page import="com.shrineoflostsecrets.constants.*"%>
@@ -8,13 +16,13 @@
 <%@ page import="com.shrineoflostsecrets.datastore.*"%>
 <%@ page import="com.google.cloud.datastore.*"%>
 <%@ page import="com.shrineoflostsecrets.ai.*"%>
-<%@ page import="com.google.appengine.api.users.*" %>
+<%@ page import="com.google.appengine.api.users.*"%>
 
 <!DOCTYPE html>
 <html>
 <head>
 <!-- Google tag (gtag.js) -->
-<script  async="true"  src="https://www.googletagmanager.com/gtag/js?id=G-N2VTBWYNCJ"></script>
+<script async="true" src="https://www.googletagmanager.com/gtag/js?id=G-N2VTBWYNCJ"></script>
 <script>
 	window.dataLayer = window.dataLayer || [];
 	function gtag() {
@@ -30,6 +38,7 @@ DungonMaster dm = DungonMasterList.getDungonMaster(currentUser);
 
 long endDate = 0;
 long startDate = 0;
+
 String world = (String) request.getParameter(JspConstants.WORLD);
 String relm = (String) request.getParameter(JspConstants.RELM);
 Set<String> tag = new HashSet<String>();
@@ -51,6 +60,42 @@ if (null != request.getParameter(JspConstants.RELM) && request.getParameter(JspC
 
 SOLSCalendar startCal = new SOLSCalendar(startDate);
 SOLSCalendar endCal = new SOLSCalendar(endDate);
+
+// Get the subject and body parameters from the request
+String subject = request.getParameter("subject");
+String body = request.getParameter("body");
+String pageurl = request.getParameter("pageurl");
+
+
+
+
+String emailResp = null;
+if (null != currentUser && subject != null && body != null) {
+    Properties props = new Properties();
+    Session mailSession = Session.getDefaultInstance(props, null);
+
+    try {
+        // Create a new email message
+        Message msg = new MimeMessage(mailSession);
+        msg.setFrom(new InternetAddress(currentUser.getEmail(), currentUser.getNickname()));
+        msg.addRecipient(Message.RecipientType.TO, new InternetAddress("info@shrineoflostsecrets.com", "Shrine of Lost Secrets"));
+        msg.setSubject("SOLS:" + subject);
+        msg.setText(body + "\r" + pageurl);
+
+        // Send the email
+        Transport.send(msg);
+
+        emailResp = "We go it!";
+    } catch (AddressException e) {
+        //out.println("Error: " + e.getMessage());
+        emailResp = "Error: " + e.getMessage();
+
+    } catch (MessagingException e) {
+        emailResp = "Error: " + e.getMessage();
+    }
+}// else {
+//    emailResp = "Error: Missing subject or body.";
+//}
 %>
 <meta charset="utf-8">
 <meta name="viewport"
@@ -64,7 +109,7 @@ SOLSCalendar endCal = new SOLSCalendar(endDate);
 <link rel="stylesheet" href="assets/css/sols.css">
 <link rel="stylesheet"
 	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<title>Shrine of Lost Secrets - Privacy</title>
+<title>Shrine of Lost Secrets - Help</title>
 </head>
 <body data-spy="scroll" data-target=".navbar" data-offset="40" id="home">
 
@@ -124,102 +169,106 @@ SOLSCalendar endCal = new SOLSCalendar(endDate);
 				</ul>
 				<ul class="navbar-nav ml-auto">
 					<li class="nav-item">
-					<%if (currentUser != null) { %>
-						<a href="<%= userService.createLogoutURL(URLBuilder.buildRequest(request, JspConstants.PIVACY, startCal, endCal, world, relm, tag,"", ""))%>"
-						class="btn btn-primary btn-sm">Welcome <%=currentUser.getNickname() %></a>
-					<%}else { %>
-					<a href="<%= userService.createLoginURL(URLBuilder.buildRequest(request, JspConstants.PIVACY, startCal, endCal, world, relm, tag,"", ""))%>"
-						class="btn btn-primary btn-sm">Login</a>
-					<%}%>			
+						<%
+						if (currentUser != null) {
+						%> <a
+						href="<%=userService.createLogoutURL(
+		URLBuilder.buildRequest(request, JspConstants.GETSTARTED, startCal, endCal, world, relm, tag, "", ""))%>"
+						class="btn btn-primary btn-sm">Welcome <%=currentUser.getNickname()%></a>
+						<%
+						} else {
+						%> <a
+						href="<%=userService.createLoginURL(
+		URLBuilder.buildRequest(request, JspConstants.GETSTARTED, startCal, endCal, world, relm, tag, "", ""))%>"
+						class="btn btn-primary btn-sm">Login</a> <%}%>
 					</li>
 				</ul>
 			</div>
 		</div>
 	</nav>
 	<!-- End Of Second Navigation -->
-	<!-- Page Header -->
-	<section id="" class="pattern-style-3">
+
+
+<%
+						if (currentUser != null) {
+						%> 
+	<!-- Contact Section -->
+	<section id="<%=JspConstants.CONTACTANCHOR%>" class="bg-white">
 		<div class="container">
-			<h6 class="section-subtitle text-center">Privacy Policy</h6>
-			<h3 class="section-title mb-5 text-center">Our Policy</h3>
 			<div class="row align-items-center">
-				<div class="row">
-					<div class="col-md-6 mb-4"></div>
-					<div class="card bg-light">
-						<div class="card-body px-4 pb-4 text-center">
-							<div class="row text-left">
-								<div class="col-md-12 my-4">
-									<div class="d-flex">
-										<div class="flex-grow-1">
-											<p class="mt-1 mb-0" id="summary">
-<p>
-Last updated: 4/27/2023
-</p>
-<p>
-This Privacy Policy explains how shrineoflostsecrets.com ("we", "us", "our") collects, uses, and discloses your personal information when you use our website located at shrineoflostsecrets.com (the "Site").
-</p>
-<p>
-We respect your privacy and are committed to protecting your personal information. Please read this Privacy Policy carefully before using our Site.
-</p>
-<p>
-Information We Collect
-When you use our Site, we may collect certain personal information that you provide to us, such as your name, email address, phone number, and any other information you choose to provide.
-</p>
-<p>
-In addition, we may automatically collect certain information about your device, including your IP address, browser type, referring/exit pages, and operating system.
-</p>
-<p>
-How We Use Your Information
-We may use your personal information to:
-</p>
-<p>
-Provide and maintain our Site
-Improve our Site and customer service
-Send you promotional emails and newsletters
-Respond to your inquiries and requests
-Provide technical support
-Comply with applicable laws, regulations, and legal processes
-How We Share Your Information
-We may share your personal information with third-party service providers that assist us in providing our Site, such as website hosting, email delivery, and customer support. We require these service providers to use your personal information only to provide services to us and to protect your personal information in accordance with this Privacy Policy.
-</p>
-<p>
-We may also share your personal information if we believe it is necessary to comply with applicable laws, regulations, or legal processes, or to protect our rights, property, or safety or that of others.
-</p>
-<p>
-Cookies
-We may use cookies and similar technologies to collect information about how you use our Site and to improve your user experience. You can set your browser to refuse all or some browser cookies, or to alert you when cookies are being sent. However, if you do not consent to our use of cookies, some portions of our Site may not function properly.
-</p>
-<p>
-Security
-We take reasonable measures to protect your personal information from unauthorized access, use, or disclosure. However, no method of transmission over the internet, or method of electronic storage, is completely secure. Therefore, we cannot guarantee absolute security.
-</p>
-<p>
-Your Rights
-You may have certain rights under applicable privacy laws, including the right to access, correct, or delete your personal information. If you would like to exercise any of these rights, please contact us using the contact information provided below.
-</p>
-<p>
-Changes to Our Privacy Policy
-We reserve the right to modify or update this Privacy Policy at any time. We will post any changes to this Privacy Policy on our Site, and the updated Privacy Policy will become effective immediately upon posting.
-</p>
-<p>
-Contact Us
-If you have any questions or concerns about this Privacy Policy or our use of your personal information, please contact us at info@shrineoflostsecrets.com.
-</p>
-<p>
-Thank you for using shrineoflostsecrets.com
-											</p>
-										</div>
-									</div>
-								</div>
-							</div>
+				<div class="col-md-6 d-none d-md-block">
+					<img src="assets/imgs/contact.jpg"
+						alt="Shrine of Lost Secrets Landing page"
+						class="w-100 rounded shadow">
+				</div>
+				<div class="col-md-6">
+					<h3 class="section-title mb-5 text-center" id="reponse"></h3>
+					<form action="<%= JspConstants.CONTACT %>" method="get"
+						enctype="text/plain">
+						<input type="hidden" name="pageurl"
+							value="<%=request.getRequestURI() + (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>">
+						<div class="form-group">
+							<input type="text" class="form-control" id="name"
+								aria-describedby="emailHelp" placeholder="Subject"
+								name="subject">
+							<textarea class="form-control" id="message"
+								aria-describedby="emailHelp"
+								placeholder="Your comment or Question" name="body" rows="4"
+								cols="50"></textarea>
 						</div>
-					</div>
+						<button type="submit" class="btn btn-primary btn-block">Share
+							your thoughts</button>
+						<br> <a href="https://www.patreon.com/your_profile"
+							target="_blank"> <i class="fab fa-patreon"></i> Become a
+							Patron
+						</a> <small class="form-text text-muted mt-3">We appreciate
+							your interest. Check our <a
+							href="<%=URLBuilder.buildRequest(request, JspConstants.PIVACY, startCal, endCal, world, relm, tag)%>">Privacy
+								Policy</a>
+						</small>
+
+						<%if(null != emailResp){ %>
+						<script>
+							var modal = document.getElementById('reponse');
+							modal.innerHTML = "<%=emailResp%>";
+						</script>
+						<%}%>
+					</form>
 				</div>
 			</div>
 		</div>
 	</section>
-	
 	<!-- End OF Contact Section -->
+	<%
+						} else {
+						%>
+							<section id="<%=JspConstants.CONTACTANCHOR%>" class="bg-white">
+		<div class="container">
+			<div class="row align-items-center">
+				<div class="col-md-6 d-none d-md-block">
+					<img src="assets/imgs/contact.jpg"
+						alt="Shrine of Lost Secrets Landing page"
+						class="w-100 rounded shadow">
+				</div>
+				<div class="col-md-6">
+					<h3 class="section-title mb-5 text-center" id="reponse">We'd love to hear your thoughts. Kindly login so we can receive your message.</h3>
+					<a href="<%=userService.createLoginURL(
+		URLBuilder.buildRequest(request, JspConstants.CONTACT, startCal, endCal, world, relm, tag, "", ""))%>"
+						class="btn btn-primary btn-sm">Login</a> 
+						<br> <a href="https://www.patreon.com/your_profile"
+							target="_blank"> <i class="fab fa-patreon"></i> Become a
+							Patron
+						</a> <small class="form-text text-muted mt-3">We appreciate
+							your interest. Check our <a
+							href="<%=URLBuilder.buildRequest(request, JspConstants.PIVACY, startCal, endCal, world, relm, tag)%>">Privacy
+								Policy</a>
+						</small>
+
+				</div>
+			</div>
+		</div>
+	</section>
+	<%} %>
 	<!-- Prefooter Section  -->
 	<div
 		class="py-4 border border-lighter border-bottom-0 border-left-0 border-right-0 bg-dark">
@@ -231,12 +280,16 @@ Thank you for using shrineoflostsecrets.com
 						alt="Shrine of Lost Secrets" class="mb-0">
 				</div>
 				<div class="col-md-9 text-md-right">
-					<a href="<%=URLBuilder.buildRequest(request, JspConstants.INDEX, startCal, endCal, world, relm, tag,
-		JspConstants.PRAYANCHOR)%>" class="px-3"><small class="font-weight-bold">Pray</small></a>
-					<a href="<%=URLBuilder.buildRequest(request, JspConstants.HELP, startCal, endCal, world, relm, tag,
-		JspConstants.HELPANCHOR)%>" class="px-3"><small class="font-weight-bold">Help</small></a>
-					<a href="<%=URLBuilder.buildRequest(request, JspConstants.CONTACT, startCal, endCal, world, relm, tag,
-		JspConstants.CONTACTANCHOR)%>" class="pl-3"><small class="font-weight-bold">Contact</small></a>
+					<a
+						href="<%=URLBuilder.buildRequest(request, JspConstants.INDEX, startCal, endCal, world, relm, tag,
+		JspConstants.PRAYANCHOR)%>"
+						class="px-3"><small class="font-weight-bold">Pray</small></a> <a
+						href="<%=URLBuilder.buildRequest(request, JspConstants.HELP, startCal, endCal, world, relm, tag,
+		JspConstants.HELPANCHOR)%>"
+						class="px-3"><small class="font-weight-bold">Help</small></a> <a
+						href="<%=URLBuilder.buildRequest(request, JspConstants.CONTACT, startCal, endCal, world, relm, tag,
+		JspConstants.CONTACTANCHOR)%>"
+						class="pl-3"><small class="font-weight-bold">Contact</small></a>
 				</div>
 			</div>
 		</div>
@@ -250,17 +303,20 @@ Thank you for using shrineoflostsecrets.com
 				<div class="col">
 					<p class="mb-0 small">
 						&copy;
-						<script>document.write(new Date().getFullYear())</script>
-						, James Warmkessel All rights reserved <%= Constants.VERSION %>
+						<script>
+							document.write(new Date().getFullYear())
+						</script>
+						, James Warmkessel All rights reserved
+						<%=Constants.VERSION%>
 					</p>
 				</div>
 				<div class="d-none d-md-block">
 					<h6 class="small mb-0">
 						<a href="https://www.facebook.com/groups/915527066379136/"
-							class="px-2" target="_blank"><i class="ti-facebook"></i></a>
-						<a href="https://twitter.com/shrinesecrets" class="px-2"
-							target="_blank"><i class="ti-twitter"></i></a>
-						<a href="https://patreon.com/TheShrineOfLostSecrets" class="px-2"
+							class="px-2" target="_blank"><i class="ti-facebook"></i></a> <a
+							href="https://twitter.com/shrinesecrets" class="px-2"
+							target="_blank"><i class="ti-twitter"></i></a> <a
+							href="https://patreon.com/TheShrineOfLostSecrets" class="px-2"
 							target="_blank"><i class="fab fa-patreon"></i></a>
 					</h6>
 				</div>
@@ -279,5 +335,3 @@ Thank you for using shrineoflostsecrets.com
 
 </body>
 </html>
-
-

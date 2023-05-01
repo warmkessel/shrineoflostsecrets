@@ -10,6 +10,8 @@ public class JspConstants {
 	public static final String EVENTLIST = "/eventList.jsp";
 	public static final String EVENTDETAILS = "/eventDetails.jsp";
 	public static final String GETSTARTED = "/getStarted.jsp";
+	public static final String HELP = "/help.jsp";
+	public static final String CONTACT = "/contact.jsp";
 
 	
 	

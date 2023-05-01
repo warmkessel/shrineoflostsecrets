@@ -1,4 +1,5 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"	pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
 <%@ page import="com.shrineoflostsecrets.constants.*"%>
 <%@ page import="com.shrineoflostsecrets.util.*"%>
 <%@ page import="java.util.*"%>
@@ -7,13 +8,13 @@
 <%@ page import="com.shrineoflostsecrets.datastore.*"%>
 <%@ page import="com.google.cloud.datastore.*"%>
 <%@ page import="com.shrineoflostsecrets.ai.*"%>
-<%@ page import="com.google.appengine.api.users.*" %>
+<%@ page import="com.google.appengine.api.users.*"%>
 <!DOCTYPE html>
 <html>
 <head>
 
 <!-- Google tag (gtag.js) -->
-<script async
+<script async="true" 
 	src="https://www.googletagmanager.com/gtag/js?id=G-N2VTBWYNCJ"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -46,7 +47,6 @@ String longDesc = (String) request.getParameter(JspConstants.LONGDESC);
 String deleted = (String) request.getParameter(JspConstants.DELETED);
 String bookmarked = (String) request.getParameter(JspConstants.BOOKMARKED);
 String promote = (String) request.getParameter(JspConstants.PROMOTE);
-
 
 boolean dirty = false;
 boolean edit = false;
@@ -148,31 +148,38 @@ if (null != request.getParameter(JspConstants.BOOKMARKED)
 	dirty = true;
 }
 if (currentUser != null && userService.isUserAdmin() && null != request.getParameter(JspConstants.PROMOTE)
-&& request.getParameter(JspConstants.PROMOTE).length() > 0) {
+		&& request.getParameter(JspConstants.PROMOTE).length() > 0) {
 	event.setUserId(Constants.UNIVERSALUSER);
 	dirty = true;
 }
 
-else if(save && currentUser != null){
+else if (save && currentUser != null) {
 	event.setUserId(dm.getKeyLong());
 	dirty = true;
 }
 
-if (dirty && (event.getLongDesc().length() == 0 || event.getShortDesc().length() == 0
-		|| event.getCompactDesc().length() == 0 || event.getTitle().length() == 0)) {
-	dirty = false;
+if (dirty && save
+		&& (event.getLongDesc().length() == 0 || event.getShortDesc().length() == 0
+		|| event.getCompactDesc().length() == 0 || event.getTitle().length() == 0
+		|| event.getShortDesc().length() >= 1500 || event.getCompactDesc().length() >= 1500
+		|| event.getTitle().length() >= 1500)) {
+%>
+<script>
+	alert("Please check the Long, Short and Compact description and title");
+	</script>
+<%
+dirty = false;
 }
-if (dirty && save && ((currentUser != null && dm.getKeyLong() == event.getUserId()) || (currentUser != null && userService.isUserAdmin()))){
-	event.save();
+if (dirty && save && ((currentUser != null && dm.getKeyLong() == event.getUserId())
+		|| (currentUser != null && userService.isUserAdmin()))) {
+event.save();
 }
 if (null == relm || relm.length() == 0) {
-	event.setRelm(Constants.MEN);
+event.setRelm(Constants.MEN);
 }
 if (null == world || world.length() == 0) {
-	event.setWorld(Constants.HOME);
+event.setWorld(Constants.HOME);
 }
-
-
 
 SOLSCalendar startCal = new SOLSCalendar(startDate);
 SOLSCalendar endCal = new SOLSCalendar(endDate);
@@ -191,7 +198,7 @@ SOLSCalendar.Scale scale = startCal.getScale(endCal);
 <!-- Bootstrap + SOLS main styles -->
 <link rel="stylesheet" href="assets/css/sols.css">
 <link rel="stylesheet"
-	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <title>Shrine of Lost Secrets - Details</title>
 </head>
 <body data-spy="scroll" data-target=".navbar" data-offset="40" id="home">
@@ -237,23 +244,28 @@ SOLSCalendar.Scale scale = startCal.getScale(endCal);
 		JspConstants.PRAYANCHOR)%>">Get
 							Started</a></li>
 					<li class="nav-item"><a class="nav-link"
-						href="<%=URLBuilder.buildRequest(request, JspConstants.INDEX, startCal, endCal, world, relm, tag,
+						href="<%=URLBuilder.buildRequest(request, JspConstants.CONTACT, startCal, endCal, world, relm, tag,
 		JspConstants.CONTACTANCHOR)%>">Make
 							an offering</a></li>
 					<li class="nav-item"><a class="nav-link"
-						href="<%=URLBuilder.buildRequest(request, JspConstants.INDEX, startCal, endCal, world, relm, tag,
+						href="<%=URLBuilder.buildRequest(request, JspConstants.CONTACT, startCal, endCal, world, relm, tag,
 		JspConstants.CONTACTANCHOR)%>">Contact
 							Us</a></li>
 				</ul>
 				<ul class="navbar-nav ml-auto">
 					<li class="nav-item">
-					<%if (currentUser != null) { %>
-						<a href="<%= userService.createLogoutURL(URLBuilder.buildRequest(request, JspConstants.DETAILS, startCal, endCal, world, relm, tag,"", ""))%>"
-						class="btn btn-primary btn-sm">Welcome <%=currentUser.getNickname() %></a>
-					<%}else { %>
-					<a href="<%= userService.createLoginURL(URLBuilder.buildRequest(request, JspConstants.DETAILS, startCal, endCal, world, relm, tag,"", ""))%>"
-						class="btn btn-primary btn-sm">Login</a>
-					<%}%>			
+						<%
+						if (currentUser != null) {
+						%> <a
+						href="<%=userService.createLogoutURL(
+		URLBuilder.buildRequest(request, JspConstants.DETAILS, startCal, endCal, world, relm, tag, "", ""))%>"
+						class="btn btn-primary btn-sm">Welcome <%=currentUser.getNickname()%></a>
+						<%
+						} else {
+						%> <a
+						href="<%=userService.createLoginURL(
+		URLBuilder.buildRequest(request, JspConstants.DETAILS, startCal, endCal, world, relm, tag, "", ""))%>"
+						class="btn btn-primary btn-sm">Login</a> <%}%>
 					</li>
 				</ul>
 			</div>
@@ -309,19 +321,19 @@ SOLSCalendar.Scale scale = startCal.getScale(endCal);
 				<%=scale%></h6>
 			<h3 class="section-title mb-6 pb-3 text-center">
 				<a
-					href="<%=URLBuilder.buildRequest(request, JspConstants.DETAILS, startCal.backward(scale), endCal, world, relm,
-		tag, JspConstants.PRAYANCHOR, JspConstants.ID + "=" + event.getKeyString())%>"><i
+					href="<%=URLBuilder.buildRequest(request, JspConstants.DETAILS, startCal.backward(scale), endCal, world, relm, tag,
+		JspConstants.PRAYANCHOR, JspConstants.ID + "=" + event.getKeyString())%>"><i
 					class="fa fa-angle-down" style="font-size: 24x"></i></a>
 				<%=startCal.getDisplayDate()%><a
-					href="<%=URLBuilder.buildRequest(request, JspConstants.DETAILS, startCal.forward(scale), endCal, world, relm,
-		tag, JspConstants.PRAYANCHOR, JspConstants.ID + "=" + event.getKeyString())%>"><i
+					href="<%=URLBuilder.buildRequest(request, JspConstants.DETAILS, startCal.forward(scale), endCal, world, relm, tag,
+		JspConstants.PRAYANCHOR, JspConstants.ID + "=" + event.getKeyString())%>"><i
 					class="fa fa-angle-up" style="font-size: 24px"></i></a> - <a
-					href="<%=URLBuilder.buildRequest(request, JspConstants.DETAILS, startCal, endCal.backward(scale), world, relm,
-		tag, JspConstants.PRAYANCHOR, JspConstants.ID + "=" + event.getKeyString())%>"><i
+					href="<%=URLBuilder.buildRequest(request, JspConstants.DETAILS, startCal, endCal.backward(scale), world, relm, tag,
+		JspConstants.PRAYANCHOR, JspConstants.ID + "=" + event.getKeyString())%>"><i
 					class="fa fa-angle-down" style="font-size: 24x"></i></a>
 				<%=endCal.getDisplayDate()%><a
-					href="<%=URLBuilder.buildRequest(request, JspConstants.DETAILS, startCal, endCal.forward(scale), world, relm,
-		tag, JspConstants.PRAYANCHOR, JspConstants.ID + "=" + event.getKeyString())%>"><i
+					href="<%=URLBuilder.buildRequest(request, JspConstants.DETAILS, startCal, endCal.forward(scale), world, relm, tag,
+		JspConstants.PRAYANCHOR, JspConstants.ID + "=" + event.getKeyString())%>"><i
 					class="fa fa-angle-up" style="font-size: 24px"></i></a>
 			</h3>
 			<div id="timeline" class=""
@@ -402,10 +414,10 @@ SOLSCalendar.Scale scale = startCal.getScale(endCal);
 		  icon.setAttribute("aria-hidden", "true");
 		  icon.style.fontSize = "33px"; 
 		  if(focus){
-			  icon.style.color="<%=JspConstants.FOCUSFLAGCOLOR %>";
+			  icon.style.color="<%=JspConstants.FOCUSFLAGCOLOR%>";
 		  }
 		  else if(personalEvent){
-			  icon.style.color="<%=JspConstants.PERSONALFAGCOLOR %>";
+			  icon.style.color="<%=JspConstants.PERSONALFAGCOLOR%>";
 		  }
 		  const timelineWidth = timelineElement.offsetWidth;
 		  const flagWidth = icon.offsetWidth;
@@ -517,7 +529,7 @@ Event events = new Event();
 events.loadFromEntity(entity);
 if (50 > entities.size()) {%>
 <%=Constants.UNIVERSALUSER%>
-<%= dm.getKeyLong()%>
+<%=dm.getKeyLong()%>
 <%=events.getKeyLong()%>
 <%=events.getUserId()%>
 
@@ -676,13 +688,18 @@ function prayAtTheShrineInput(instruction, input, target) {
 							onClick="suggestDate('<%=JspConstants.EVENTDATE%>', <%=startCal.getElapsedTime(endCal)%>)"
 							value="Generate Random Date"></td>
 					</tr>
-					<% if (currentUser != null && userService.isUserAdmin()) { %>
+					<%
+					if (currentUser != null && userService.isUserAdmin()) {
+					%>
 					<tr>
 						<td>Promote To World Wide:</td>
 						<td><input type="checkbox" name=<%=JspConstants.PROMOTE%>
-							value="true" <%=((Constants.UNIVERSALUSER == event.getUserId()) ? "checked" : "")%>></td>
+							value="true"
+							<%=((Constants.UNIVERSALUSER == event.getUserId()) ? "checked" : "")%>></td>
 					</tr>
-					<%} %>
+					<%
+					}
+					%>
 					<tr>
 						<td><a href="" onClick="toggleDetails(); return false;">Details</a></td>
 					</tr>
@@ -726,12 +743,16 @@ function prayAtTheShrineInput(instruction, input, target) {
 							value="<%=event.getRelm()%>"></td>
 					</tr>
 				</table>
-				<% if(currentUser != null){%>
-					<input type="button" value="Save" onClick="submissionReady()">
-				<%}else{%>
-					<input type="button" value="Save" onClick="alert('Creating Events requieres that you are logged in.')">
+				<%
+				if (currentUser != null) {
+				%>
+				<input type="button" value="Save" onClick="submissionReady()">
+				<%
+				} else {
+				%>
+				<input type="button" value="Save"
+					onClick="alert('Creating Events requieres that you are logged in.')">
 				<%}%>
-			</form>
 			<h1 class="section-title mb-6 pb-3 text-center">
 				<a
 					href="<%=URLBuilder.buildRequest(request, JspConstants.INDEX, startCal, endCal, world, relm, tag,
@@ -747,19 +768,28 @@ function prayAtTheShrineInput(instruction, input, target) {
 	<section>
 		<div class="container" id="<%=JspConstants.EDIT%>">
 			<h6 class="section-subtitle text-center"><%=event.getEventCalendar().getDisplayDate()%></h6>
-			<h3 class="section-title mb-6 pb-3 text-center"><%=event.getTitle()%></h3>
+			<h3 class="section-title mb-6 pb-3 text-center"><%=CaseControl.capFirstLetter(event.getTitle())%></h3>
 			<p>
-				<%=event.getLongDesc()%>
+				<%=CaseControl.capFirstLetter(event.getLongDesc())%>
 			<p>
 			<p>
 				<small class="font-weight-bold"><%=event.getTagsString()%> :
 					<%=event.getEventCalendar().getTime()%></small>
 			</p>
-			<% if((currentUser != null && dm.getKeyLong() == event.getUserId()) || (currentUser != null && userService.isUserAdmin())){ %>
+			<%
+			if ((currentUser != null && dm.getKeyLong() == event.getUserId())
+					|| (currentUser != null && userService.isUserAdmin())) {
+			%>
 			<a
 				href="<%=URLBuilder.buildRequest(request, JspConstants.DETAILS, startCal, endCal, world, relm, tag, "",
 		JspConstants.ID + "=" + event.getKeyString() + "&" + JspConstants.EDIT + "=true")%>">Edit</a>
-		<%}%>
+			<%}%>
+			<%if (currentUser != null && dm.getKeyLong() == event.getUserId()) { %>
+			<h3 class="section-title mb-6 pb-3 text-center">
+			<a
+					href="<%=URLBuilder.buildRequest(request, JspConstants.CONTACT, startCal, endCal, world, relm, tag,
+		JspConstants.CONTACTANCHOR, "subject=request%20global%20consideration&body=https://shrineoflostsecrets.com/details.jsp?" + event.getKeyLong())%>">Submitting this event to the Global Repository!</a></h3>
+			<%} %>
 			<h1 class="section-title mb-6 pb-3 text-center">
 				<a
 					href="<%=URLBuilder.buildRequest(request, JspConstants.INDEX, startCal, endCal, world, relm, tag,
@@ -770,40 +800,6 @@ function prayAtTheShrineInput(instruction, input, target) {
 
 	</section>
 	<%}%>
-
-	<!-- Contact Section -->
-	<section id="<%=JspConstants.CONTACTANCHOR%>" class="bg-white">
-		<div class="container">
-			<div class="row align-items-center">
-				<div class="col-md-6 d-none d-md-block">
-					<img src="assets/imgs/contact.jpg"
-						alt="Shrine of Lost Secrets Landing page"
-						class="w-100 rounded shadow">
-				</div>
-				<div class="col-md-6">
-					<form action="mailto:info@shrineoflostsecrets.com?body="
-						method="post" enctype="text/plain">
-						<input type="hidden" name="page url"
-							value="<%=request.getRequestURI() + (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>">
-						<div class="form-group">
-							<input type="text" class="form-control" id="name"
-								aria-describedby="emailHelp" placeholder="Your Name" name="name">
-							<input type="text" class="form-control" id="message"
-								aria-describedby="emailHelp"
-								placeholder="Your comment or Question" name="message">
-						</div>
-						<button type="submit" class="btn btn-primary btn-block">Share
-							your thoughts</button>
-						<small class="form-text text-muted mt-3">We appreciate
-							your interest. Check our <a href="#">Privacy Policy</a>
-						</small>
-					</form>
-				</div>
-			</div>
-		</div>
-	</section>
-	<!-- End OF Contact Section -->
-
 	<!-- Prefooter Section  -->
 	<div
 		class="py-4 border border-lighter border-bottom-0 border-left-0 border-right-0 bg-dark">
@@ -822,7 +818,7 @@ function prayAtTheShrineInput(instruction, input, target) {
 						href="<%=URLBuilder.buildRequest(request, JspConstants.INDEX, startCal, endCal, world, relm, tag,
 		JspConstants.HELPANCHOR)%>"
 						class="px-3"><small class="font-weight-bold">Help</small></a> <a
-						href="<%=URLBuilder.buildRequest(request, JspConstants.INDEX, startCal, endCal, world, relm, tag,
+						href="<%=URLBuilder.buildRequest(request, JspConstants.CONTACT, startCal, endCal, world, relm, tag,
 		JspConstants.CONTACTANCHOR)%>"
 						class="pl-3"><small class="font-weight-bold">Contact</small></a>
 				</div>
@@ -840,15 +836,18 @@ function prayAtTheShrineInput(instruction, input, target) {
 					<p class="mb-0 small">
 						&copy;
 						<script>document.write(new Date().getFullYear())</script>
-						, James Warmkessel All rights reserved <%= Constants.VERSION %>
+						, James Warmkessel All rights reserved
+						<%=Constants.VERSION%>
 					</p>
 				</div>
 				<div class="d-none d-md-block">
 					<h6 class="small mb-0">
-						<a href="https://www.facebook.com/groups/915527066379136/"      
+						<a href="https://www.facebook.com/groups/915527066379136/"
 							class="px-2" target="_blank"><i class="ti-facebook"></i></a>
-						<a href="https://twitter.com/shrinesecrets"                     
-							class="px-2" target="_blank"><i class="ti-twitter"></i></a> 
+						<a href="https://twitter.com/shrinesecrets" class="px-2"
+							target="_blank"><i class="ti-twitter"></i></a>
+						<a href="https://patreon.com/TheShrineOfLostSecrets" class="px-2"
+							target="_blank"><i class="fab fa-patreon"></i></a>
 					</h6>
 				</div>
 			</div>

@@ -132,9 +132,10 @@ public class TagRepo {
             if (x >= 65) {
                 break;
             }
+            else
             x++;
             JSONObject jsonObject = new JSONObject();
-            jsonObject.put("word", CaseControl.capFirstLetter(entry.getKey()));
+            jsonObject.put("word", CaseControl.capAndUnderscore(entry.getKey()));
             jsonObject.put("frequency", entry.getValue());
             jsonArray.put(jsonObject);
         }

@@ -14,7 +14,7 @@
 <html>
 <head>
 <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-N2VTBWYNCJ"></script>
+<script  async="true"  src="https://www.googletagmanager.com/gtag/js?id=G-N2VTBWYNCJ"></script>
 <script>
 	window.dataLayer = window.dataLayer || [];
 	function gtag() {
@@ -66,8 +66,8 @@ SOLSCalendar endCal = new SOLSCalendar(endDate);
 <!-- Bootstrap + SOLS main styles -->
 <link rel="stylesheet" href="assets/css/sols.css">
 <link rel="stylesheet"
-	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-<title>Shrine of Lost Secrets - Help</title>
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<title>Shrine of Lost Secrets - Getting Started</title>
 </head>
 <body data-spy="scroll" data-target=".navbar" data-offset="40" id="home">
 
@@ -79,11 +79,16 @@ SOLSCalendar endCal = new SOLSCalendar(endDate);
 		JspConstants.PRAYANCHOR, "#")%>">
 				<img src="assets/imgs/logo-sm.jpg" alt="Shrine of Lost Secrets">
 			</a>
-			<ul class="navbar-nav ml-auto">
-				<li class="nav-item"><a class="nav-link text-primary"
-					href="#home">CALL US : <span class="pl-2 text-muted">(408)
-							768 8654</span></a></li>
-			</ul>
+			<div class="d-none d-md-block">
+				<h6 class="mb-0">
+					<a href="https://www.facebook.com/groups/915527066379136/"
+						class="px-2" target="_blank"><i class="ti-facebook"></i></a> <a
+						href="https://twitter.com/shrinesecrets" class="px-2"
+						target="_blank"><i class="ti-twitter"></i></a> <a
+						href="https://patreon.com/TheShrineOfLostSecrets" class="px-2"
+						target="_blank"><i class="fab fa-patreon"></i></a>
+				</h6>
+			</div>
 		</div>
 	</nav>
 	<!-- End of First Navigation -->
@@ -104,7 +109,7 @@ SOLSCalendar endCal = new SOLSCalendar(endDate);
 		JspConstants.PRAYANCHOR)%>">Pray
 							at the Shrine</a></li>
 					<li class="nav-item"><a class="nav-link"
-						href="<%=URLBuilder.buildRequest(request, JspConstants.INDEX, startCal, endCal, world, relm, tag,
+						href="<%=URLBuilder.buildRequest(request, JspConstants.HELP, startCal, endCal, world, relm, tag,
 		JspConstants.HELPANCHOR)%>">Ask
 							for Help</a></li>
 					<li class="nav-item"><a class="nav-link"
@@ -112,11 +117,11 @@ SOLSCalendar endCal = new SOLSCalendar(endDate);
 		JspConstants.PRAYANCHOR)%>">Get
 							Started</a></li>
 					<li class="nav-item"><a class="nav-link"
-						href="<%=URLBuilder.buildRequest(request, JspConstants.INDEX, startCal, endCal, world, relm, tag,
+						href="<%=URLBuilder.buildRequest(request, JspConstants.CONTACT, startCal, endCal, world, relm, tag,
 		JspConstants.CONTACTANCHOR)%>">Make
 							an offering</a></li>
 					<li class="nav-item"><a class="nav-link"
-						href="<%=URLBuilder.buildRequest(request, JspConstants.INDEX, startCal, endCal, world, relm, tag,
+						href="<%=URLBuilder.buildRequest(request, JspConstants.CONTACT, startCal, endCal, world, relm, tag,
 		JspConstants.CONTACTANCHOR)%>">Contact
 							Us</a></li>
 				</ul>
@@ -215,7 +220,7 @@ SOLSCalendar endCal = new SOLSCalendar(endDate);
 										<div class="flex-grow-1">
 											<a
 												href="<%=URLBuilder.buildRequest(request, JspConstants.INDEX, new SOLSCalendar(13494), new SOLSCalendar(29003), "Home",
-		"Men", "whisperingwood", JspConstants.PRAYANCHOR)%>"
+		"Men", "whispering_wood", JspConstants.PRAYANCHOR)%>"
 												target="_blank">The Battle of Whispering Woods &lt;--
 												Start Here</a>
 											<p class="mt-1 mb-1">Enter Taramond, a small village
@@ -234,7 +239,7 @@ SOLSCalendar endCal = new SOLSCalendar(endDate);
 											<ul>
 												<li><a
 													href="<%=URLBuilder.buildRequest(request, JspConstants.INDEX, new SOLSCalendar(21612), new SOLSCalendar(29003), "Home",
-		"Men", "aldrich wise taramond", JspConstants.PRAYANCHOR)%>"
+		"Men", "aldrich_wise taramond", JspConstants.PRAYANCHOR)%>"
 													target="_blank">Aldrich the Wise - More about Aldric</a>
 												<li><a
 													href="<%=URLBuilder.buildRequest(request, JspConstants.INDEX, new SOLSCalendar(13494), new SOLSCalendar(29003), "Home",
@@ -259,7 +264,7 @@ SOLSCalendar endCal = new SOLSCalendar(endDate);
 										<div class="flex-grow-1">
 											<a
 												href="<%=URLBuilder.buildRequest(request, JspConstants.INDEX, new SOLSCalendar(19484), new SOLSCalendar(19670), "Home",
-		"Men", "nightsofthebrave taramond", JspConstants.PRAYANCHOR)%>"
+		"Men", "nights_of_the_brave taramond", JspConstants.PRAYANCHOR)%>"
 												target="_blank">The Night of the Brave &lt;-- Start Here</a>
 											<p class="mt-1 mb-1">Arin is enamored with the
 												breathtaking beauty of the world around him, where nature
@@ -312,9 +317,9 @@ SOLSCalendar endCal = new SOLSCalendar(endDate);
 				<div class="col-md-9 text-md-right">
 					<a href="<%=URLBuilder.buildRequest(request, JspConstants.INDEX, startCal, endCal, world, relm, tag,
 		JspConstants.PRAYANCHOR)%>" class="px-3"><small class="font-weight-bold">Pray</small></a>
-					<a href="<%=URLBuilder.buildRequest(request, JspConstants.INDEX, startCal, endCal, world, relm, tag,
+					<a href="<%=URLBuilder.buildRequest(request, JspConstants.HELP, startCal, endCal, world, relm, tag,
 		JspConstants.HELPANCHOR)%>" class="px-3"><small class="font-weight-bold">Help</small></a>
-					<a href="<%=URLBuilder.buildRequest(request, JspConstants.INDEX, startCal, endCal, world, relm, tag,
+					<a href="<%=URLBuilder.buildRequest(request, JspConstants.CONTACT, startCal, endCal, world, relm, tag,
 		JspConstants.CONTACTANCHOR)%>" class="pl-3"><small class="font-weight-bold">Contact</small></a>
 				</div>
 			</div>
@@ -337,8 +342,10 @@ SOLSCalendar endCal = new SOLSCalendar(endDate);
 					<h6 class="small mb-0">
 						<a href="https://www.facebook.com/groups/915527066379136/"
 							class="px-2" target="_blank"><i class="ti-facebook"></i></a>
-						<a href="https://twitter.com/shrinesecrets"
-							class="px-2" target="_blank"><i class="ti-twitter"></i></a>
+						<a href="https://twitter.com/shrinesecrets" class="px-2"
+							target="_blank"><i class="ti-twitter"></i></a>
+						<a href="https://patreon.com/TheShrineOfLostSecrets" class="px-2"
+							target="_blank"><i class="fab fa-patreon"></i></a>
 					</h6>
 				</div>
 			</div>

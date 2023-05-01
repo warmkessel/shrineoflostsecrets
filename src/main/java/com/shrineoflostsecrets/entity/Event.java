@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import java.util.logging.Logger;
+//import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import com.shrineoflostsecrets.constants.Constants;
@@ -25,7 +25,7 @@ public class Event extends BaseEntity implements Comparable<Event> {
 	 * 
 	 */
 	private static final long serialVersionUID = -361472214131790072L;
-	 private static final Logger log = Logger.getLogger(Event.class.getName());
+	 //private static final Logger log = Logger.getLogger(Event.class.getName());
 
 	private boolean bookmarked = false;
 
@@ -276,15 +276,7 @@ public class Event extends BaseEntity implements Comparable<Event> {
 		super.loadFromEntity(entity);
 		if (null != entity) {
 			setBookmarked(entity.getBoolean(EventConstants.BOOKMARKED));
-			long userid = entity.getLong(EventConstants.USERID);
-//			log.info("userid:" + userid);
-			
-		
 			setUserId(entity.getLong(EventConstants.USERID));
-			
-//			log.info("getUserId:" + getUserId());
-
-			
 			setRevision(new Long(entity.getLong(EventConstants.REVISION)).intValue());
 			setWorld(entity.getString(EventConstants.WORLD));
 			setRelm(entity.getString(EventConstants.RELM));
