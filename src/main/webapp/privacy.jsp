@@ -110,8 +110,7 @@ SOLSCalendar endCal = new SOLSCalendar(endDate);
 		JspConstants.HELPANCHOR)%>">Ask
 							for Help</a></li>
 					<li class="nav-item"><a class="nav-link"
-						href="<%=URLBuilder.buildRequest(request, JspConstants.GETSTARTED, startCal, endCal, world, relm, tag,
-		JspConstants.PRAYANCHOR)%>">Get
+						href="<%=URLBuilder.buildRequest(request, JspConstants.GETSTARTED, startCal, endCal, world, relm, tag)%>">Get
 							Started</a></li>
 					<li class="nav-item"><a class="nav-link"
 						href="<%=URLBuilder.buildRequest(request, JspConstants.CONTACT, startCal, endCal, world, relm, tag,

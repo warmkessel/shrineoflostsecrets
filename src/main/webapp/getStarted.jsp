@@ -76,7 +76,7 @@ SOLSCalendar endCal = new SOLSCalendar(endDate);
 		<div class="container">
 			<a class="navbar-brand"
 				href="<%=URLBuilder.buildRequest(request, JspConstants.INDEX, startCal, endCal, world, relm, tag,
-		JspConstants.PRAYANCHOR, "#")%>">
+		JspConstants.PRAYANCHOR)%>">
 				<img src="assets/imgs/logo-sm.jpg" alt="Shrine of Lost Secrets">
 			</a>
 			<div class="d-none d-md-block">
@@ -113,8 +113,7 @@ SOLSCalendar endCal = new SOLSCalendar(endDate);
 		JspConstants.HELPANCHOR)%>">Ask
 							for Help</a></li>
 					<li class="nav-item"><a class="nav-link"
-						href="<%=URLBuilder.buildRequest(request, JspConstants.GETSTARTED, startCal, endCal, world, relm, tag,
-		JspConstants.PRAYANCHOR)%>">Get
+						href="<%=URLBuilder.buildRequest(request, JspConstants.GETSTARTED, startCal, endCal, world, relm, tag)%>">Get
 							Started</a></li>
 					<li class="nav-item"><a class="nav-link"
 						href="<%=URLBuilder.buildRequest(request, JspConstants.CONTACT, startCal, endCal, world, relm, tag,
@@ -147,6 +146,29 @@ SOLSCalendar endCal = new SOLSCalendar(endDate);
 			<h3 class="section-title mb-5 text-center">A little about the
 				Shrine first</h3>
 			<div class="row align-items-center">
+				<div class="row">
+					<div class="col-md-6 mb-4"></div>
+					<div class="card bg-light">
+						<div class="card-body px-4 pb-4 text-center">
+							<div class="row text-left">
+								<div class="col-md-6 my-4">
+									<div class="d-flex">
+										<div class="flex-grow-1">
+											<iframe width="500" height="290" src="https://www.youtube.com/embed/LyTq5l9m9Hg" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+										</div>
+									</div>
+								</div>
+								<div class="col-md-6 my-4">
+									<div class="d-flex">
+										<div class="flex-grow-1">
+										</div>
+									</div>
+								</div>
+
+							</div>
+						</div>
+					</div>
+				</div>
 				<div class="row">
 					<div class="col-md-6 mb-4"></div>
 					<div class="card bg-light">
@@ -204,7 +226,7 @@ SOLSCalendar endCal = new SOLSCalendar(endDate);
 			</div>
 		</div>
 	</section>
-	<section id="" class="pattern-style-3">
+	<section  id="<%=JspConstants.GETSTARTEDANCHOR%>" class="pattern-style-3">
 		<div class="container">
 			<h6 class="section-subtitle text-center">Get me Started</h6>
 			<h3 class="section-title mb-5 text-center">Here are some
@@ -212,12 +234,51 @@ SOLSCalendar endCal = new SOLSCalendar(endDate);
 			<div class="row align-items-center">
 				<div class="row">
 					<div class="col-md-6 mb-4"></div>
-					<div class="card bg-light">
+					<div class="card bg-light" >
 						<div class="card-body px-4 pb-4 text-center">
 							<div class="row text-left">
 								<div class="col-md-6 my-4">
 									<div class="d-flex">
 										<div class="flex-grow-1">
+											<iframe width="500" height="290" src="https://www.youtube.com/embed/afW9rGfV7XY" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe><br>
+											<a
+												href="<%=URLBuilder.buildRequest(request, JspConstants.INDEX, new SOLSCalendar(19484), new SOLSCalendar(19670), "Home",
+		"Men", "nights_of_the_brave taramond", JspConstants.PRAYANCHOR)%>"
+												target="_blank">The Night of the Brave &lt;-- Start Here</a>
+											<p class="mt-1 mb-1">Arin is enamored with the
+												breathtaking beauty of the world around him, where nature
+												reigns supreme and the wonders of the land are beyond
+												comprehension. However, the arrival of Riven Shadowhand and
+												her Darkstar Raiders shatters the peaceful life of Taramond,
+												forcing villagers to choose between fight, flee, or pay
+												tribute. The Nights of the Brave see Blackwood and his
+												soldiers defend Taramond against a powerful enemy with
+												fierce pride and bravery, emerging victorious and forever
+												remembered.</p>
+											<p class="mt-1 mb-1">How will your adventures impact the
+												conflict? Will Oakheart burn? Will the Geoffrey Blackwood get killed in the defense of Taramond?
+												Will the Darkstar Raiders capture the village?</p>
+											<ul>
+												<li><a
+													href="<%=URLBuilder.buildRequest(request, JspConstants.INDEX, new SOLSCalendar(643), new SOLSCalendar(19670), "Home",
+		"Men", "oakheart taramond", JspConstants.PRAYANCHOR)%>"
+													target="_blank">The history of Oakheart</a>
+												<li><a
+													href="<%=URLBuilder.buildRequest(request, JspConstants.INDEX, new SOLSCalendar(12279), new SOLSCalendar(20500), "Home",
+		"Men", "geoffrey blackwood taramond", JspConstants.PRAYANCHOR)%>"
+													target="_blank">Geoffrey Blackwood</a>
+												<li><a
+													href="<%=URLBuilder.buildRequest(request, JspConstants.INDEX, new SOLSCalendar(19484), new SOLSCalendar(19670), "Home",
+		"Men", "darkstar raiders taramond", JspConstants.PRAYANCHOR)%>"
+													target="_blank">Darkstar Raiders of Taramond</a>
+											</ul>
+										</div>
+									</div>
+								</div>
+								<div class="col-md-6 my-4">
+									<div class="d-flex">
+										<div class="flex-grow-1">
+											<iframe width="500" height="290" src="https://www.youtube.com/embed/afW9rGfV7XY" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe><br>
 											<a
 												href="<%=URLBuilder.buildRequest(request, JspConstants.INDEX, new SOLSCalendar(13494), new SOLSCalendar(29003), "Home",
 		"Men", "whispering_wood", JspConstants.PRAYANCHOR)%>"
@@ -255,43 +316,6 @@ SOLSCalendar endCal = new SOLSCalendar(endDate);
 													href="<%=URLBuilder.buildRequest(request, JspConstants.INDEX, new SOLSCalendar(13494), new SOLSCalendar(29003), "Home",
 		"Men", "supernatural taramond", JspConstants.PRAYANCHOR)%>"
 													target="_blank">And who or what is raising the dead?</a>
-											</ul>
-										</div>
-									</div>
-								</div>
-								<div class="col-md-6 my-4">
-									<div class="d-flex">
-										<div class="flex-grow-1">
-											<a
-												href="<%=URLBuilder.buildRequest(request, JspConstants.INDEX, new SOLSCalendar(19484), new SOLSCalendar(19670), "Home",
-		"Men", "nights_of_the_brave taramond", JspConstants.PRAYANCHOR)%>"
-												target="_blank">The Night of the Brave &lt;-- Start Here</a>
-											<p class="mt-1 mb-1">Arin is enamored with the
-												breathtaking beauty of the world around him, where nature
-												reigns supreme and the wonders of the land are beyond
-												comprehension. However, the arrival of Riven Shadowhand and
-												her Darkstar Raiders shatters the peaceful life of Taramond,
-												forcing villagers to choose between fight, flee, or pay
-												tribute. The Nights of the Brave see Blackwood and his
-												soldiers defend Taramond against a powerful enemy with
-												fierce pride and bravery, emerging victorious and forever
-												remembered.</p>
-											<p class="mt-1 mb-1">How will your adventures impact the
-												conflict? Will Oakheart burn? Will the Geoffrey Blackwood get killed in the defense of Taramond?
-												Will the Darkstar Raiders capture the village?</p>
-											<ul>
-												<li><a
-													href="<%=URLBuilder.buildRequest(request, JspConstants.INDEX, new SOLSCalendar(643), new SOLSCalendar(19670), "Home",
-		"Men", "oakheart taramond", JspConstants.PRAYANCHOR)%>"
-													target="_blank">The history of Oakheart</a>
-												<li><a
-													href="<%=URLBuilder.buildRequest(request, JspConstants.INDEX, new SOLSCalendar(12279), new SOLSCalendar(20500), "Home",
-		"Men", "geoffrey blackwood taramond", JspConstants.PRAYANCHOR)%>"
-													target="_blank">Geoffrey Blackwood</a>
-												<li><a
-													href="<%=URLBuilder.buildRequest(request, JspConstants.INDEX, new SOLSCalendar(19484), new SOLSCalendar(19670), "Home",
-		"Men", "darkstar raiders taramond", JspConstants.PRAYANCHOR)%>"
-													target="_blank">Darkstar Raiders of Taramond</a>
 											</ul>
 										</div>
 									</div>

@@ -85,7 +85,7 @@ if (null != currentUser && subject != null && body != null) {
         // Send the email
         Transport.send(msg);
 
-        emailResp = "We go it!";
+        emailResp = "We got it!";
     } catch (AddressException e) {
         //out.println("Error: " + e.getMessage());
         emailResp = "Error: " + e.getMessage();
@@ -109,7 +109,7 @@ if (null != currentUser && subject != null && body != null) {
 <link rel="stylesheet" href="assets/css/sols.css">
 <link rel="stylesheet"
 	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<title>Shrine of Lost Secrets - Help</title>
+<title>Shrine of Lost Secrets - Contact</title>
 </head>
 <body data-spy="scroll" data-target=".navbar" data-offset="40" id="home">
 

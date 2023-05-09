@@ -97,7 +97,7 @@ public class SOLSCalendar {
 			return forward(scale, false);
 
 		}
-		public SOLSCalendar forward(Scale scale, boolean forward) {
+	public SOLSCalendar forward(Scale scale, boolean forward) {
 		long theAmount = 0;
 		if(Scale.DAY.equals(scale)) {
 			theAmount = 1;
@@ -119,6 +119,10 @@ public class SOLSCalendar {
 		}
 		if(!forward) {
 			theAmount = -theAmount/2;
+		}
+		else {
+			theAmount = theAmount/2;
+
 		}
 		return forward(theAmount);
 	}

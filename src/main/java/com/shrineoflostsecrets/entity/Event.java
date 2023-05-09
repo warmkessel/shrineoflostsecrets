@@ -40,12 +40,12 @@ public class Event extends BaseEntity implements Comparable<Event> {
 	private String compactDesc = "";
 	private String shortDesc = "";
 	private String longDesc = new String("");
-	private String images = "";
+	private String media = "";
 
 	public Event() {
 	}
 	public Event(Key key, List<? extends Value<?>> deleted, boolean bookmarked, Timestamp createdDate, Timestamp updatedDate, int userId, String world, String relm, String kingdom, List<? extends Value<?>> tags, long eventDate, String title, String compactDesc,
-			String shortDesc, String longDesc, String images) {
+			String shortDesc, String longDesc, String media) {
 		super(key, deleted, createdDate, updatedDate);
 		this.bookmarked = bookmarked;
 		this.userId = userId;
@@ -58,7 +58,7 @@ public class Event extends BaseEntity implements Comparable<Event> {
 		this.compactDesc = Objects.requireNonNull(compactDesc);
 		this.shortDesc = Objects.requireNonNull(shortDesc);
 		this.longDesc = Objects.requireNonNull(longDesc);
-		this.images = Objects.requireNonNull(images);
+		this.media = Objects.requireNonNull(media);
 	}
 
 	public boolean isBookmarked() {
@@ -202,13 +202,15 @@ public class Event extends BaseEntity implements Comparable<Event> {
 	public void setLongDesc(String longDesc) {
 		this.longDesc = longDesc;
 	}
-
-	public String getImages() {
-		return images;
+	public boolean hasMedia() {
+		return (0 != getMedia().length());
+	}
+	public String getMedia() {
+		return media;
 	}
 
-	public void setImages(String images) {
-		this.images = images;
+	public void setMedia(String media) {
+		this.media = media;
 	}
 
 	@Override
@@ -237,7 +239,7 @@ public class Event extends BaseEntity implements Comparable<Event> {
 		result = 31 * result + compactDesc.hashCode();
 		result = 31 * result + shortDesc.hashCode();
 		result = 31 * result + longDesc.hashCode();
-		result = 31 * result + images.hashCode();
+		result = 31 * result + media.hashCode();
 		return result;
 	}
 
@@ -248,7 +250,7 @@ public class Event extends BaseEntity implements Comparable<Event> {
 				.set(EventConstants.UPDATEDDATE, getUpdatedDate()).set(EventConstants.USERID, getUserId()).set(EventConstants.REVISION, getRevision())
 				.set(EventConstants.WORLD, getWorld()).set(EventConstants.RELM, getRelm()).set(EventConstants.TAGS, getTags()).set(EventConstants.EVENTDATE, getEventDate())
 				.set(EventConstants.TITLE, getTitle()).set(EventConstants.COMPACTDESC, getCompactDesc()).set(EventConstants.SHORTDESC, getShortDesc())
-				.set(EventConstants.LONGDESC, StringValue.newBuilder(getLongDesc()).setExcludeFromIndexes(true).build()).set(EventConstants.IMAGES, getImages()).build();
+				.set(EventConstants.LONGDESC, StringValue.newBuilder(getLongDesc()).setExcludeFromIndexes(true).build()).set(EventConstants.MEDIA, getMedia()).build();
 		getDatastore().put(entity.build());
 	}
 
@@ -287,7 +289,9 @@ public class Event extends BaseEntity implements Comparable<Event> {
 			setCompactDesc(entity.getString(EventConstants.COMPACTDESC));
 			setShortDesc(entity.getString(EventConstants.SHORTDESC));
 			setLongDesc(entity.getString(EventConstants.LONGDESC));
-			setImages(entity.getString(EventConstants.IMAGES));
+			if (entity.contains(EventConstants.MEDIA)) {
+				setMedia(entity.getString(EventConstants.MEDIA));
+			}
 		}
 	}
 
@@ -298,7 +302,7 @@ public class Event extends BaseEntity implements Comparable<Event> {
 				+ ", " + EventConstants.WORLD + "='" + world + '\'' +  ", " + EventConstants.RELM + "='" + relm + '\'' + '\'' + ", \" + TAGS + \"='" + getTags()
 				+ '\'' + ", \" + EVENTDATE + \"='" + eventDate + '\'' + ", \" + TITLE + \"='" + title + '\''
 				+ ", \" + KINGDOM + \"='" + EventConstants.COMPACTDESC + '\'' + ", \" + SHORTDESC + \"='" + shortDesc + '\''
-				+ ", \" + LONGDESC + \"='" + longDesc + '\'' + ", \" + IMAGES + \"'" + images + '\'' + '}';
+				+ ", \" + LONGDESC + \"='" + longDesc + '\'' + ", \" + MEDIA + \"'" + media + '\'' + '}';
 	}
 
 	public int compareTo(Event other) {

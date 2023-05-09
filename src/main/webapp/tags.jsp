@@ -1,14 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ page import="com.shrineoflostsecrets.entity.*"%>
-<%@ page import="com.shrineoflostsecrets.datastore.*"%>
-<%@ page import="java.util.List"%>
-<%@ page import="com.google.cloud.datastore.*"%>
-<%@ page import="com.shrineoflostsecrets.constants.*"%>
-<%@ page import="com.shrineoflostsecrets.util.*"%>
-<%@ page import="java.util.*"%>
-<%@ page import="com.google.appengine.api.users.*" %>
-
-<%
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%><%@ page import="com.shrineoflostsecrets.entity.*"%><%@ page import="com.shrineoflostsecrets.datastore.*"%><%@ page import="java.util.List"%><%@ page import="com.google.cloud.datastore.*"%><%@ page import="com.shrineoflostsecrets.constants.*"%><%@ page import="com.shrineoflostsecrets.util.*"%><%@ page import="java.util.*"%><%@ page import="com.google.appengine.api.users.*" %><%
 UserService userService = UserServiceFactory.getUserService();
 User currentUser = userService.getCurrentUser();
 DungonMaster dm = DungonMasterList.getDungonMaster(currentUser);

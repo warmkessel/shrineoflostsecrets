@@ -4,7 +4,7 @@ public class EventConstants extends BaseEntityConstants{
 	public static final String EVENT = "Event";
 
 	
-	public static final String IMAGES = "Images";
+	public static final String MEDIA = "Media";
 
 	public static final String LONGDESC = "LongDesc";
 

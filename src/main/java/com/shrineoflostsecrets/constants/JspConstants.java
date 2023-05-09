@@ -52,10 +52,12 @@ public class JspConstants {
 	public static final String LONGDESC = "longDesc";
 	public static final String DELETED = "deleted";
 	public static final String BOOKMARKED = "bookmarked";
+	public static final String MEDIA = "media";
 
 	public static final String PRAYANCHOR = "pray";
 	public static final String HELPANCHOR = "help";
 	public static final String CONTACTANCHOR = "contact";
+	public static final String GETSTARTEDANCHOR = "getstarted";
 
 	
 	public static final String COMMAND = "command";	

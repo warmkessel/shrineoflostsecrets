@@ -14,7 +14,7 @@
 <head>
 
 <!-- Google tag (gtag.js) -->
-<script async="true" 
+<script async="true"
 	src="https://www.googletagmanager.com/gtag/js?id=G-N2VTBWYNCJ"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -35,9 +35,17 @@ if (null != id && id.length() > 0) {
 long eventDate = 0;
 long endDate = 0;
 long startDate = 0;
+String world = Constants.HOME;
+String relm = Constants.MEN;
+if (null != request.getParameter(JspConstants.RELM) && request.getParameter(JspConstants.RELM).length() > 0) {
+	relm = (String) request.getParameter(JspConstants.RELM);
+}
+if (null != request.getParameter(JspConstants.WORLD) && request.getParameter(JspConstants.WORLD).length() > 0) {
+	world = (String) request.getParameter(JspConstants.WORLD);
+}
+
 /* 	String kingdom = (String) request.getParameter(JspConstants.KINGDOM);
- */ String world = (String) request.getParameter(JspConstants.WORLD);
-String relm = (String) request.getParameter(JspConstants.RELM);
+ */
 Set<String> tag = new HashSet<String>();
 Set<String> tags = new HashSet<String>();
 String title = (String) request.getParameter(JspConstants.TITLE);
@@ -47,6 +55,7 @@ String longDesc = (String) request.getParameter(JspConstants.LONGDESC);
 String deleted = (String) request.getParameter(JspConstants.DELETED);
 String bookmarked = (String) request.getParameter(JspConstants.BOOKMARKED);
 String promote = (String) request.getParameter(JspConstants.PROMOTE);
+String media = (String) request.getParameter(JspConstants.MEDIA);
 
 boolean dirty = false;
 boolean edit = false;
@@ -152,6 +161,11 @@ if (currentUser != null && userService.isUserAdmin() && null != request.getParam
 	event.setUserId(Constants.UNIVERSALUSER);
 	dirty = true;
 }
+if (currentUser != null && userService.isUserAdmin() && null != request.getParameter(JspConstants.MEDIA)
+		&& request.getParameter(JspConstants.MEDIA).length() > 0) {
+	event.setMedia(media);
+	dirty = true;
+}
 
 else if (save && currentUser != null) {
 	event.setUserId(dm.getKeyLong());
@@ -211,11 +225,16 @@ SOLSCalendar.Scale scale = startCal.getScale(endCal);
 		JspConstants.PRAYANCHOR, "#")%>">
 				<img src="assets/imgs/logo-sm.jpg" alt="Shrine of Lost Secrets">
 			</a>
-			<ul class="navbar-nav ml-auto">
-				<li class="nav-item"><a class="nav-link text-primary"
-					href="#home">CALL US : <span class="pl-2 text-muted">(408)
-							768 8654</span></a></li>
-			</ul>
+			<div class="d-none d-md-block">
+				<h6 class="mb-0">
+					<a href="https://www.facebook.com/groups/915527066379136/"
+						class="px-2" target="_blank"><i class="ti-facebook"></i></a> <a
+						href="https://twitter.com/shrinesecrets" class="px-2"
+						target="_blank"><i class="ti-twitter"></i></a> <a
+						href="https://patreon.com/TheShrineOfLostSecrets" class="px-2"
+						target="_blank"><i class="fab fa-patreon"></i></a>
+				</h6>
+			</div>
 		</div>
 	</nav>
 	<!-- End of First Navigation -->
@@ -240,8 +259,7 @@ SOLSCalendar.Scale scale = startCal.getScale(endCal);
 		JspConstants.HELPANCHOR)%>">Ask
 							for Help</a></li>
 					<li class="nav-item"><a class="nav-link"
-						href="<%=URLBuilder.buildRequest(request, JspConstants.GETSTARTED, startCal, endCal, world, relm, tag,
-		JspConstants.PRAYANCHOR)%>">Get
+						href="<%=URLBuilder.buildRequest(request, JspConstants.GETSTARTED, startCal, endCal, world, relm, tag)%>">Get
 							Started</a></li>
 					<li class="nav-item"><a class="nav-link"
 						href="<%=URLBuilder.buildRequest(request, JspConstants.CONTACT, startCal, endCal, world, relm, tag,
@@ -303,15 +321,32 @@ SOLSCalendar.Scale scale = startCal.getScale(endCal);
 	            document.getElementById('output').textContent = 'An error occurred.';
 	        });
 	}
-	handleSubmit();
+	<%if (!event.hasMedia() && (currentUser == null || !userService.isUserAdmin())) {%>
+		handleSubmit();
+	<%}%>
 	</script>
 	<%}%>
-	<header class="header">
-		<div class="overlay">
+	
+			<%
+			if (!event.hasMedia()) {
+			%>
+			<header class="header">
+			<div class="overlay">
 			<img src="assets/imgs/logo.jpg" alt="Shrine of Lost Secrets"
 				class="logo2" id="eventImage">
-		</div>
-	</header>
+			</div>
+			</header>
+			<%
+			} else {
+			%>
+				<header class="header" style="min-height:861px;">
+			<div class="overlay">
+			<%=event.getMedia()%>
+			</div>
+			</header>
+			
+			<%}%>
+		
 	<!-- End Of Page Header -->
 
 	<section id="<%=JspConstants.PRAYANCHOR%>">
@@ -480,11 +515,11 @@ SOLSCalendar.Scale scale = startCal.getScale(endCal);
 	    
 		timelineElement.appendChild(div);
     }
-	placeForwardArrow("<%=startCal.getDisplayDate()%>","<%=startCal.getShortDisplayDate()%>", "<%=URLBuilder.buildRequest(request, JspConstants.DETAILS, startCal.backward(startCal.getElapsedTime(endCal)),
-		endCal.backward(startCal.getElapsedTime(endCal)), world, relm, tag, JspConstants.PRAYANCHOR,
+	placeForwardArrow("<%=startCal.getDisplayDate()%>","<%=startCal.getShortDisplayDate()%>", "<%=URLBuilder.buildRequest(request, JspConstants.DETAILS, startCal.backward(startCal.getElapsedTime(endCal) / 2),
+		endCal.backward(startCal.getElapsedTime(endCal) / 2), world, relm, tag, JspConstants.PRAYANCHOR,
 		JspConstants.ID + "=" + event.getKeyString())%>")
-	placeBackwardArrow("<%=endCal.getDisplayDate()%>","<%=endCal.getShortDisplayDate()%>", "<%=URLBuilder.buildRequest(request, JspConstants.DETAILS, startCal.forward(startCal.getElapsedTime(endCal)),
-		endCal.forward(startCal.getElapsedTime(endCal)), world, relm, tag, JspConstants.PRAYANCHOR,
+	placeBackwardArrow("<%=endCal.getDisplayDate()%>","<%=endCal.getShortDisplayDate()%>", "<%=URLBuilder.buildRequest(request, JspConstants.DETAILS, startCal.forward(startCal.getElapsedTime(endCal) / 2),
+		endCal.forward(startCal.getElapsedTime(endCal) / 2), world, relm, tag, JspConstants.PRAYANCHOR,
 		JspConstants.ID + "=" + event.getKeyString())%>")	
   <%if (SOLSCalendar.Scale.CENTURY.equals(scale)) {
 	SOLSCalendar futureYear = startCal.forwardCentury().justCentury();
@@ -742,6 +777,17 @@ function prayAtTheShrineInput(instruction, input, target) {
 						<td><input name="<%=JspConstants.RELM%>"
 							value="<%=event.getRelm()%>"></td>
 					</tr>
+					<%
+					if (currentUser != null && userService.isUserAdmin()) {
+					%>
+					<tr>
+						<td>Media:</td>
+						<td><textarea name="<%=JspConstants.MEDIA%>" rows="5"
+								cols="100"><%=event.getMedia()%></textarea></td>
+					</tr>
+					<%
+					}
+					%>
 				</table>
 				<%
 				if (currentUser != null) {
@@ -753,6 +799,8 @@ function prayAtTheShrineInput(instruction, input, target) {
 				<input type="button" value="Save"
 					onClick="alert('Creating Events requieres that you are logged in.')">
 				<%}%>
+			</form>
+
 			<h1 class="section-title mb-6 pb-3 text-center">
 				<a
 					href="<%=URLBuilder.buildRequest(request, JspConstants.INDEX, startCal, endCal, world, relm, tag,
@@ -760,7 +808,6 @@ function prayAtTheShrineInput(instruction, input, target) {
 					to the Shrine</a>
 			</h1>
 		</div>
-
 	</section>
 	<%
 	} else {
@@ -784,12 +831,20 @@ function prayAtTheShrineInput(instruction, input, target) {
 				href="<%=URLBuilder.buildRequest(request, JspConstants.DETAILS, startCal, endCal, world, relm, tag, "",
 		JspConstants.ID + "=" + event.getKeyString() + "&" + JspConstants.EDIT + "=true")%>">Edit</a>
 			<%}%>
-			<%if (currentUser != null && dm.getKeyLong() == event.getUserId()) { %>
+			<%
+			if (currentUser != null && dm.getKeyLong() == event.getUserId()) {
+			%>
 			<h3 class="section-title mb-6 pb-3 text-center">
-			<a
+				<a
 					href="<%=URLBuilder.buildRequest(request, JspConstants.CONTACT, startCal, endCal, world, relm, tag,
-		JspConstants.CONTACTANCHOR, "subject=request%20global%20consideration&body=https://shrineoflostsecrets.com/details.jsp?" + event.getKeyLong())%>">Submitting this event to the Global Repository!</a></h3>
-			<%} %>
+		JspConstants.CONTACTANCHOR,
+		"subject=request%20global%20consideration&body=https://shrineoflostsecrets.com/details.jsp?id="
+				+ event.getKeyLong())%>">Submitting
+					this event to the Global Repository!</a>
+			</h3>
+			<%
+			}
+			%>
 			<h1 class="section-title mb-6 pb-3 text-center">
 				<a
 					href="<%=URLBuilder.buildRequest(request, JspConstants.INDEX, startCal, endCal, world, relm, tag,
@@ -843,10 +898,10 @@ function prayAtTheShrineInput(instruction, input, target) {
 				<div class="d-none d-md-block">
 					<h6 class="small mb-0">
 						<a href="https://www.facebook.com/groups/915527066379136/"
-							class="px-2" target="_blank"><i class="ti-facebook"></i></a>
-						<a href="https://twitter.com/shrinesecrets" class="px-2"
-							target="_blank"><i class="ti-twitter"></i></a>
-						<a href="https://patreon.com/TheShrineOfLostSecrets" class="px-2"
+							class="px-2" target="_blank"><i class="ti-facebook"></i></a> <a
+							href="https://twitter.com/shrinesecrets" class="px-2"
+							target="_blank"><i class="ti-twitter"></i></a> <a
+							href="https://patreon.com/TheShrineOfLostSecrets" class="px-2"
 							target="_blank"><i class="fab fa-patreon"></i></a>
 					</h6>
 				</div>

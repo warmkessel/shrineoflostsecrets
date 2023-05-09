@@ -152,7 +152,7 @@ else {%>
 		<div class="container">
 			<a class="navbar-brand"
 				href="<%=URLBuilder.buildRequest(request, JspConstants.INDEX, startCal, endCal, world, relm, tag,
-		JspConstants.PRAYANCHOR, "#")%>">
+		JspConstants.PRAYANCHOR)%>">
 				<img src="assets/imgs/logo-sm.jpg" alt="Shrine of Lost Secrets">
 			</a>
 			<div class="d-none d-md-block">
@@ -189,8 +189,7 @@ else {%>
 		JspConstants.HELPANCHOR)%>">Ask
 							for Help</a></li>
 					<li class="nav-item"><a class="nav-link"
-						href="<%=URLBuilder.buildRequest(request, JspConstants.GETSTARTED, startCal, endCal, world, relm, tag,
-		JspConstants.PRAYANCHOR)%>">Get
+						href="<%=URLBuilder.buildRequest(request, JspConstants.GETSTARTED, startCal, endCal, world, relm, tag)%>">Get
 							Started</a></li>
 					<li class="nav-item"><a class="nav-link"
 						href="<%=URLBuilder.buildRequest(request, JspConstants.CONTACT, startCal, endCal, world, relm, tag,
@@ -256,7 +255,8 @@ else {%>
 				class="logo">
 			<h1 class="subtitle">Welcome To</h1>
 			<h1 class="title">Shrine of Lost Secrets</h1>
-			<a class="btn btn-primary mt-3" href="#<%=JspConstants.PRAYANCHOR%>">Pray
+			<a class="btn btn-primary mt-3" href="<%=URLBuilder.buildRequest(request, JspConstants.INDEX, startCal, endCal, world, relm, tag,
+		JspConstants.PRAYANCHOR, "#")%>">Pray
 				at the Shrine</a>
 		</div>
 	</header>
@@ -432,10 +432,10 @@ else {%>
 	    
 		timelineElement.appendChild(div);
     }
-	placeForwardArrow("<%=startCal.getDisplayDate()%>","<%=startCal.getShortDisplayDate()%>", "<%=URLBuilder.buildRequest(request, JspConstants.INDEX, startCal.backward(startCal.getElapsedTime(endCal)),
-		endCal.backward(startCal.getElapsedTime(endCal)), world, relm, tag, JspConstants.PRAYANCHOR)%>")
-	placeBackwardArrow("<%=endCal.getDisplayDate()%>","<%=endCal.getShortDisplayDate()%>", "<%=URLBuilder.buildRequest(request, JspConstants.INDEX, startCal.forward(startCal.getElapsedTime(endCal)),
-		endCal.forward(startCal.getElapsedTime(endCal)), world, relm, tag, JspConstants.PRAYANCHOR)%>")	
+	placeForwardArrow("<%=startCal.getDisplayDate()%>","<%=startCal.getShortDisplayDate()%>", "<%=URLBuilder.buildRequest(request, JspConstants.INDEX, startCal.backward(startCal.getElapsedTime(endCal)/2),
+		endCal.backward(startCal.getElapsedTime(endCal)/2), world, relm, tag, JspConstants.PRAYANCHOR)%>")
+	placeBackwardArrow("<%=endCal.getDisplayDate()%>","<%=endCal.getShortDisplayDate()%>", "<%=URLBuilder.buildRequest(request, JspConstants.INDEX, startCal.forward(startCal.getElapsedTime(endCal)/2),
+		endCal.forward(startCal.getElapsedTime(endCal)/2), world, relm, tag, JspConstants.PRAYANCHOR)%>")	
   <%if (SOLSCalendar.Scale.CENTURY.equals(scale)) {
 	SOLSCalendar futureYear = startCal.forwardCentury().justCentury();
 	double rangeLength = Double.valueOf(startCal.getElapsedTime(endCal));
