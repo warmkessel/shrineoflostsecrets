@@ -19,6 +19,7 @@ public class JspConstants {
 	public static final String DEFAULTFAGCOLOR = "#886433";
 	public static final String PERSONALFAGCOLOR = "black";
 	public static final String FOCUSFLAGCOLOR = "red";
+	public static final String MULTIEVENTCOLOR = "green";
 
 	
 	public static final String DIRTY = "dirty";

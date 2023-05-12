@@ -36,6 +36,9 @@ UserService userService = UserServiceFactory.getUserService();
 User currentUser = userService.getCurrentUser();
 DungonMaster dm = DungonMasterList.getDungonMaster(currentUser);
 
+boolean error = false;
+
+
 long endDate = 0;
 long startDate = 0;
 
@@ -65,12 +68,13 @@ SOLSCalendar endCal = new SOLSCalendar(endDate);
 String subject = request.getParameter("subject");
 String body = request.getParameter("body");
 String pageurl = request.getParameter("pageurl");
-
+String errorString = request.getParameter("error");
+error = Boolean.valueOf(errorString);
 
 
 
 String emailResp = null;
-if (null != currentUser && subject != null && body != null) {
+if ((error || null != currentUser) && subject != null && body != null) {
     Properties props = new Properties();
     Session mailSession = Session.getDefaultInstance(props, null);
 
@@ -173,13 +177,13 @@ if (null != currentUser && subject != null && body != null) {
 						if (currentUser != null) {
 						%> <a
 						href="<%=userService.createLogoutURL(
-		URLBuilder.buildRequest(request, JspConstants.GETSTARTED, startCal, endCal, world, relm, tag, "", ""))%>"
+		URLBuilder.buildRequest(request, JspConstants.CONTACT, startCal, endCal, world, relm, tag))%>"
 						class="btn btn-primary btn-sm">Welcome <%=currentUser.getNickname()%></a>
 						<%
 						} else {
 						%> <a
 						href="<%=userService.createLoginURL(
-		URLBuilder.buildRequest(request, JspConstants.GETSTARTED, startCal, endCal, world, relm, tag, "", ""))%>"
+		URLBuilder.buildRequest(request, JspConstants.CONTACT, startCal, endCal, world, relm, tag))%>"
 						class="btn btn-primary btn-sm">Login</a> <%}%>
 					</li>
 				</ul>
@@ -213,7 +217,7 @@ if (null != currentUser && subject != null && body != null) {
 								name="subject">
 							<textarea class="form-control" id="message"
 								aria-describedby="emailHelp"
-								placeholder="Your comment or Question" name="body" rows="4"
+								placeholder="Your comment or question" name="body" rows="4"
 								cols="50"></textarea>
 						</div>
 						<button type="submit" class="btn btn-primary btn-block">Share
@@ -250,7 +254,7 @@ if (null != currentUser && subject != null && body != null) {
 						alt="Shrine of Lost Secrets Landing page"
 						class="w-100 rounded shadow">
 				</div>
-				<div class="col-md-6">
+				<div class="col-md-6">				
 					<h3 class="section-title mb-5 text-center" id="reponse">We'd love to hear your thoughts. Kindly login so we can receive your message.</h3>
 					<a href="<%=userService.createLoginURL(
 		URLBuilder.buildRequest(request, JspConstants.CONTACT, startCal, endCal, world, relm, tag, "", ""))%>"

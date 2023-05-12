@@ -54,6 +54,7 @@ if (null != request.getParameter(JspConstants.RELM) && request.getParameter(JspC
 
 SOLSCalendar startCal = new SOLSCalendar(startDate);
 SOLSCalendar endCal = new SOLSCalendar(endDate);
+
 %>
 <meta charset="utf-8">
 <meta name="viewport"
@@ -155,6 +156,9 @@ SOLSCalendar endCal = new SOLSCalendar(endDate);
 									<div class="d-flex">
 										<div class="flex-grow-1">
 											<iframe width="500" height="290" src="https://www.youtube.com/embed/LyTq5l9m9Hg" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+											Shrine of Lost Secrets introduction:
+											<p class="mt-1 mb-0" id="summary">
+											Welcome to the Shrine of Lost Secrets! This website is dedicated to assisting you in running tabletop role-playing games, such as Dungeons and Dragons, by enriching your campaigns with detailed histories and engaging backstories for non-player characters, locales, and various elements within your game universe. Our mission is to elevate your adventures by adding depth and nuance to your gaming experience.											</p>
 										</div>
 									</div>
 								</div>

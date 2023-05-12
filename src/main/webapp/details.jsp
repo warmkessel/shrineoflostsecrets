@@ -122,23 +122,23 @@ if (null != request.getParameter(JspConstants.TAGINPUT) && request.getParameter(
 }
 
 if (null != request.getParameter(JspConstants.TITLE) && request.getParameter(JspConstants.TITLE).length() > 0) {
-	title = (String) request.getParameter(JspConstants.TITLE);
+	title = (String) CaseControl.cleanHTML(request.getParameter(JspConstants.TITLE));
 	event.setTitle(title);
 	dirty = true;
 }
 if (null != request.getParameter(JspConstants.COMPACTDESC)
 		&& request.getParameter(JspConstants.COMPACTDESC).length() > 0) {
-	compactDesc = (String) request.getParameter(JspConstants.COMPACTDESC);
+	compactDesc = (String) CaseControl.cleanHTML(request.getParameter(JspConstants.COMPACTDESC));
 	event.setCompactDesc(compactDesc);
 	dirty = true;
 }
 if (null != request.getParameter(JspConstants.SHORTDESC) && request.getParameter(JspConstants.SHORTDESC).length() > 0) {
-	shortDesc = (String) request.getParameter(JspConstants.SHORTDESC);
+	shortDesc = (String) CaseControl.cleanHTML(request.getParameter(JspConstants.SHORTDESC));
 	event.setShortDesc(shortDesc);
 	dirty = true;
 }
 if (null != request.getParameter(JspConstants.LONGDESC) && request.getParameter(JspConstants.LONGDESC).length() > 0) {
-	longDesc = (String) request.getParameter(JspConstants.LONGDESC);
+	longDesc = (String) CaseControl.cleanHTML(request.getParameter(JspConstants.LONGDESC));
 	event.setLongDesc(longDesc);
 	dirty = true;
 }
@@ -477,6 +477,35 @@ SOLSCalendar.Scale scale = startCal.getScale(endCal);
 	  }
 	}
   
+  function placeMultiEvent(tip, anchor,  position) {
+	  if (!flagSet[position]) {
+		  flagSet[position] = true;
+		  const icon = document.createElement("i");
+		  icon.className = "fa-solid fa-timeline";
+		  icon.setAttribute("aria-hidden", "true");
+		  icon.style.fontSize = "33px"; 
+		  icon.style.color="<%=JspConstants.MULTIEVENTCOLOR%>";
+
+		  const timelineWidth = timelineElement.offsetWidth;
+		  const flagWidth = icon.offsetWidth;
+	
+		  const flagLeft = (position/100) * timelineWidth;
+	
+		  const anchorElement = document.createElement("a");
+		  anchorElement.setAttribute("title", tip); // add tooltip to icon element
+		  anchorElement.href = anchor;
+//		  anchorElement.target = "_blank"; // added target attribute
+		  anchorElement.style.position = "absolute";
+		  anchorElement.style.float = "left";
+		  anchorElement.style.bottom = "50px";
+		  placeFlagLocation(anchorElement, position);
+		  //anchorElement.style.left = (flagLeft) + "px";
+		  anchorElement.appendChild(icon);
+		  timelineElement.appendChild(anchorElement);
+		  return anchorElement;
+	  }
+	}
+  
   function placeArrow(tip, text, position) {
 		const icon = document.createElement("i");
 		const timelineWidth = timelineElement.offsetWidth;
@@ -558,21 +587,21 @@ monthOffset = monthOffset + SOLSCalendarConstants.LENTHOFALUNARMONTH;
 }
 }
 
-List<Entity> entities = EventsList.listEvents(startCal, endCal, world, relm, dm, tag);
-for (Entity entity : entities) {
-Event events = new Event();
-events.loadFromEntity(entity);
-if (50 > entities.size()) {%>
-<%=Constants.UNIVERSALUSER%>
-<%=dm.getKeyLong()%>
-<%=events.getKeyLong()%>
-<%=events.getUserId()%>
-
+  List<Entity> entities = EventsList.listEvents(startCal, endCal, world, relm, dm, tag);
+	EventCollection collection = new EventCollection(entities);
+	if (!collection.isMoreEvents()) {
+		for (Event events : collection.getEvents()) {%>
 				placeFlag("<%=events.getTitle()%>", "<%=URLBuilder.buildRequest(request, JspConstants.DETAILS, startCal, endCal, world, relm, tag, "",
 		JspConstants.ID + "=" + events.getKeyString())%>", <%double totalDays = Double.valueOf(startCal.getElapsedTime(endCal));
 double elapseDays = Double.valueOf(events.getEventCalendar().getElapsedTime(endCal));%><%=100 - Math.round((elapseDays / totalDays) * 100)%>, <%=event.equals(events)%>, <%=Constants.UNIVERSALUSER != dm.getKeyLong() && dm.getKeyLong() == events.getUserId()%>)
 			
-	<%}
+	<%}} else{
+		for (EventCluster cluser : collection.getEventsCluster()){
+		%>
+					placeMultiEvent("<%=cluser.getNumberOfElements()%> Events", "<%=URLBuilder.buildRequest(request, JspConstants.INDEX, cluser.getLowerBoundDate(), cluser.getUpperBoundDate(), world, relm, tag, JspConstants.PRAYANCHOR)%>", <%double totalDays = Double.valueOf(startCal.getElapsedTime(endCal));
+double elapseDays = Double.valueOf(cluser.getCentroidDate().getElapsedTime(endCal));%><%=100 - Math.round((elapseDays / totalDays) * 100)%>)
+		<%
+	}
 }%>
 	</script>
 		</div>
@@ -817,7 +846,7 @@ function prayAtTheShrineInput(instruction, input, target) {
 			<h6 class="section-subtitle text-center"><%=event.getEventCalendar().getDisplayDate()%></h6>
 			<h3 class="section-title mb-6 pb-3 text-center"><%=CaseControl.capFirstLetter(event.getTitle())%></h3>
 			<p>
-				<%=CaseControl.capFirstLetter(event.getLongDesc())%>
+				<%=CaseControl.capAndLb(event.getLongDesc())%>
 			<p>
 			<p>
 				<small class="font-weight-bold"><%=event.getTagsString()%> :

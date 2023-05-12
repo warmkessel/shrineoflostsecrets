@@ -3,7 +3,6 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
          version="3.1">
-
     <filter>
         <filter-name>MemcacheFilter</filter-name>
         <filter-class>com.shrineoflostsecrets.filter.MemcacheFilter</filter-class>
@@ -13,7 +12,6 @@
         <filter-name>MemcacheFilter</filter-name>
         <url-pattern>/tags.jsp</url-pattern>
     </filter-mapping>
-
     <servlet>
         <servlet-name>Tags</servlet-name>
         <jsp-file>/tags.jsp</jsp-file>
@@ -25,5 +23,10 @@
     <welcome-file-list>
         <welcome-file>index.jsp</welcome-file>
     </welcome-file-list>
-
+    
+    <!-- Add an error page for handling uncaught exceptions -->
+    <error-page>
+        <exception-type>java.lang.Throwable</exception-type>
+        <location>/error.jsp</location>
+    </error-page>
 </web-app>

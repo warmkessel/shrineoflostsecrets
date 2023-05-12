@@ -3,7 +3,10 @@ package com.shrineoflostsecrets.constants;
 public class EventConstants extends BaseEntityConstants{
 	public static final String EVENT = "Event";
 
+	public static final String TIMELINEEVENT = "TimelineEvent";
 	
+	public static final String TIMELINECOLLECTION = "TimelineCollection";
+
 	public static final String MEDIA = "Media";
 
 	public static final String LONGDESC = "LongDesc";

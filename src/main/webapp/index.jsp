@@ -372,17 +372,39 @@ else {%>
 		  if(personalEvent){
 			  icon.style.color="<%=JspConstants.PERSONALFAGCOLOR%>";
 		  }
-		  
-//		  const leftEdge = startDate;
-//		  const rightEdge = endDate;
-//		  const flagPosition = position;
+		  const flagLeft = (position/100) * timelineWidth;	
+		  const anchorElement = document.createElement("a");
+		  anchorElement.setAttribute("title", tip); // add tooltip to icon element
+		  anchorElement.href = anchor;
+		  anchorElement.target = "_blank"; // added target attribute
+		  anchorElement.style.position = "absolute";
+		  anchorElement.style.float = "left";
+		  anchorElement.style.bottom = "50px";
+		  placeFlagLocation(anchorElement, position);
+		  //anchorElement.style.left = (flagLeft) + "px";
+		  anchorElement.appendChild(icon);
+		  timelineElement.appendChild(anchorElement);
+		  return anchorElement;
+	  }
+	}
+  function placeMultiEvent(tip, anchor,  position) {
+	  if (!flagSet[position]) {
+		  flagSet[position] = true;
+		  const icon = document.createElement("i");
+		  icon.className = "fa-solid fa-timeline";
+		  icon.setAttribute("aria-hidden", "true");
+		  icon.style.fontSize = "33px"; 
+		  icon.style.color="<%=JspConstants.MULTIEVENTCOLOR%>";
+
+		  const timelineWidth = timelineElement.offsetWidth;
+		  const flagWidth = icon.offsetWidth;
 	
 		  const flagLeft = (position/100) * timelineWidth;
 	
 		  const anchorElement = document.createElement("a");
 		  anchorElement.setAttribute("title", tip); // add tooltip to icon element
 		  anchorElement.href = anchor;
-		  anchorElement.target = "_blank"; // added target attribute
+//		  anchorElement.target = "_blank"; // added target attribute
 		  anchorElement.style.position = "absolute";
 		  anchorElement.style.float = "left";
 		  anchorElement.style.bottom = "50px";
@@ -715,9 +737,8 @@ placeFlag("testflagb", "", 0); */
 					<div class="row text-left">
 						<%
 						List<Entity> entities = EventsList.listEvents(startCal, endCal, world, relm, dm, tag);
-						for (Entity entity : entities) {
-							Event event = new Event();
-							event.loadFromEntity(entity);
+						EventCollection collection = new EventCollection(entities);
+						for (Event event : collection.getEvents()) {
 						%>
 						<div class="col-md-6 my-4">
 							<a
@@ -731,13 +752,9 @@ placeFlag("testflagb", "", 0); */
 									</div>
 									<h6 class="float-right text-primary">Details</h6>
 									<%
-									if (50 > entities.size()) {
+									if (!collection.isMoreEvents()) {
 									%>
 									<script>
-									<%=Constants.UNIVERSALUSER%>
-									<%=dm.getKeyLong()%>
-									<%=event.getUserId()%>
-									
 									placeFlag("<%=event.getTitle()%>", "<%=URLBuilder.buildRequest(request, JspConstants.DETAILS, startCal, endCal, world, relm, tag, "",
 		JspConstants.ID + "=" + event.getKeyString())%>", <%double totalDays = Double.valueOf(startCal.getElapsedTime(endCal));
 double elapseDays = Double.valueOf(event.getEventCalendar().getElapsedTime(endCal));%><%=100 - Math.round((elapseDays / totalDays) * 100)%>, <%=Constants.UNIVERSALUSER != dm.getKeyLong() && dm.getKeyLong() == event.getUserId()%>)
@@ -747,6 +764,15 @@ double elapseDays = Double.valueOf(event.getEventCalendar().getElapsedTime(endCa
 							</a>
 						</div>
 						<%}%>
+						<%
+						if (collection.isMoreEvents()) {
+							for (EventCluster cluser : collection.getEventsCluster()){
+									%>
+									<script>
+									placeMultiEvent("<%=cluser.getNumberOfElements()%> Events", "<%=URLBuilder.buildRequest(request, JspConstants.INDEX, cluser.getLowerBoundDate(), cluser.getUpperBoundDate(), world, relm, tag, JspConstants.PRAYANCHOR)%>", <%double totalDays = Double.valueOf(startCal.getElapsedTime(endCal));
+double elapseDays = Double.valueOf(cluser.getCentroidDate().getElapsedTime(endCal));%><%=100 - Math.round((elapseDays / totalDays) * 100)%>)
+  								</script>
+									<%}}%>
 					</div>
 				</div>
 			</div>
