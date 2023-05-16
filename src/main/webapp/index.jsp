@@ -45,12 +45,8 @@ if (null != request.getParameter(JspConstants.END) && request.getParameter(JspCo
 SOLSCalendar startCal = new SOLSCalendar(startDate);
 SOLSCalendar endCal = new SOLSCalendar(endDate);
 endCal = startCal.endMustBeAfter(endCal);
-//startCal.getScale(endCal);
 SOLSCalendar.Scale scale = startCal.getScale(endCal);
-//if(SOLSCalendar.Scale.YEAR.equals(scale) || SOLSCalendar.Scale.DECKADE.equals(scale) || SOLSCalendar.Scale.CENTURY.equals(scale)){
-//startCal = startCal.justYear();
-//	endCal = endCal.justYear();
-//}
+
 %><!DOCTYPE html>
 <html lang="en">
 <head>

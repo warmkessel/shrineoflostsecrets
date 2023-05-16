@@ -165,6 +165,8 @@ SOLSCalendar endCal = new SOLSCalendar(endDate);
 								<div class="col-md-6 my-4">
 									<div class="d-flex">
 										<div class="flex-grow-1">
+											<jsp:include page="/componenets/datepicker.jsp" />
+										
 										</div>
 									</div>
 								</div>
@@ -388,6 +390,7 @@ SOLSCalendar endCal = new SOLSCalendar(endDate);
 
 	<!-- bootstrap affix -->
 	<script src="assets/vendors/bootstrap/bootstrap.affix.js"></script>
+
 
 </body>
 </html>
