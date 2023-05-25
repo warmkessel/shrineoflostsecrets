@@ -47,4 +47,10 @@ public class CaseControl {
 		}
 		return  str.replaceAll("_", " ");
 	}
+	public static String replaceHyphen(String str) {
+		if(null == str || str.length() == 0) {
+			return "";
+		}
+		return  str.replaceAll("-", "_");
+	}
 }

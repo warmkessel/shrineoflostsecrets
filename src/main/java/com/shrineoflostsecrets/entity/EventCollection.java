@@ -14,13 +14,16 @@ public class EventCollection {
 	public static final int MAXNUMBEROFCLUSTERS = 5;
 
 	public EventCollection(List<Entity> entities) {
-		moreEvents = (entities.size() >MAXRETURNSIZE );
-		for(int x = 0; x < Math.min(entities.size(), MAXRETURNSIZE); x++) {
+		this(entities, MAXRETURNSIZE, true);
+	}
+	public EventCollection(List<Entity> entities, int maxReturnSize, boolean withCluster) {
+		moreEvents = (entities.size() >maxReturnSize);
+		for(int x = 0; x < Math.min(entities.size(), maxReturnSize); x++) {
 			Event event = new Event();
 			event.loadFromEntity(entities.get(x));
 			events.add(event);
 		}
-		if(isMoreEvents()){
+		if(isMoreEvents() && withCluster ){
 			eventsCluster = kMeansClustering(getEntityIds(entities));
 		}
 	}

@@ -29,9 +29,17 @@ public class JspConstants {
 	
 	public static final String ID = "id";
 
+	public static final String RESET = "reset";
+	public static final String LIST = "list";
+	public static final String COUNT = "count";
+	public static final String EMAIL = "email";
+
+	
+	
 	public static final String START = "start";
 	public static final String END = "end";
 	public static final String EVENTDATE = "eventDate";
+	public static final String DATEPICKER = "datepicker";
 	
 	public static final String WORLD = "world";
 	public static final String RELM = "relm";
@@ -69,5 +77,13 @@ public class JspConstants {
 	public static final String DETIALS = "details";	
 
 	public static final String SIZE = "size";	
+	
+	public static final String OPENAIEPHEMERALUSERID = "openai-ephemeral-user-id";	
+	public static final String OPENAICONVERSTAIONID = "openai-conversation-id";	
+	
+	
+	public static final String SHRINEULR = "https://shrineoflostsecrets.com";	
+	
+	
 
 }

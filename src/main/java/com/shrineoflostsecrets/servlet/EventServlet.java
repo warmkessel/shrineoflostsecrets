@@ -2,7 +2,7 @@ package com.shrineoflostsecrets.servlet;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.logging.Logger;
+//import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -28,14 +28,15 @@ public class EventServlet extends HttpServlet {
 	 * 
 	 */
 	private static final long serialVersionUID = -5214329767452507374L;
-	private static final Logger log = Logger.getLogger(ForwardDate.class.getName());
+//	private static final Logger log = Logger.getLogger(DateServlet.class.getName());
 
 	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		doOptions(req, resp);
+	protected void doOptions(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		setResponseHeaders(resp);
+		resp.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
 	}
 
-	protected void doOptions(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		setResponseHeaders(resp);
 		long startDate = SOLSCalendarConstants.BEGININGOFTHEAGEOFMAN;
 		long endDate = SOLSCalendarConstants.MIDPOINTOFMAN;
@@ -47,7 +48,7 @@ public class EventServlet extends HttpServlet {
 
 		String ephemeralUserId = req.getHeader(JspConstants.OPENAIEPHEMERALUSERID);
 //		log.info(JspConstants.OPENAIEPHEMERALUSERID +  " "  + ephemeralUserId);
-
+		DungonMaster dm = null;
 		if (ephemeralUserId != null) {
 			String cookieStart = getSessionValue(ephemeralUserId, JspConstants.START);
 
@@ -67,6 +68,10 @@ public class EventServlet extends HttpServlet {
 				} catch (NumberFormatException e) {
 				}
 			}
+			String emailValue = getSessionValue(ephemeralUserId, JspConstants.EMAIL);
+			if(null != emailValue && emailValue.length() > 0){
+				dm = DungonMasterList.getDungonMaster(emailValue);
+			}
 		}
 		boolean listOnly = false;
 		if (null != req.getParameter(JspConstants.LIST) && req.getParameter(JspConstants.LIST).length() > 0) {
@@ -77,7 +82,13 @@ public class EventServlet extends HttpServlet {
 		if (null != countParam && countParam.length() > 0) {
 			count = Integer.parseInt(countParam);
 		}
-		JSONObject jsonReturn = createJsonResponse(startCal, endCal, tag, req, listOnly, count);
+		
+		if (null == dm) {
+			UserService userService = UserServiceFactory.getUserService();
+			User currentUser = userService.getCurrentUser();
+			dm = DungonMasterList.getDungonMaster(currentUser);
+		}
+		JSONObject jsonReturn = createJsonResponse(startCal, endCal, tag, req, listOnly, count, dm);
 		resp.getWriter().write(jsonReturn.toString());
 //		for (String paramName : req.getParameterMap().keySet()) {
 //			String[] paramValues = req.getParameterValues(paramName);
@@ -90,7 +101,6 @@ public class EventServlet extends HttpServlet {
 
 	private void setResponseHeaders(HttpServletResponse resp) {
 		resp.setHeader("Access-Control-Allow-Origin", "https://chat.openai.com");
-		resp.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
 		resp.setHeader("Access-Control-Allow-Headers",
 				"Content-Type, openai-conversation-id, Authorization, Content-Length, X-Requested-With, openai-ephemeral-user-id");
 		resp.setContentType("text/plain");
@@ -102,7 +112,7 @@ public class EventServlet extends HttpServlet {
 			List<String> list = Arrays.asList(req.getParameterValues(JspConstants.TAGS));
 			for (String str : list) {
 				for (String spl : str.split(" ")) {
-					tag.add(spl.toLowerCase());
+					tag.add(CaseControl.replaceHyphen(spl.toLowerCase()));
 				}
 			}
 		}
@@ -110,15 +120,14 @@ public class EventServlet extends HttpServlet {
 	}
 
 	private JSONObject createJsonResponse(SOLSCalendar startCal, SOLSCalendar endCal, Set<String> tag,
-			HttpServletRequest req, boolean listOnly, int count) {
+			HttpServletRequest req, boolean listOnly, int count, DungonMaster dm) {
 		String world = Constants.HOME;
 		String relm = Constants.MEN;
 
-		UserService userService = UserServiceFactory.getUserService();
-		User currentUser = userService.getCurrentUser();
-		DungonMaster dm = DungonMasterList.getDungonMaster(currentUser);
-
 		JSONObject jsonReturn = new JSONObject();
+		if (null != dm) {
+			jsonReturn.put("userName", dm.getUsername());
+		}
 		jsonReturn.put("eventDateRange", startCal.getShortDisplayDate() + endCal.getShortDisplayDate());
 		jsonReturn.put("shrineurl", JspConstants.SHRINEULR + URLBuilder.buildRequest(req, JspConstants.INDEX, startCal,
 				endCal, world, relm, tag, JspConstants.PRAYANCHOR));
@@ -141,6 +150,7 @@ public class EventServlet extends HttpServlet {
 			jsonObject.put("additionalTags", convertToString(removeExistingTags(eventTag, tag)));
 			jsonArray.put(jsonObject);
 		}
+		jsonReturn.put("moreEventsAvailable", collection.isMoreEvents());
 		jsonReturn.put("events", jsonArray);
 		return jsonReturn;
 	}
@@ -153,14 +163,14 @@ public class EventServlet extends HttpServlet {
 		return theReturn.toString();
 	}
 
-	
 	private Set<String> convert(String[] theNew) {
-	    return new HashSet<>(Arrays.asList(theNew));
+		return new HashSet<>(Arrays.asList(theNew));
 
 	}
+
 	private Set<String> removeExistingTags(Set<String> newTags, Set<String> existingTags) {
-	    newTags.removeAll(existingTags);
-	    return newTags;
+		newTags.removeAll(existingTags);
+		return newTags;
 	}
 //	private void setSessionValue(String ephemeralUserId, String parameterName,
 //			long parameterValue) {

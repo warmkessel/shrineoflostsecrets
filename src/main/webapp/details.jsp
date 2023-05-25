@@ -32,6 +32,12 @@ Event event = new Event();
 if (null != id && id.length() > 0) {
 	event.loadEvent(new Long(id).longValue());
 }
+long idLong = 0L;
+try {
+	idLong = Long.parseLong(id);
+} catch (NumberFormatException e) {
+	idLong = 0L; // Set value to 0 in case of NumberFormatException
+}
 long eventDate = 0;
 long endDate = 0;
 long startDate = 0;
@@ -75,7 +81,7 @@ if (null != request.getParameter(JspConstants.START) && request.getParameter(Jsp
 }
 if (null != request.getParameter(JspConstants.END) && request.getParameter(JspConstants.END).length() > 0) {
 	endDate = Long.parseLong(request.getParameter(JspConstants.END));
-	eventDate = endDate;
+	eventDate = startDate + (endDate - startDate)/2;
 }
 
 if (null != request.getParameter(JspConstants.EVENTDATE) && request.getParameter(JspConstants.EVENTDATE).length() > 0) {
@@ -156,18 +162,18 @@ if (null != request.getParameter(JspConstants.BOOKMARKED)
 	event.setBookmarked(bookmarked);
 	dirty = true;
 }
-if (currentUser != null && userService.isUserAdmin() && null != request.getParameter(JspConstants.PROMOTE)
-		&& request.getParameter(JspConstants.PROMOTE).length() > 0) {
-	event.setUserId(Constants.UNIVERSALUSER);
-	dirty = true;
-}
-if (currentUser != null && userService.isUserAdmin() && null != request.getParameter(JspConstants.MEDIA)
-		&& request.getParameter(JspConstants.MEDIA).length() > 0) {
+
+if (currentUser != null && userService.isUserLoggedIn() && userService.isUserAdmin()
+		&& null != request.getParameter(JspConstants.MEDIA) && request.getParameter(JspConstants.MEDIA).length() > 0) {
 	event.setMedia(media);
 	dirty = true;
 }
-
-else if (save && currentUser != null) {
+if (currentUser != null && userService.isUserLoggedIn() && userService.isUserAdmin()
+		&& null != request.getParameter(JspConstants.PROMOTE)
+		&& request.getParameter(JspConstants.PROMOTE).length() > 0) {
+	event.setUserId(Constants.UNIVERSALUSER);
+	dirty = true;
+} else if (save && currentUser != null) {
 	event.setUserId(dm.getKeyLong());
 	dirty = true;
 }
@@ -179,13 +185,13 @@ if (dirty && save
 		|| event.getTitle().length() >= 1500)) {
 %>
 <script>
-	alert("Please check the Long, Short and Compact description and title");
+	alert("Please check the Detailed Description, Short Description and Shrine Description and title");
 	</script>
 <%
 dirty = false;
 }
-if (dirty && save && ((currentUser != null && dm.getKeyLong() == event.getUserId())
-		|| (currentUser != null && userService.isUserAdmin()))) {
+if (dirty && save && currentUser != null && userService.isUserLoggedIn()
+		&& (dm.getKeyLong() == event.getUserId() || userService.isUserAdmin())) {
 event.save();
 }
 if (null == relm || relm.length() == 0) {
@@ -200,6 +206,7 @@ SOLSCalendar endCal = new SOLSCalendar(endDate);
 SOLSCalendar eventCal = new SOLSCalendar(eventDate);
 endCal = startCal.endMustBeAfter(endCal);
 SOLSCalendar.Scale scale = startCal.getScale(endCal);
+double totalDays = Double.valueOf(startCal.getElapsedTime(endCal));
 %>
 <meta charset="utf-8">
 <meta name="viewport"
@@ -275,14 +282,14 @@ SOLSCalendar.Scale scale = startCal.getScale(endCal);
 						<%
 						if (currentUser != null) {
 						%> <a
-						href="<%=userService.createLogoutURL(
-		URLBuilder.buildRequest(request, JspConstants.DETAILS, startCal, endCal, world, relm, tag, "", ""))%>"
+						href="<%=userService.createLogoutURL(URLBuilder.buildRequest(request, JspConstants.DETAILS, startCal, endCal, world,
+		relm, tag, "", JspConstants.ID + "=" + id))%>"
 						class="btn btn-primary btn-sm">Welcome <%=currentUser.getNickname()%></a>
 						<%
 						} else {
 						%> <a
-						href="<%=userService.createLoginURL(
-		URLBuilder.buildRequest(request, JspConstants.DETAILS, startCal, endCal, world, relm, tag, "", ""))%>"
+						href="<%=userService.createLoginURL(URLBuilder.buildRequest(request, JspConstants.DETAILS, startCal, endCal, world,
+		relm, tag, "", JspConstants.ID + "=" + id))%>"
 						class="btn btn-primary btn-sm">Login</a> <%}%>
 					</li>
 				</ul>
@@ -326,27 +333,27 @@ SOLSCalendar.Scale scale = startCal.getScale(endCal);
 	<%}%>
 	</script>
 	<%}%>
-	
-			<%
-			if (!event.hasMedia()) {
-			%>
-			<header class="header">
-			<div class="overlay">
+
+	<%
+	if (!event.hasMedia()) {
+	%>
+	<header class="header">
+		<div class="overlay">
 			<img src="assets/imgs/logo.jpg" alt="Shrine of Lost Secrets"
 				class="logo2" id="eventImage">
-			</div>
-			</header>
-			<%
-			} else {
-			%>
-				<header class="header" style="min-height:861px;">
-			<div class="overlay">
+		</div>
+	</header>
+	<%
+	} else {
+	%>
+	<header class="header" style="min-height: 861px;">
+		<div class="overlay">
 			<%=event.getMedia()%>
-			</div>
-			</header>
-			
-			<%}%>
-		
+		</div>
+	</header>
+
+	<%}%>
+
 	<!-- End Of Page Header -->
 
 	<section id="<%=JspConstants.PRAYANCHOR%>">
@@ -435,6 +442,8 @@ SOLSCalendar.Scale scale = startCal.getScale(endCal);
 		timelineElement.appendChild(anchorElement);
   }
   const flagSet = {};
+  var flag = null;
+  
   function placeFlagLocation(element, position) {
 	  const timelineWidth = timelineElement.offsetWidth;
 	  const flagLeft = (position/100) * timelineWidth;
@@ -587,21 +596,19 @@ monthOffset = monthOffset + SOLSCalendarConstants.LENTHOFALUNARMONTH;
 }
 }
 
-  List<Entity> entities = EventsList.listEvents(startCal, endCal, world, relm, dm, tag);
-	EventCollection collection = new EventCollection(entities);
-	if (!collection.isMoreEvents()) {
-		for (Event events : collection.getEvents()) {%>
-				placeFlag("<%=events.getTitle()%>", "<%=URLBuilder.buildRequest(request, JspConstants.DETAILS, startCal, endCal, world, relm, tag, "",
-		JspConstants.ID + "=" + events.getKeyString())%>", <%double totalDays = Double.valueOf(startCal.getElapsedTime(endCal));
+List<Entity> entities = EventsList.listEvents(startCal, endCal, world, relm, dm, tag);
+EventCollection collection = new EventCollection(entities);
+if (!collection.isMoreEvents()) {
+for (Event events : collection.getEvents()) {%>
+<%if (idLong == events.getKeyLong()) {%>flag = <%}%>placeFlag("<%=events.getTitle()%>", "<%=URLBuilder.buildRequest(request, JspConstants.DETAILS, startCal, endCal, world, relm, tag, "",
+		JspConstants.ID + "=" + events.getKeyString())%>", <%
 double elapseDays = Double.valueOf(events.getEventCalendar().getElapsedTime(endCal));%><%=100 - Math.round((elapseDays / totalDays) * 100)%>, <%=event.equals(events)%>, <%=Constants.UNIVERSALUSER != dm.getKeyLong() && dm.getKeyLong() == events.getUserId()%>)
-			
-	<%}} else{
-		for (EventCluster cluser : collection.getEventsCluster()){
-		%>
-					placeMultiEvent("<%=cluser.getNumberOfElements()%> Events", "<%=URLBuilder.buildRequest(request, JspConstants.INDEX, cluser.getLowerBoundDate(), cluser.getUpperBoundDate(), world, relm, tag, JspConstants.PRAYANCHOR)%>", <%double totalDays = Double.valueOf(startCal.getElapsedTime(endCal));
-double elapseDays = Double.valueOf(cluser.getCentroidDate().getElapsedTime(endCal));%><%=100 - Math.round((elapseDays / totalDays) * 100)%>)
-		<%
-	}
+	<%}
+} else {
+for (EventCluster cluser : collection.getEventsCluster()) {%>
+					placeMultiEvent("<%=cluser.getNumberOfElements()%> Events", "<%=URLBuilder.buildRequest(request, JspConstants.INDEX, cluser.getLowerBoundDate(), cluser.getUpperBoundDate(),
+		world, relm, tag, JspConstants.PRAYANCHOR)%>", <%double elapseDays = Double.valueOf(cluser.getCentroidDate().getElapsedTime(endCal));%><%=100 - Math.round((elapseDays / totalDays) * 100)%>)
+		<%}
 }%>
 	</script>
 		</div>
@@ -671,171 +678,361 @@ function prayAtTheShrineInput(instruction, input, target) {
 		return true
 	}
   }
-  function toggleDetails(){
-		if("none" == document.getElementById("<%=JspConstants.DETAILS%>").style.display){
-			document.getElementById("<%=JspConstants.DETAILS%>").style.display = "block";
-		}
-		else{
-			document.getElementById("<%=JspConstants.DETAILS%>").style.display = "none";
+	function createStepper() {
+		  var currentStep = 0;
+		  var totalSteps = 5;
+		  var steps = [];
+		  var advanceds = [];
+		  var details = [];
+		  var advancedMode = false;
 
+		  function hideAllSteps() {
+		    steps.forEach(function(step) {
+		      step.style.display = "none";
+		    });
+		  }
+
+		  function showStep(step) {
+		    step.style.display = "block";
+		  }
+
+		  function stepForward() {
+		    if (currentStep < totalSteps) {
+		      hideAllSteps();
+		      currentStep++;
+		      showStep(steps[currentStep]);
+		    }
+		  }
+
+		  function stepBackward() {
+		    if (currentStep > 0) {
+		      hideAllSteps();
+		      currentStep--;
+		      showStep(steps[currentStep]);
+		    }
+		  }
+
+		  function toggleMode() {
+		    advancedMode = !advancedMode;
+		    if (advancedMode) {
+		      steps.forEach(function(step) {
+		        step.style.display = "block";
+		      });
+		      advanceds.forEach(function(advance) {
+		        advance.style.display = "block";
+		      });
+		      details.forEach(function(detail) {
+		        detail.style.display = "none";      
+		      });
+		    } else {
+		      hideAllSteps();
+		      showStep(steps[currentStep]);
+		      advanceds.forEach(function(advance) {
+		        advance.style.display = "none";
+		      });
+		      details.forEach(function(detail) {
+		        detail.style.display = "none";      
+		      }); 
+		    }
+		  }
+
+		  function initialize() {
+		    for (var i = 0; i <= totalSteps; i++) {
+		      var step = document.getElementById("step" + i);
+		      if (step) {
+		        steps.push(step);
+		      }
+		    }
+		    for (var i = 0; i <= totalSteps; i++) {
+		      var advanced = document.getElementById("advanced" + i);
+		      if (advanced) {
+		        advanceds.push(advanced);
+		      }
+		    }  
+		    advanceds.forEach(function(advance) {
+		        advance.style.display = "none";
+		      });
+		    
+		    for (var i = 0; i <= totalSteps; i++) {
+		      var detail = document.getElementById("details" + i);
+		      if (detail) {
+		        details.push(detail);
+		      }
+		    }  
+		    hideAllSteps();
+		    showStep(steps[currentStep]);
+		  }
+
+		  return {
+		    stepForward: stepForward,
+		    stepBackward: stepBackward,
+		    toggleMode: toggleMode,
+		    initialize: initialize
+		  };
 		}
-	}
-	function suggestDate(target, maxtime){
-     document.getElementsByName(target)[0].value = <%=startCal.getTime()%> + Math.round(Math.random()*maxtime);
-	}
+
 </script>
-			<form method="post" action="<%=JspConstants.DETAILS%>"
-				id="<%=JspConstants.SAVEDETAILSFORM%>">
-				<input type=hidden name="<%=JspConstants.ID%>"
-					value="<%=event.getKeyString()%>"><input type=hidden
-					name="<%=JspConstants.START%>" value="<%=startDate%>"><input
-					type=hidden name="<%=JspConstants.END%>" value="<%=endDate%>"><input
-					type=hidden name="<%=JspConstants.SAVE%>" value="true">
+			<div class="card-body px-4 pb-4 text-center">
+				<div class="row text-left">
+					<div class="col-md-6 my-4">
+						<h6 class="section-title mb-5">
+							<input type="button" value="Backward"
+								onClick="stepper.stepBackward();">
+						</h6>
+					</div>
+					<div class="col-md-6  my-4">
+						<h6 class="section-title mb-5 text-right">
+							<input type="button" value="Forward"
+								onClick="stepper.stepForward();">
+						</h6>
+					</div>
+					<form method="post" action="<%=JspConstants.DETAILS%>"
+						id="<%=JspConstants.SAVEDETAILSFORM%>">
+						<input type=hidden name="<%=JspConstants.ID%>"
+							value="<%=event.getKeyString()%>"><input type=hidden
+							name="<%=JspConstants.START%>" value="<%=startDate%>"><input
+							type=hidden name="<%=JspConstants.END%>" value="<%=endDate%>"><input
+							type=hidden name="<%=JspConstants.SAVE%>" value="true">
 
-				<%
-				for (String element : tag) {
-				%>
-				<input type=hidden name="<%=JspConstants.TAGS%>" value=<%=element%>>
-				<%
-				}
-				%>
-				<table>
-					<tr>
-						<td>Title:</td>
-						<td><input name="<%=JspConstants.TITLE%>"
-							value="<%=event.getTitle()%>" size=50 maxlength="1500"></td>
-						<td><input type="button"
-							onClick='prayAtTheShrine("AITITLE", "<%=JspConstants.TITLE%>")'
-							value="Generate Title"></td>
-					</tr>
-					<tr>
-						<td>Tag:</td>
-						<td><textarea name="<%=JspConstants.TAGINPUT%>" rows="5"
-								cols="100"><%=event.getTagsString()%></textarea></td>
-						<td><input type="button"
-							onClick='prayAtTheShrine("AITAGS", "<%=JspConstants.TAGS%>")'
-							value="Generate Tags"></td>
-					</tr>
-					<tr>
-						<td>CompactDesc:</td>
-						<td><textarea name="<%=JspConstants.COMPACTDESC%>" rows="10"
-								cols="100" maxlength="1500"><%=event.getCompactDesc()%></textarea>
-						</td>
-						<td><input type="button"
-							onClick='prayAtTheShrine("AICOMPACTDESC", "<%=JspConstants.COMPACTDESC%>")'
-							value="Generate Compact Desc"></td>
-					</tr>
+						<%
+						for (String element : tag) {
+						%>
+						<input type=hidden name="<%=JspConstants.TAGS%>"
+							value=<%=element%>>
+						<%
+						}
+						%>
+						<div id="step4" class="step col-md-12 my-4">
+							<div class="d-flex">
+								<div class="flex-grow-1">
+									<h6>Title:</h6>
+									<p class="mt-1 mb-0" id="details4">"The Event Title: An
+										Essential Tool for Dungeon Masters. As a key component of any
+										Dungeons & Dragons game or similar role-playing event, the
+										title may indeed be the most critical element. It aids Dungeon
+										Masters in locating and selecting their desired content."</p>
+									<br> <input name="<%=JspConstants.TITLE%>"
+										value="<%=event.getTitle()%>" size=50 maxlength="1500">
+								</div>
+							</div>
+						</div>
+						<div id="step3" class="step col-md-12 my-4">
+							<div class="d-flex">
+								<div class="flex-grow-1">
+									<h6>Tags:</h6>
+									<p class="mt-1 mb-0" id="details3">The tags associated with
+										the event are the content that should be included. They should
+										be separated by spaces. If a tag needs to be displayed with a
+										space, such as "Whispering woods," use an underscore instead
+										("Whispering_woods"). All tags will be converted to lowercase,
+										and the first letter will be automatically capitalized.</p>
+									<br> <input name="<%=JspConstants.TAGINPUT%>"
+										value="<%=event.getTagsString()%>" size=50 maxlength="1500">
+								</div>
+							</div>
+						</div>
+						<div id="step2" class="step col-md-12 my-4">
+							<div class="d-flex">
+								<div class="flex-grow-1">
+									<h6>Shrine Description:</h6>
+									<p class="mt-1 mb-0" id="details2">The content displayed
+										most compact information, with just the bare details. Most
+										often, just choose the "Generate the Shrine Description"
+										button to have the shrine rewrite the detailed content. You
+										can then make any desired modifications to the details.</p>
+									<br>
+									<textarea name="<%=JspConstants.COMPACTDESC%>" rows="10"
+										cols="100" maxlength="1500"><%=event.getCompactDesc()%></textarea>
+									<input type="button"
+										onClick='prayAtTheShrine("AICOMPACTDESC", "<%=JspConstants.COMPACTDESC%>")'
+										value="Generate Shrine Desc">
+								</div>
+							</div>
+						</div>
+						<div id="step1" class="step col-md-12 my-4">
+							<div class="d-flex">
+								<div class="flex-grow-1">
+									<h6>Short Description:</h6>
+									<p class="mt-1 mb-0" id="details1">The content displayed
+										most often, this should summarize the content in detailed
+										description in a couple of sentences. Most often, just choose
+										the "Generate the Short Description" button to have the shrine
+										rewrite the detailed content. You can then make any desired
+										modifications to the details.</p>
+									<br>
+									<textarea name="<%=JspConstants.SHORTDESC%>" rows="15"
+										cols="100" maxlength="1500"><%=event.getShortDesc()%></textarea>
+									<br> <input type="button"
+										onClick='prayAtTheShrine("AISHORTDESC", "<%=JspConstants.SHORTDESC%>")'
+										value="Generate Short Desc">
+								</div>
+							</div>
+						</div>
+						<div id="step0" class="step col-md-12 my-4">
+							<div class="d-flex">
+								<div class="flex-grow-1">
+									<h6>Detailed Description:</h6>
+									<p class="mt-1 mb-0" id="details0">The content displayed on
+										the details page when selected by the user is called the
+										detailed description. To start, you can write a sentence or
+										two with the essential information about the event. Afterward,
+										click the "Generate the Detailed Description" button to expand
+										the content. You can then make any desired modifications to
+										the details.</p>
+									<br>
+									<textarea name="<%=JspConstants.LONGDESC%>" rows="20"
+										cols="100"><%=event.getLongDesc()%></textarea>
+									<br> <input type="button"
+										onClick='prayAtTheShrine("AILONGDESC", "<%=JspConstants.LONGDESC%>")'
+										value="Generate Detailed Desc">
+								</div>
+							</div>
+						</div>
+						<div id="step5" class="step col-md-12 my-4">
+							<div class="d-flex">
+								<div class="flex-grow-1">
+									<h6>EventDate:</h6>
+									<p class="mt-1 mb-0" id="details5">Arguably the most
+										critical piece of information, this indicates the date when
+										the event occurred.</p>
+									<br>
 
-					<tr>
-						<td>ShortDesc:</td>
-						<td><textarea name="<%=JspConstants.SHORTDESC%>" rows="15"
-								cols="100" maxlength="1500"><%=event.getShortDesc()%></textarea>
-						</td>
-						<td><input type="button"
-							onClick='prayAtTheShrine("AISHORTDESC", "<%=JspConstants.SHORTDESC%>")'
-							value="Generate Short Desc"></td>
-					</tr>
-					<tr>
-						<td>LongDesc:</td>
-						<td><textarea name="<%=JspConstants.LONGDESC%>" rows="20"
-								cols="100"><%=event.getLongDesc()%></textarea></td>
-						<td><input type="button"
-							onClick='prayAtTheShrine("AILONGDESC", "<%=JspConstants.LONGDESC%>")'
-							value="Generate Long Desc"></td>
-					</tr>
+									<script type="text/javascript">
+									function updateLoc(){ 
+									var input = document.getElementById("eventdate");
+									var now =  parseInt(input.value, 0);
+									if(flag === null && now >= <%=startCal.getTime()%> && now <= <%=endCal.getTime()%>) { 
+										flag = placeFlag("new Event", "",  100 - ((<%=endCal.getTime()%> - now) / <%=totalDays%>)*100, true, true);			 
+									 }
+									 else  if(now >= <%=startCal.getTime()%> && now <= <%=endCal.getTime()%>){
+										placeFlagLocation(flag,100 - ((<%=endCal.getTime()%> - now) / <%=totalDays%>)*100);
+									 }		 
+									}
+									</script>
+									<input id="eventdate" onchange="updateLoc()"
+										name="<%=JspConstants.EVENTDATE%>"
+										value="<%=(event.getEventDate() == 0 ? startCal.getRandomDate(endCal).getTime() : event.getEventDate())%>">
+									<jsp:include page="/componenets/datepicker.jsp">
+										<jsp:param name="datepicker" value="eventdate" />
+									</jsp:include>
+								</div>
+							</div>
+						</div>
+						<%
+						if (currentUser != null && userService.isUserLoggedIn() && userService.isUserAdmin()) {
+						%>
+						<div id="advanced1" class="step col-md-12 my-4">
+							<div class="d-flex">
+								<div class="flex-grow-1">
+									<h6>Promote To World Wide:</h6>
+									<input type="checkbox" name=<%=JspConstants.PROMOTE%>
+										value="true"
+										<%=((Constants.UNIVERSALUSER == event.getUserId()) ? "checked" : "")%>>
+								</div>
+							</div>
+						</div>
+						<%}%>
+						<div id="advanced2" class="step col-md-12 my-4">
+							<div class="d-flex">
+								<div class="flex-grow-1">
+									<h6>
+										Deleted: <input type="checkbox" name=<%=JspConstants.DELETED%>
+											value="true" <%=((event.isDeleted(dm)) ? "checked" : "")%>>
+									</h6>
+								</div>
+							</div>
+							<div class="d-flex">
+								<div class="flex-grow-1">
+									<h6>
+										Bookmarked: <input type="checkbox"
+											name=<%=JspConstants.BOOKMARKED%> value="true"
+											<%=((event.isBookmarked()) ? "checked" : "")%>>
+									</h6>
+								</div>
+							</div>
+							<div class="d-flex">
+								<div class="flex-grow-1">
+									<h6>
+										CreatedDate:<%=event.getCreatedDate()%></h6>
+								</div>
+							</div>
+							<div class="d-flex">
+								<div class="flex-grow-1">
+									<h6>
+										UpdatedDate:<%=event.getUpdatedDate()%></h6>
+								</div>
+							</div>
+							<div class="d-flex">
+								<div class="flex-grow-1">
+									<h6>
+										Revision:<%=event.getRevision()%></h6>
+								</div>
+							</div>
+							<div class="d-flex">
+								<div class="flex-grow-1">
+									<h6>
+										UserId:<%=event.getUserId()%></h6>
+								</div>
+							</div>
+							<div class="d-flex">
+								<div class="flex-grow-1">
+									<h6>World:</h6>
+									<input name="<%=JspConstants.WORLD%>"
+										value="<%=event.getWorld()%>">
+								</div>
+							</div>
+							<div class="d-flex">
+								<div class="flex-grow-1">
+									<h6>Relm:</h6>
+									<input name="<%=JspConstants.RELM%>"
+										value="<%=event.getRelm()%>">
+								</div>
+							</div>
 
-					<tr>
-						<td>EventDate:</td>
-						<td><input name="<%=JspConstants.EVENTDATE%>"
-							value="<%=event.getEventDate()%>"></td>
-						<td><input type="button"
-							onClick="suggestDate('<%=JspConstants.EVENTDATE%>', <%=startCal.getElapsedTime(endCal)%>)"
-							value="Generate Random Date"></td>
-					</tr>
-					<%
-					if (currentUser != null && userService.isUserAdmin()) {
-					%>
-					<tr>
-						<td>Promote To World Wide:</td>
-						<td><input type="checkbox" name=<%=JspConstants.PROMOTE%>
-							value="true"
-							<%=((Constants.UNIVERSALUSER == event.getUserId()) ? "checked" : "")%>></td>
-					</tr>
-					<%
-					}
-					%>
-					<tr>
-						<td><a href="" onClick="toggleDetails(); return false;">Details</a></td>
-					</tr>
-				</table>
-				<table id="<%=JspConstants.DETAILS%>" style="display: none">
-					<tr>
-						<td>Deleted:</td>
-						<td><input type="checkbox" name=<%=JspConstants.DELETED%>
-							value="true" <%=((event.isDeleted(dm)) ? "checked" : "")%>></td>
-					<tr>
-					<tr>
-						<td><input type="button"
-							onClick='prayAtTheShrine("AIGENERATEEVENT", "<%=JspConstants.LONGDESC%>")'
-							value="Generate Event"></td>
-						<td>
-					<tr>
-						<td>Bookmarked:</td>
-						<td><input type="checkbox" name=<%=JspConstants.BOOKMARKED%>
-							value="true" <%=((event.isBookmarked()) ? "checked" : "")%>></td>
-					</tr>
-					<tr>
-						<td>CreatedDate:</td>
-						<td><%=event.getCreatedDate()%></td>
-					</tr>
-					<tr>
-						<td>UpdatedDate:</td>
-						<td><%=event.getUpdatedDate()%></td>
-					</tr>
-					<tr>
-						<td>Revision:</td>
-						<td><%=event.getRevision()%><br> UserId:<%=event.getUserId()%></td>
-					</tr>
-					<tr>
-						<td>World:</td>
-						<td><input name="<%=JspConstants.WORLD%>"
-							value="<%=event.getWorld()%>"></td>
-					</tr>
-					<tr>
-						<td>Relm:</td>
-						<td><input name="<%=JspConstants.RELM%>"
-							value="<%=event.getRelm()%>"></td>
-					</tr>
-					<%
-					if (currentUser != null && userService.isUserAdmin()) {
-					%>
-					<tr>
-						<td>Media:</td>
-						<td><textarea name="<%=JspConstants.MEDIA%>" rows="5"
-								cols="100"><%=event.getMedia()%></textarea></td>
-					</tr>
-					<%
-					}
-					%>
-				</table>
-				<%
-				if (currentUser != null) {
-				%>
-				<input type="button" value="Save" onClick="submissionReady()">
-				<%
-				} else {
-				%>
-				<input type="button" value="Save"
-					onClick="alert('Creating Events requieres that you are logged in.')">
-				<%}%>
-			</form>
-
-			<h1 class="section-title mb-6 pb-3 text-center">
-				<a
-					href="<%=URLBuilder.buildRequest(request, JspConstants.INDEX, startCal, endCal, world, relm, tag,
+							<%
+							if (currentUser != null && userService.isUserLoggedIn() && userService.isUserAdmin()) {
+							%>
+							<div class="d-flex">
+								<div class="flex-grow-1">
+									<h6>Media:</h6>
+									<textarea name="<%=JspConstants.MEDIA%>" rows="5" cols="100"><%=event.getMedia()%></textarea>
+								</div>
+							</div>
+							<%
+							}
+							%>
+						</div>
+					</form>
+					<script>var stepper = createStepper(); stepper.initialize();</script>
+					<div class="col-md-6 my-4">
+						<h6 class="section-title mb-5">
+							<%
+							if (currentUser != null) {
+							%>
+							<input type="button" value="Save" onClick="submissionReady()">
+							<%
+							} else {
+							%>
+							<input type="button" value="Save"
+								onClick="alert('Creating Events requieres that you are logged in.')">
+							<%}%>
+						</h6>
+					</div>
+					<div class="col-md-6 my-4">
+						<h6 class="section-title mb-5 text-right">
+							<input type="button" value="Advanced"
+								onClick="stepper.toggleMode();">
+						</h6>
+					</div>
+				</div>
+				<h1 class="section-title mb-6 pb-3 text-center">
+					<a
+						href="<%=URLBuilder.buildRequest(request, JspConstants.INDEX, startCal, endCal, world, relm, tag,
 		JspConstants.PRAYANCHOR, "pray")%>">Return
-					to the Shrine</a>
-			</h1>
+						to the Shrine</a>
+				</h1>
+
+			</div>
 		</div>
 	</section>
 	<%
@@ -853,15 +1050,15 @@ function prayAtTheShrineInput(instruction, input, target) {
 					<%=event.getEventCalendar().getTime()%></small>
 			</p>
 			<%
-			if ((currentUser != null && dm.getKeyLong() == event.getUserId())
-					|| (currentUser != null && userService.isUserAdmin())) {
+			if (currentUser != null && userService.isUserLoggedIn()
+					&& (dm.getKeyLong() == event.getUserId() || userService.isUserAdmin())) {
 			%>
 			<a
 				href="<%=URLBuilder.buildRequest(request, JspConstants.DETAILS, startCal, endCal, world, relm, tag, "",
 		JspConstants.ID + "=" + event.getKeyString() + "&" + JspConstants.EDIT + "=true")%>">Edit</a>
 			<%}%>
 			<%
-			if (currentUser != null && dm.getKeyLong() == event.getUserId()) {
+			if (currentUser != null && userService.isUserLoggedIn() && dm.getKeyLong() == event.getUserId()) {
 			%>
 			<h3 class="section-title mb-6 pb-3 text-center">
 				<a

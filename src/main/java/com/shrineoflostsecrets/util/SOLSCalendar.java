@@ -149,6 +149,11 @@ public class SOLSCalendar {
 		return new SOLSCalendar(getTime() - getDayOfMonth());
 	}
 
+	public SOLSCalendar getRandomDate(SOLSCalendar endDate) {
+		double therange = endDate.getTime() - getTime() ;
+		return new SOLSCalendar(getTime() + Math.round(Math.random() * therange));
+	}
+	
 	public long getTime() {
 		return time;
 	}

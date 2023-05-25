@@ -164,9 +164,7 @@ SOLSCalendar endCal = new SOLSCalendar(endDate);
 								</div>
 								<div class="col-md-6 my-4">
 									<div class="d-flex">
-										<div class="flex-grow-1">
-											<jsp:include page="/componenets/datepicker.jsp" />
-										
+										<div class="flex-grow-1">		
 										</div>
 									</div>
 								</div>

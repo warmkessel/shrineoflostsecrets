@@ -21,7 +21,7 @@ public class DungonMasterList {
 			return getDungonMaster(theUser.getEmail());
 		}
 	}
-	private static DungonMaster getDungonMaster(String email) {
+	public static DungonMaster getDungonMaster(String email) {
 		Datastore datastore = DatastoreOptions.getDefaultInstance().getService();
 		Query<Entity> query = Query.newEntityQueryBuilder().setKind(DungonMasterConstants.DUNGONMASTER)
 				.setFilter( PropertyFilter.eq(DungonMasterConstants.EMAIL, email)).build();

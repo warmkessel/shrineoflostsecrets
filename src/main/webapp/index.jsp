@@ -707,7 +707,7 @@ placeFlag("testflagb", "", 0); */
 						<div class="col-md-6 my-4">
 							<a
 								href="<%=URLBuilder.buildRequest(request, JspConstants.DETAILS, startCal, endCal, world, relm, tag, JspConstants.ID,
-		"edit=true&" + JspConstants.EVENTDATE + "=" + endCal.getTime())%>"
+		"edit=true&")%>"
 								target="_blank"
 								class="pb-3 mx-3 d-block text-dark text-decoration-none border border-left-0 border-top-0 border-right-0">
 								<div class="d-flex">
@@ -743,8 +743,8 @@ placeFlag("testflagb", "", 0); */
 								target="_blank"
 								class="pb-3 mx-3 d-block text-dark text-decoration-none border border-left-0 border-top-0 border-right-0">
 								<div class="d-flex">
-									<div class="flex-grow-1"><%=event.getTitle()%>-<%=event.getEventCalendar().getDisplayDate()%>
-										<p class="mt-1 mb-0"><%=event.getShortDesc()%></p>
+									<div class="flex-grow-1"><%=CaseControl.capFirstLetter(event.getTitle())%>-<%=event.getEventCalendar().getDisplayDate()%>
+										<p class="mt-1 mb-0"><%=CaseControl.capFirstLetter(event.getShortDesc())%></p>
 									</div>
 									<h6 class="float-right text-primary">Details</h6>
 									<%

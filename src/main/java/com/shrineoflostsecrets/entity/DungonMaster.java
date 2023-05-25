@@ -1,11 +1,7 @@
 package com.shrineoflostsecrets.entity;
 
-import java.util.List;
 import com.shrineoflostsecrets.constants.*;
-import com.google.cloud.Timestamp;
 import com.google.cloud.datastore.Entity;
-import com.google.cloud.datastore.Key;
-import com.google.cloud.datastore.Value;
 
 public class DungonMaster extends BaseEntity {
 
@@ -13,31 +9,28 @@ public class DungonMaster extends BaseEntity {
 	 * 
 	 */
 	public DungonMaster() {
-		
-	}
-	public DungonMaster(Entity entity) {
-		this(entity.getString(DungonMasterConstants.EMAIL));
+		super();
 	}
 	public DungonMaster(String email) {
 		super();
-		this.email = email;
-	}
-	public DungonMaster(Key key, List<? extends Value<?>> deleted, Timestamp createdDate, Timestamp updatedDate, String email) {
-		super(key, deleted, createdDate, updatedDate);
-		this.email = email;
+		setEmail(email);
+		setUsername(email.substring(0, email.indexOf("@")).toString());
 	}
 	public void loadFromEntity(Entity entity) {
 		super.loadFromEntity(entity);
 		if (null != entity) {
 			setEmail(entity.getString(DungonMasterConstants.EMAIL));
+			if (entity.contains(DungonMasterConstants.USERNAME)) {
+	            setUsername(entity.getString(DungonMasterConstants.USERNAME));
+	        } else {
+	    		setUsername(email.substring(0, email.indexOf("@")).toString());
+	  		}
 		}
 	}
-	
-	
+
 	private static final long serialVersionUID = 2070834976678167423L;
 	private String email = "";
-
-	
+	private String username = "";
 
 	public String getEmail() {
 		return email;
@@ -47,14 +40,13 @@ public class DungonMaster extends BaseEntity {
 		this.email = email;
 	}
 
-
 	public void save() {
 		Entity.Builder entity = Entity.newBuilder(getKey());
 		entity.set(EventConstants.DELETED, getDeleted()).set(EventConstants.CREATEDDATE, getCreatedDate())
-				.set(EventConstants.UPDATEDDATE, getUpdatedDate()).set(DungonMasterConstants.EMAIL, getEmail()).build();
+				.set(EventConstants.UPDATEDDATE, getUpdatedDate()).set(DungonMasterConstants.EMAIL, getEmail()).set(DungonMasterConstants.USERNAME, getUsername()).build();
 		getDatastore().put(entity.build());
 	}
-	
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) {
@@ -78,6 +70,12 @@ public class DungonMaster extends BaseEntity {
 		return DungonMasterConstants.DUNGONMASTER;
 	}
 
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
 }
-
-
