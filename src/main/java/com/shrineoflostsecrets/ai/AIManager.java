@@ -41,7 +41,7 @@ public class AIManager {
 //        
 //        
 			String endpoint = "https://api.openai.com/v1/chat/completions";
-			String requestBody = "{\"model\":\"gpt-3.5-turbo\",\"messages\": [{\"role\": \"user\", \"content\": \"" + input + ". "+ instruction + "\"}]}";
+			String requestBody = "{\"model\":\"" + AIConstants.AIMODEL + "\",\"messages\": [{\"role\": \"user\", \"content\": \"" + input + ". "+ instruction + "\"}]}";
 			URLFetchService urlFetchService = URLFetchServiceFactory.getURLFetchService();
 			HTTPRequest httpRequest = new HTTPRequest(new java.net.URL(endpoint), HTTPMethod.POST);
 			httpRequest.getFetchOptions().setDeadline(60000d);

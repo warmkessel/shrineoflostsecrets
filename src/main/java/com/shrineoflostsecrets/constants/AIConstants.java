@@ -1,6 +1,8 @@
 package com.shrineoflostsecrets.constants;
 
 public class AIConstants {
+	public static final String AIMODEL = "gpt-4";	
+	public static final String AIMODELONG = "gpt-4-32k";	
 	public static final String FANTISYTOKEN = "Do not reference any real people or places, style:in a style of detailed world-building, use of archaic language, epic storytelling, poetic quality, complex sentence structures and rich imagery.  Tone:honor, duty, sacrifice, the struggle between good and evil, simple joys of life, grand and mythic, deeply human and empathetic.";	
 	public static final String AITITLE = "generate a title";	
 //	public static final String AITAGS = "Rewrite a given text by removing all function and preposition words.";	
