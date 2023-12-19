@@ -82,7 +82,9 @@ SOLSCalendar endCal = new SOLSCalendar(endDate);
 			</a>
 			<div class="d-none d-md-block">
 				<h6 class="mb-0">
-					<a href="https://www.facebook.com/groups/915527066379136/"
+					<a href="https://www.youtube.com/@ShrineofLostSecrets"
+						class="px-2" target="_blank"><i class="ti-youtube"></i></a>
+						<a href="https://www.facebook.com/groups/915527066379136/"
 						class="px-2" target="_blank"><i class="ti-facebook"></i></a> <a
 						href="https://twitter.com/shrinesecrets" class="px-2"
 						target="_blank"><i class="ti-twitter"></i></a> <a
@@ -155,7 +157,7 @@ SOLSCalendar endCal = new SOLSCalendar(endDate);
 								<div class="col-md-6 my-4">
 									<div class="d-flex">
 										<div class="flex-grow-1">
-											<iframe width="500" height="290" src="https://www.youtube.com/embed/LyTq5l9m9Hg" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+											<iframe width="500" height="290" src="https://www.youtube.com/embed/LyTq5l9m9Hg" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
 											Shrine of Lost Secrets introduction:
 											<p class="mt-1 mb-0" id="summary">
 											Welcome to the Shrine of Lost Secrets! This website is dedicated to assisting you in running tabletop role-playing games, such as Dungeons and Dragons, by enriching your campaigns with detailed histories and engaging backstories for non-player characters, locales, and various elements within your game universe. Our mission is to elevate your adventures by adding depth and nuance to your gaming experience.											</p>
@@ -164,7 +166,11 @@ SOLSCalendar endCal = new SOLSCalendar(endDate);
 								</div>
 								<div class="col-md-6 my-4">
 									<div class="d-flex">
-										<div class="flex-grow-1">		
+										<div class="flex-grow-1">
+										Join the Adventure!
+										<p class="mt-1 mb-0" id="summary">Back in 1974, a group of amazing folks led by the legendary Gary Gygax created the incredible world of Dungeons and Dragons. The tales and quests they crafted became legendary, echoing through the ages like an epic battle cry. But hey, it's been 50 years since then, and the world has evolved, just like us, the players. Our needs have changed!</p>
+<p>I'm thrilled to extend a personal invitation for you to jump into this shared adventure, where your voice can truly make a difference. Now, I know you're probably thinking, "Not another request for my time, money!" Trust me, I get it. But fear not, because my ask is simple: I invite you to contribute a story or an event to our amazing repository. It can be as easy or as intricate as you want it to be!</p>
+<p>Dungeons and Dragons holds a special place in each of our hearts. It means something extraordinary to me, and I know it holds that same magic for you. If the timing isn't right now, no worries at all! This invitation never expires. So, whenever you're ready, I'll be here, eagerly waiting to embark on this incredible journey with you. And may your dice always roll true!</p>
 										</div>
 									</div>
 								</div>
@@ -248,7 +254,7 @@ SOLSCalendar endCal = new SOLSCalendar(endDate);
 											<a
 												href="<%=URLBuilder.buildRequest(request, JspConstants.INDEX, new SOLSCalendar(19484), new SOLSCalendar(19670), "Home",
 		"Men", "nights_of_the_brave taramond", JspConstants.PRAYANCHOR)%>"
-												target="_blank">The Night of the Brave &lt;-- Start Here</a>
+												target="_blank">The Nights of the Brave &lt;-- Start Here</a>
 											<p class="mt-1 mb-1">Arin is enamored with the
 												breathtaking beauty of the world around him, where nature
 												reigns supreme and the wonders of the land are beyond
@@ -368,6 +374,8 @@ SOLSCalendar endCal = new SOLSCalendar(endDate);
 				</div>
 				<div class="d-none d-md-block">
 					<h6 class="small mb-0">
+						<a href="https://www.youtube.com/@ShrineofLostSecrets"
+						class="px-2" target="_blank"><i class="ti-youtube"></i></a>
 						<a href="https://www.facebook.com/groups/915527066379136/"
 							class="px-2" target="_blank"><i class="ti-facebook"></i></a>
 						<a href="https://twitter.com/shrinesecrets" class="px-2"

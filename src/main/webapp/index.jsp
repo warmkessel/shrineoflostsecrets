@@ -51,7 +51,7 @@ SOLSCalendar.Scale scale = startCal.getScale(endCal);
 <html lang="en">
 <head>
 <!-- Google tag (gtag.js) -->
-<script  async="true" 
+<script async="true"
 	src="https://www.googletagmanager.com/gtag/js?id=G-N2VTBWYNCJ"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -153,7 +153,9 @@ else {%>
 			</a>
 			<div class="d-none d-md-block">
 				<h6 class="mb-0">
-					<a href="https://www.facebook.com/groups/915527066379136/"
+					<a href="https://www.youtube.com/@ShrineofLostSecrets" class="px-2"
+						target="_blank"><i class="ti-youtube"></i></a> <a
+						href="https://www.facebook.com/groups/915527066379136/"
 						class="px-2" target="_blank"><i class="ti-facebook"></i></a> <a
 						href="https://twitter.com/shrinesecrets" class="px-2"
 						target="_blank"><i class="ti-twitter"></i></a> <a
@@ -251,7 +253,8 @@ else {%>
 				class="logo">
 			<h1 class="subtitle">Welcome To</h1>
 			<h1 class="title">Shrine of Lost Secrets</h1>
-			<a class="btn btn-primary mt-3" href="<%=URLBuilder.buildRequest(request, JspConstants.INDEX, startCal, endCal, world, relm, tag,
+			<a class="btn btn-primary mt-3"
+				href="<%=URLBuilder.buildRequest(request, JspConstants.INDEX, startCal, endCal, world, relm, tag,
 		JspConstants.PRAYANCHOR, "#")%>">Pray
 				at the Shrine</a>
 		</div>
@@ -262,32 +265,76 @@ else {%>
 		<div class="container">
 			<h6 class="section-subtitle text-center">
 				Time -
-				<%=scale%><br>
-				<a
+				<%=scale%><br> <a
 					href="<%=URLBuilder.buildRequest(request, JspConstants.INDEX,
 		new SOLSCalendar(SOLSCalendarConstants.BEGININGOFTHEAGEOFMAN),
 		new SOLSCalendar(SOLSCalendarConstants.MIDPOINTOFMAN), world, relm, tag, JspConstants.PRAYANCHOR)%>">Reset
 					Calendar</a>
 			</h6>
-			<h3 class="section-title mb-6 pb-3 text-center">
-				<a
-					href="<%=URLBuilder.buildRequest(request, JspConstants.INDEX, startCal.backward(scale), endCal, world, relm, tag,
-		JspConstants.PRAYANCHOR)%>"><i
-					class="fa fa-angle-down" style="font-size: 24x"></i></a>
-				<%=startCal.getDisplayDate()%><a
-					href="<%=URLBuilder.buildRequest(request, JspConstants.INDEX, startCal.forward(scale), endCal, world, relm, tag,
-		JspConstants.PRAYANCHOR)%>"><i
-					class="fa fa-angle-up" style="font-size: 24px"></i></a> - <a
-					href="<%=URLBuilder.buildRequest(request, JspConstants.INDEX, startCal, endCal.backward(scale), world, relm, tag,
-		JspConstants.PRAYANCHOR)%>"><i
-					class="fa fa-angle-down" style="font-size: 24x"></i></a>
-				<%=endCal.getDisplayDate()%><a
-					href="<%=URLBuilder.buildRequest(request, JspConstants.INDEX, startCal, endCal.forward(scale), world, relm, tag,
-		JspConstants.PRAYANCHOR)%>"><i
-					class="fa fa-angle-up" style="font-size: 24px"></i></a>
-			</h3>
+			<div class="card bg-light">
+				<div class="card-body px-4 pb-4 text-center">
+					<div class="row">
+						<div class="col-md-6 my-4 text-center">
+							<h6>Start Date:</h6>
+							<input type="input" id="startDate" name="startDate"
+								value="<%=startCal.getTime()%>" onchange="updateTime()" size="7">
+							<div style="display: flex; justify-content: center; align-items: center;">
+							<jsp:include page="/componenets/datepicker.jsp">
+								<jsp:param name="datepicker" value="startDate" />
+							</jsp:include>
+							</div>
+						</div>
+						<div class="col-md-6 my-4 text-center">
+							<h6>End Date:</h6>
+							<input type="input" id="endDate" name="endDate"
+								value="<%=endCal.getTime()%>" onchange="updateTime()"  size="7">
+							<div style="display: flex; justify-content: center; align-items: center;">
+							<jsp:include page="/componenets/datepicker.jsp">
+								<jsp:param name="datepicker" value="endDate" />
+							</jsp:include>
+							</div>
+						</div>
+						<script>
+						function updateTime() {
+						    var searchString = '<%=URLBuilder.buildRequest(request, JspConstants.INDEX, startCal, endCal, world, relm, tag)%>';
+						    var searchStringOrig = searchString;
+						    var regexStart = /start=([^&]+)/;
+						    var matchStart = searchString.match(regexStart);
+						    if (matchStart && matchStart[1]) {
+						        var currentValueStart = matchStart[1];
+						        var newValueStart = document.getElementById('startDate').value;
+						        searchString = searchString.replace(currentValueStart, newValueStart);
+						    } else {
+						        console.log("No match found for 'start'.");
+						    }
+						    var regexEnd = /end=([^&]+)/;
+						    var matchEnd = searchString.match(regexEnd);
+						    if (matchEnd && matchEnd[1]) {
+						        var currentValueEnd = matchEnd[1];
+						        var newValueEnd = document.getElementById('endDate').value;
+						        searchString = searchString.replace(currentValueEnd, newValueEnd);
+						    } else {
+						        console.log("No match found for 'end'.");
+						    }
+						    if (searchStringOrig !== searchString) {
+						        if (timeoutID) {
+						          clearTimeout(timeoutID);
+						        }
+						        var timeoutID = setTimeout(function() {
+						          window.location.href = searchString;
+						        }, 10000); // 10 seconds timeout
+						      } else {
+						        if (timeoutID) {
+						          clearTimeout(timeoutID);
+						        }
+						      }
+			            }
+						</script>
+					</div>
+				</div>
+			</div>
 			<div id="timeline" class=""
-				style="height: 100px; position: relative; display: block; margin-bottom: 50px; padding-left: 10px; padding-right: 10px;">
+				style="height: 100px; position: relative; display: block; margin-bottom: 10px; padding-left: 10px; padding-right: 10px;">
 				<hr
 					style="height: 2px; background-color: black; border: 0; margin-top: 25px; margin-bottom: 25px; margin-left: 0px; margin-right: 0px; position: relative; top: 50px;">
 			</div>
@@ -450,10 +497,10 @@ else {%>
 	    
 		timelineElement.appendChild(div);
     }
-	placeForwardArrow("<%=startCal.getDisplayDate()%>","<%=startCal.getShortDisplayDate()%>", "<%=URLBuilder.buildRequest(request, JspConstants.INDEX, startCal.backward(startCal.getElapsedTime(endCal)/2),
-		endCal.backward(startCal.getElapsedTime(endCal)/2), world, relm, tag, JspConstants.PRAYANCHOR)%>")
-	placeBackwardArrow("<%=endCal.getDisplayDate()%>","<%=endCal.getShortDisplayDate()%>", "<%=URLBuilder.buildRequest(request, JspConstants.INDEX, startCal.forward(startCal.getElapsedTime(endCal)/2),
-		endCal.forward(startCal.getElapsedTime(endCal)/2), world, relm, tag, JspConstants.PRAYANCHOR)%>")	
+	placeForwardArrow("<%=startCal.getDisplayDate()%>","<%=startCal.getShortDisplayDate()%>", "<%=URLBuilder.buildRequest(request, JspConstants.INDEX, startCal.backward(startCal.getElapsedTime(endCal) / 2),
+		endCal.backward(startCal.getElapsedTime(endCal) / 2), world, relm, tag, JspConstants.PRAYANCHOR)%>")
+	placeBackwardArrow("<%=endCal.getDisplayDate()%>","<%=endCal.getShortDisplayDate()%>", "<%=URLBuilder.buildRequest(request, JspConstants.INDEX, startCal.forward(startCal.getElapsedTime(endCal) / 2),
+		endCal.forward(startCal.getElapsedTime(endCal) / 2), world, relm, tag, JspConstants.PRAYANCHOR)%>")	
   <%if (SOLSCalendar.Scale.CENTURY.equals(scale)) {
 	SOLSCalendar futureYear = startCal.forwardCentury().justCentury();
 	double rangeLength = Double.valueOf(startCal.getElapsedTime(endCal));
@@ -490,10 +537,6 @@ futureMonth = futureMonth.forwardMonth();
 monthOffset = monthOffset + SOLSCalendarConstants.LENTHOFALUNARMONTH;
 }
 }%>
-/* placeArrow("testa", "",  100)
-placeArrow("testb",  "", 0)
-placeFlag("testflaga", "", 100);
-placeFlag("testflagb", "", 0); */
 </script>
 		</div>
 		<div class="container">
@@ -762,13 +805,17 @@ double elapseDays = Double.valueOf(event.getEventCalendar().getElapsedTime(endCa
 						<%}%>
 						<%
 						if (collection.isMoreEvents()) {
-							for (EventCluster cluser : collection.getEventsCluster()){
-									%>
-									<script>
-									placeMultiEvent("<%=cluser.getNumberOfElements()%> Events", "<%=URLBuilder.buildRequest(request, JspConstants.INDEX, cluser.getLowerBoundDate(), cluser.getUpperBoundDate(), world, relm, tag, JspConstants.PRAYANCHOR)%>", <%double totalDays = Double.valueOf(startCal.getElapsedTime(endCal));
+							for (EventCluster cluser : collection.getEventsCluster()) {
+						%>
+						<script>
+									placeMultiEvent("<%=cluser.getNumberOfElements()%> Events", "<%=URLBuilder.buildRequest(request, JspConstants.INDEX, cluser.getLowerBoundDate(), cluser.getUpperBoundDate(),
+		world, relm, tag, JspConstants.PRAYANCHOR)%>", <%double totalDays = Double.valueOf(startCal.getElapsedTime(endCal));
 double elapseDays = Double.valueOf(cluser.getCentroidDate().getElapsedTime(endCal));%><%=100 - Math.round((elapseDays / totalDays) * 100)%>)
   								</script>
-									<%}}%>
+						<%
+						}
+						}
+						%>
 					</div>
 				</div>
 			</div>
@@ -817,11 +864,13 @@ double elapseDays = Double.valueOf(cluser.getCentroidDate().getElapsedTime(endCa
 				</div>
 				<div class="d-none d-md-block">
 					<h6 class="small mb-0">
-						<a href="https://www.facebook.com/groups/915527066379136/"
-							class="px-2" target="_blank"><i class="ti-facebook"></i></a>
-						<a href="https://twitter.com/shrinesecrets" class="px-2"
-							target="_blank"><i class="ti-twitter"></i></a>
-						<a href="https://patreon.com/TheShrineOfLostSecrets" class="px-2"
+						<a href="https://www.youtube.com/@ShrineofLostSecrets"
+							class="px-2" target="_blank"><i class="ti-youtube"></i></a> <a
+							href="https://www.facebook.com/groups/915527066379136/"
+							class="px-2" target="_blank"><i class="ti-facebook"></i></a> <a
+							href="https://twitter.com/shrinesecrets" class="px-2"
+							target="_blank"><i class="ti-twitter"></i></a> <a
+							href="https://patreon.com/TheShrineOfLostSecrets" class="px-2"
 							target="_blank"><i class="fab fa-patreon"></i></a>
 					</h6>
 				</div>

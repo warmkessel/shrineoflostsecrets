@@ -80,7 +80,9 @@ SOLSCalendar endCal = new SOLSCalendar(endDate);
 			</a>
 			<div class="d-none d-md-block">
 				<h6 class="mb-0">
-					<a href="https://www.facebook.com/groups/915527066379136/"
+					<a href="https://www.youtube.com/@ShrineofLostSecrets"
+						class="px-2" target="_blank"><i class="ti-youtube"></i></a>
+						<a href="https://www.facebook.com/groups/915527066379136/"
 						class="px-2" target="_blank"><i class="ti-facebook"></i></a> <a
 						href="https://twitter.com/shrinesecrets" class="px-2"
 						target="_blank"><i class="ti-twitter"></i></a> <a
@@ -395,6 +397,8 @@ SOLSCalendar endCal = new SOLSCalendar(endDate);
 				</div>
 				<div class="d-none d-md-block">
 					<h6 class="small mb-0">
+						<a href="https://www.youtube.com/@ShrineofLostSecrets"
+						class="px-2" target="_blank"><i class="ti-youtube"></i></a>
 						<a href="https://www.facebook.com/groups/915527066379136/"
 							class="px-2" target="_blank"><i class="ti-facebook"></i></a>
 						<a href="https://twitter.com/shrinesecrets" class="px-2"

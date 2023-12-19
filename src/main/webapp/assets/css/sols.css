@@ -11433,7 +11433,7 @@ hr {
 }
 
 section {
-  padding: 80px 0;
+  padding: 40px 0;
 }
 
 section:nth-child(odd) {
@@ -11499,8 +11499,6 @@ section.has-overlay:after {
 
 section.has-img-bg {
   position: relative;
-  background: url(../imgs/section.jpg) no-repeat center top fixed;
-  background-size: cover;
   color: #fff;
 }
 

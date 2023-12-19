@@ -53,6 +53,10 @@
 		<servlet-name>Openapi</servlet-name>
 		<url-pattern>/ai/openapi.yaml</url-pattern>
 	</servlet-mapping>
+		<servlet-mapping>
+		<servlet-name>Openapi</servlet-name>
+		<url-pattern>/ai/openapi.jsp</url-pattern>
+	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>Help</servlet-name>
 		<url-pattern>/ai/help</url-pattern>

@@ -234,7 +234,9 @@ double totalDays = Double.valueOf(startCal.getElapsedTime(endCal));
 			</a>
 			<div class="d-none d-md-block">
 				<h6 class="mb-0">
-					<a href="https://www.facebook.com/groups/915527066379136/"
+					<a href="https://www.youtube.com/@ShrineofLostSecrets"
+						class="px-2" target="_blank"><i class="ti-youtube"></i></a>
+						<a href="https://www.facebook.com/groups/915527066379136/"
 						class="px-2" target="_blank"><i class="ti-facebook"></i></a> <a
 						href="https://twitter.com/shrinesecrets" class="px-2"
 						target="_blank"><i class="ti-twitter"></i></a> <a
@@ -379,7 +381,7 @@ double totalDays = Double.valueOf(startCal.getElapsedTime(endCal));
 					class="fa fa-angle-up" style="font-size: 24px"></i></a>
 			</h3>
 			<div id="timeline" class=""
-				style="height: 100px; width: 1000px; position: relative; display: block; clear: both:content; margin-bottom: 50px;">
+				style="height: 100px; width: 1000px; position: relative; display: block; clear: both:content; margin-bottom: 10px;">
 				<hr
 					style="height: 2px; background-color: black; border: 0; margin-top: 25px; margin-bottom: 25px; margin-left: 0px; margin-right: 0px; position: relative; top: 50px;">
 			</div>
@@ -909,9 +911,9 @@ function prayAtTheShrineInput(instruction, input, target) {
 									 }		 
 									}
 									</script>
-									<input id="eventdate" onchange="updateLoc()"
+									<input id="eventdate" onchange="forwardeventdate(0, 'eventdate')"
 										name="<%=JspConstants.EVENTDATE%>"
-										value="<%=(event.getEventDate() == 0 ? startCal.getRandomDate(endCal).getTime() : event.getEventDate())%>">
+										value="<%=(event.getEventDate() == 0 ? startCal.getRandomDate(endCal).getTime() : event.getEventDate())%>" size="7">
 									<jsp:include page="/componenets/datepicker.jsp">
 										<jsp:param name="datepicker" value="eventdate" />
 									</jsp:include>
@@ -1123,6 +1125,8 @@ function prayAtTheShrineInput(instruction, input, target) {
 				</div>
 				<div class="d-none d-md-block">
 					<h6 class="small mb-0">
+						<a href="https://www.youtube.com/@ShrineofLostSecrets"
+						class="px-2" target="_blank"><i class="ti-youtube"></i></a>
 						<a href="https://www.facebook.com/groups/915527066379136/"
 							class="px-2" target="_blank"><i class="ti-facebook"></i></a> <a
 							href="https://twitter.com/shrinesecrets" class="px-2"

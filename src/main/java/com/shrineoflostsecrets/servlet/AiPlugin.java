@@ -33,7 +33,7 @@ public class AiPlugin extends HttpServlet {
 		try {
 			// pre-flight request processing
 			resp.getWriter().write("{\n"
-					+ "    \"schema_version\": \"v1\",\n"
+					+ "    \"schema_version\": \"v1.1\",\n"
 					+ "    \"name_for_human\": \"Shrine of Lost Secrets ChatGPT\",\n"
 					+ "    \"name_for_model\": \"shrineoflostsecrets\",\n"
 					+ "    \"description_for_human\": \"Enhance RPG experience with access to Shrine of Lost Secrets, for Dungeons & Dragons enthusiasts and similar games.\",\n"
@@ -60,6 +60,9 @@ public class AiPlugin extends HttpServlet {
 		resp.setHeader("Access-Control-Allow-Headers",
 				"Content-Type, openai-conversation-id, Authorization, Content-Length, X-Requested-With, openai-ephemeral-user-id");
 		resp.setContentType("text/plain");
+		resp.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+		resp.setHeader("Pragma", "no-cache");
+		resp.setHeader("Expires", "0");
 	}
 
 	@Override

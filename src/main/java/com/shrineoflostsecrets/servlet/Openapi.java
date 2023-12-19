@@ -198,6 +198,9 @@ public class Openapi extends HttpServlet {
 		resp.setHeader("Access-Control-Allow-Headers",
 				"Content-Type, openai-conversation-id, Authorization, Content-Length, X-Requested-With, openai-ephemeral-user-id");
 		resp.setContentType("text/plain");
+		resp.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+		resp.setHeader("Pragma", "no-cache");
+		resp.setHeader("Expires", "0");
 	}
 
 	@Override
