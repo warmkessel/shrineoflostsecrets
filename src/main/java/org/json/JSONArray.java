@@ -1448,7 +1448,6 @@ public class JSONArray implements Iterable<Object> {
      *         &nbsp;<small>(right bracket)</small>.
      * @throws JSONException if a called function fails
      */
-    @SuppressWarnings("resource")
     public String toString(int indentFactor) throws JSONException {
         StringWriter sw = new StringWriter();
         synchronized (sw.getBuffer()) {
@@ -1498,7 +1497,6 @@ public class JSONArray implements Iterable<Object> {
      * @return The writer.
      * @throws JSONException if a called function fails or unable to write
      */
-    @SuppressWarnings("resource")
     public Writer write(Writer writer, int indentFactor, int indent)
             throws JSONException {
         try {

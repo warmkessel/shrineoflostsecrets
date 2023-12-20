@@ -2000,7 +2000,6 @@ public class JSONObject {
      *            A String
      * @return A String correctly formatted for insertion in a JSON text.
      */
-    @SuppressWarnings("resource")
     public static String quote(String string) {
         StringWriter sw = new StringWriter();
         synchronized (sw.getBuffer()) {
@@ -2393,7 +2392,6 @@ public class JSONObject {
      * @throws JSONException
      *             If the object contains an invalid number.
      */
-    @SuppressWarnings("resource")
     public String toString(int indentFactor) throws JSONException {
         StringWriter w = new StringWriter();
         synchronized (w.getBuffer()) {
@@ -2510,7 +2508,6 @@ public class JSONObject {
         return this.write(writer, 0, 0);
     }
 
-    @SuppressWarnings("resource")
     static final Writer writeValue(Writer writer, Object value,
             int indentFactor, int indent) throws JSONException, IOException {
         if (value == null || value.equals(null)) {
@@ -2588,7 +2585,6 @@ public class JSONObject {
      * @throws JSONException if a called function has an error or a write error
      * occurs
      */
-    @SuppressWarnings("resource")
     public Writer write(Writer writer, int indentFactor, int indent)
             throws JSONException {
         try {
