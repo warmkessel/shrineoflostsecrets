@@ -276,7 +276,7 @@ else {%>
 					<div class="row">
 						<div class="col-md-6 my-4 text-center">
 							<h6>Start Date:</h6>
-							<input type="input" id="startDate" name="startDate"
+							<input id="startDate" name="startDate"
 								value="<%=startCal.getTime()%>" onchange="updateTime()" size="7">
 							<div style="display: flex; justify-content: center; align-items: center;">
 							<jsp:include page="/componenets/datepicker.jsp">
@@ -286,7 +286,7 @@ else {%>
 						</div>
 						<div class="col-md-6 my-4 text-center">
 							<h6>End Date:</h6>
-							<input type="input" id="endDate" name="endDate"
+							<input id="endDate" name="endDate"
 								value="<%=endCal.getTime()%>" onchange="updateTime()"  size="7">
 							<div style="display: flex; justify-content: center; align-items: center;">
 							<jsp:include page="/componenets/datepicker.jsp">

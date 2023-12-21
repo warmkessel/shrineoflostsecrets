@@ -30,7 +30,7 @@ DungonMaster dm = DungonMasterList.getDungonMaster(currentUser);
 String id = (String) request.getParameter(JspConstants.ID);
 Event event = new Event();
 if (null != id && id.length() > 0) {
-	event.loadEvent(new Long(id).longValue());
+	event.loadEvent(Long.parseLong(id));
 }
 long idLong = 0L;
 try {

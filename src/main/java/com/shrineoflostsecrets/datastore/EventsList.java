@@ -37,8 +37,8 @@ public class EventsList {
 
 		Iterator<Entity> it = entities.iterator();
 		
-		StringValue du0 = StringValue.of(new Long(Constants.UNIVERSALUSER).toString());
-		StringValue du1 = StringValue.of(new Long(userId).toString());
+		StringValue du0 = StringValue.of(String.valueOf(Constants.UNIVERSALUSER));
+		StringValue du1 = StringValue.of(String.valueOf(userId));
 
 		while (it.hasNext()) {
 			Entity ent = (Entity) it.next();

@@ -53,3 +53,5 @@ Note - Be careful when changing `javax.servlet` as App Engine Standard uses 3.1 
 for Java 7.
 
 Our usual process is to test, update the versions, then test again before committing back.
+
+https://cli.github.com/manual/gh_auth_login

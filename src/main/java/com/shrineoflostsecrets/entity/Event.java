@@ -17,15 +17,14 @@ import com.google.cloud.datastore.Key;
 import com.google.cloud.datastore.ListValue;
 import com.google.cloud.datastore.StringValue;
 import com.google.cloud.datastore.Value;
-public class Event extends BaseEntity implements Comparable<Event> {
 
-	
+public class Event extends BaseEntity implements Comparable<Event> {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -361472214131790072L;
-	 //private static final Logger log = Logger.getLogger(Event.class.getName());
+	// private static final Logger log = Logger.getLogger(Event.class.getName());
 
 	private boolean bookmarked = false;
 
@@ -44,8 +43,10 @@ public class Event extends BaseEntity implements Comparable<Event> {
 
 	public Event() {
 	}
-	public Event(Key key, List<? extends Value<?>> deleted, boolean bookmarked, Timestamp createdDate, Timestamp updatedDate, int userId, String world, String relm, String kingdom, List<? extends Value<?>> tags, long eventDate, String title, String compactDesc,
-			String shortDesc, String longDesc, String media) {
+
+	public Event(Key key, List<? extends Value<?>> deleted, boolean bookmarked, Timestamp createdDate,
+			Timestamp updatedDate, int userId, String world, String relm, String kingdom, List<? extends Value<?>> tags,
+			long eventDate, String title, String compactDesc, String shortDesc, String longDesc, String media) {
 		super(key, deleted, createdDate, updatedDate);
 		this.bookmarked = bookmarked;
 		this.userId = userId;
@@ -66,7 +67,7 @@ public class Event extends BaseEntity implements Comparable<Event> {
 	}
 
 	public void setBookmarked(String bookmarked) {
-		setBookmarked(new Boolean(bookmarked).booleanValue());
+		setBookmarked(bookmarked);
 	}
 
 	public void setBookmarked(boolean bookmarked) {
@@ -89,7 +90,7 @@ public class Event extends BaseEntity implements Comparable<Event> {
 		setUpdatedDate();
 		setRevision(getRevision() + 1);
 	}
-	
+
 	public void setRevision(int revision) {
 		this.revision = revision;
 	}
@@ -109,6 +110,7 @@ public class Event extends BaseEntity implements Comparable<Event> {
 	public void setRelm(String relm) {
 		this.relm = relm;
 	}
+
 //	public String getKingdom() {
 //		return kingdom;
 //	}
@@ -117,30 +119,29 @@ public class Event extends BaseEntity implements Comparable<Event> {
 //		this.kingdom = kingdom;
 //	}
 	public String getTagsEncodedString() {
-		if(getTags().size() == 0) {
+		if (getTags().size() == 0) {
 			return "";
-		}
-		else {
-			List<String> tagStrings = getTags().stream().map(Value::get).map(Object::toString).collect(Collectors.toList());
+		} else {
+			List<String> tagStrings = getTags().stream().map(Value::get).map(Object::toString)
+					.collect(Collectors.toList());
 			return String.join("&tags=", tagStrings);
 		}
 	}
-	
 
 	public String getTagsString() {
-		if(getTags().size() == 0) {
+		if (getTags().size() == 0) {
 			return "";
-		}
-		else {
-			List<String> tagStrings = getTags().stream().map(Value::get).map(Object::toString).collect(Collectors.toList());
+		} else {
+			List<String> tagStrings = getTags().stream().map(Value::get).map(Object::toString)
+					.collect(Collectors.toList());
 			return String.join(" ", tagStrings);
 		}
 	}
 
 	public List<? extends Value<?>> getTags() {
 
-		if(null == tags) {
-			tags =  new ArrayList<>();
+		if (null == tags) {
+			tags = new ArrayList<>();
 		}
 		return tags;
 	}
@@ -151,10 +152,10 @@ public class Event extends BaseEntity implements Comparable<Event> {
 	}
 
 	public void setTags(Set<String> tags) {
-	    String[] tagsArray = tags.toArray(new String[tags.size()]);
+		String[] tagsArray = tags.toArray(new String[tags.size()]);
 		setTags(Arrays.stream(tagsArray).map(StringValue::of).collect(Collectors.toList()));
 	}
-	
+
 	public void setTags(List<? extends Value<?>> tags) {
 		this.tags = tags;
 	}
@@ -162,6 +163,7 @@ public class Event extends BaseEntity implements Comparable<Event> {
 	public long getEventDate() {
 		return eventDate;
 	}
+
 	public SOLSCalendar getEventCalendar() {
 		return new SOLSCalendar(getEventDate());
 	}
@@ -198,13 +200,14 @@ public class Event extends BaseEntity implements Comparable<Event> {
 		return longDesc;
 	}
 
-
 	public void setLongDesc(String longDesc) {
 		this.longDesc = longDesc;
 	}
+
 	public boolean hasMedia() {
 		return (0 != getMedia().length());
 	}
+
 	public String getMedia() {
 		return media;
 	}
@@ -229,12 +232,12 @@ public class Event extends BaseEntity implements Comparable<Event> {
 	public int hashCode() {
 		int result = super.hashCode();
 		result = 31 * result + (bookmarked ? 1 : 0);
-		result = 31 * result + new Long(userId).intValue();
+		result = 31 * result + (int) userId;
 		result = 31 * result + revision;
 		result = 31 * result + world.hashCode();
-		//result = 31 * result + kingdom.hashCode();
+		// result = 31 * result + kingdom.hashCode();
 		result = 31 * result + getTags().hashCode();
-		result = 31 * result + new Long(eventDate).hashCode();
+		result = 31 * result + Long.hashCode(eventDate);
 		result = 31 * result + title.hashCode();
 		result = 31 * result + compactDesc.hashCode();
 		result = 31 * result + shortDesc.hashCode();
@@ -246,11 +249,15 @@ public class Event extends BaseEntity implements Comparable<Event> {
 	public void save() {
 		incRevision();
 		Entity.Builder entity = Entity.newBuilder(getKey());
-		entity.set(EventConstants.DELETED, getDeleted()).set(EventConstants.BOOKMARKED, isBookmarked()).set(EventConstants.CREATEDDATE, getCreatedDate())
-				.set(EventConstants.UPDATEDDATE, getUpdatedDate()).set(EventConstants.USERID, getUserId()).set(EventConstants.REVISION, getRevision())
-				.set(EventConstants.WORLD, getWorld()).set(EventConstants.RELM, getRelm()).set(EventConstants.TAGS, getTags()).set(EventConstants.EVENTDATE, getEventDate())
-				.set(EventConstants.TITLE, getTitle()).set(EventConstants.COMPACTDESC, getCompactDesc()).set(EventConstants.SHORTDESC, getShortDesc())
-				.set(EventConstants.LONGDESC, StringValue.newBuilder(getLongDesc()).setExcludeFromIndexes(true).build()).set(EventConstants.MEDIA, getMedia()).build();
+		entity.set(EventConstants.DELETED, getDeleted()).set(EventConstants.BOOKMARKED, isBookmarked())
+				.set(EventConstants.CREATEDDATE, getCreatedDate()).set(EventConstants.UPDATEDDATE, getUpdatedDate())
+				.set(EventConstants.USERID, getUserId()).set(EventConstants.REVISION, getRevision())
+				.set(EventConstants.WORLD, getWorld()).set(EventConstants.RELM, getRelm())
+				.set(EventConstants.TAGS, getTags()).set(EventConstants.EVENTDATE, getEventDate())
+				.set(EventConstants.TITLE, getTitle()).set(EventConstants.COMPACTDESC, getCompactDesc())
+				.set(EventConstants.SHORTDESC, getShortDesc())
+				.set(EventConstants.LONGDESC, StringValue.newBuilder(getLongDesc()).setExcludeFromIndexes(true).build())
+				.set(EventConstants.MEDIA, getMedia()).build();
 		getDatastore().put(entity.build());
 	}
 
@@ -260,7 +267,7 @@ public class Event extends BaseEntity implements Comparable<Event> {
 	}
 
 	public void loadEvent(String key) {
-		loadEvent(new Long(key).longValue());
+		loadEvent(Long.parseLong(key));
 	}
 
 	public void loadEvent(long key) {
@@ -279,7 +286,7 @@ public class Event extends BaseEntity implements Comparable<Event> {
 		if (null != entity) {
 			setBookmarked(entity.getBoolean(EventConstants.BOOKMARKED));
 			setUserId(entity.getLong(EventConstants.USERID));
-			setRevision(new Long(entity.getLong(EventConstants.REVISION)).intValue());
+			setRevision(Long.valueOf(entity.getLong(EventConstants.REVISION)).intValue());
 			setWorld(entity.getString(EventConstants.WORLD));
 			setRelm(entity.getString(EventConstants.RELM));
 //			setKingdom(entity.getString(EventConstants.KINGDOM));
@@ -296,13 +303,14 @@ public class Event extends BaseEntity implements Comparable<Event> {
 	}
 
 	public String toString() {
-		return "Event{" + "" + Constants.KEY + "='" + getKeyString() + '\'' + ", " + EventConstants.DELETED + "=" + getDeletedString()
-				+ ", \" + BOOKMARKED + \"=" + bookmarked + ", \" + CREATEDDATE + \"=" + getCreatedDate()
-				+ ", \" + UPDATEDDATE + \"=" + getUpdatedDate() + ", "+ EventConstants.USERID +"=" + userId + ", "+ EventConstants.REVISION +"=" + revision
-				+ ", " + EventConstants.WORLD + "='" + world + '\'' +  ", " + EventConstants.RELM + "='" + relm + '\'' + '\'' + ", \" + TAGS + \"='" + getTags()
+		return "Event{" + "" + Constants.KEY + "='" + getKeyString() + '\'' + ", " + EventConstants.DELETED + "="
+				+ getDeletedString() + ", \" + BOOKMARKED + \"=" + bookmarked + ", \" + CREATEDDATE + \"="
+				+ getCreatedDate() + ", \" + UPDATEDDATE + \"=" + getUpdatedDate() + ", " + EventConstants.USERID + "="
+				+ userId + ", " + EventConstants.REVISION + "=" + revision + ", " + EventConstants.WORLD + "='" + world
+				+ '\'' + ", " + EventConstants.RELM + "='" + relm + '\'' + '\'' + ", \" + TAGS + \"='" + getTags()
 				+ '\'' + ", \" + EVENTDATE + \"='" + eventDate + '\'' + ", \" + TITLE + \"='" + title + '\''
-				+ ", \" + KINGDOM + \"='" + EventConstants.COMPACTDESC + '\'' + ", \" + SHORTDESC + \"='" + shortDesc + '\''
-				+ ", \" + LONGDESC + \"='" + longDesc + '\'' + ", \" + MEDIA + \"'" + media + '\'' + '}';
+				+ ", \" + KINGDOM + \"='" + EventConstants.COMPACTDESC + '\'' + ", \" + SHORTDESC + \"='" + shortDesc
+				+ '\'' + ", \" + LONGDESC + \"='" + longDesc + '\'' + ", \" + MEDIA + \"'" + media + '\'' + '}';
 	}
 
 	public int compareTo(Event other) {
@@ -316,6 +324,7 @@ public class Event extends BaseEntity implements Comparable<Event> {
 			return this.title.compareTo(other.title);
 		}
 	}
+
 	public String getEventKind() {
 		return EventConstants.EVENT;
 	}

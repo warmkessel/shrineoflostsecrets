@@ -74,7 +74,7 @@ public  abstract class BaseEntity implements  Serializable {
 		return getKey().getId();
 	}
 	public String getKeyString() {
-		return new Long(getKeyLong()).toString();
+		return Long.toString(getKeyLong());
 	}
 
 	public void setKey(Key key) {

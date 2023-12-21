@@ -81,11 +81,10 @@ if ((error || null != currentUser) && subject != null && body != null) {
     try {
         // Create a new email message
         Message msg = new MimeMessage(mailSession);
-        msg.setFrom(new InternetAddress(currentUser.getEmail(), currentUser.getNickname()));
+		msg.setFrom(new InternetAddress("jr@warmkessel.com", "Shrine of Lost Secrets"));
         msg.addRecipient(Message.RecipientType.TO, new InternetAddress("comment@shrineoflostsecrets.com", "Shrine of Lost Secrets"));
         msg.setSubject("SOLS:" + subject);
-        msg.setText(body + "\r" + pageurl);
-
+        msg.setText(currentUser.getEmail() + " - " +  currentUser.getNickname() + "\r" + body + "\r" + pageurl);
         // Send the email
         Transport.send(msg);
 
