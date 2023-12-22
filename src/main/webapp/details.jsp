@@ -565,36 +565,36 @@ double totalDays = Double.valueOf(startCal.getElapsedTime(endCal));
 	SOLSCalendar futureYear = startCal.forwardCentury().justCentury();
 	double rangeLength = Double.valueOf(startCal.getElapsedTime(endCal));
 	double dayOffset = startCal.getDayOfCentury();
-	double yearOffset = SOLSCalendarConstants.LENGTHOFCENTURY;
+	double yearOffset = SOLSCalendarConstants.LENGTH_OF_CENTURY;
 	while (yearOffset - dayOffset < rangeLength) {%>
 		placeArrow("<%=futureYear.getDisplayDate()%>", "<%=futureYear.getYear()%>", <%=Math.round((yearOffset / rangeLength - (dayOffset / rangeLength)) * 100)%>)
 		<%futureYear = futureYear.forwardCentury();
-yearOffset = yearOffset + SOLSCalendarConstants.LENGTHOFCENTURY;
+yearOffset = yearOffset + SOLSCalendarConstants.LENGTH_OF_CENTURY;
 }
 } else if (SOLSCalendar.Scale.DECADE.equals(scale)) {
 SOLSCalendar futureYear = startCal.forwardDecade().justDecade();
 double rangeLength = Double.valueOf(startCal.getElapsedTime(endCal));
 double dayOffset = startCal.getDayOfDecade();
-double yearOffset = SOLSCalendarConstants.LENGTHOFDECADE;
+double yearOffset = SOLSCalendarConstants.LENGTH_OF_DECADE;
 while (yearOffset - dayOffset < rangeLength) {%>
 			placeArrow("<%=futureYear.getDisplayDate()%>", "<%=futureYear.getYear()%>", <%=Math.round((yearOffset / rangeLength - (dayOffset / rangeLength)) * 100)%>)
 			<%futureYear = futureYear.forwardDecade();
-yearOffset = yearOffset + SOLSCalendarConstants.LENGTHOFDECADE;
+yearOffset = yearOffset + SOLSCalendarConstants.LENGTH_OF_DECADE;
 }
 } else if (SOLSCalendar.Scale.MONTH.equals(scale) || SOLSCalendar.Scale.SEASON.equals(scale)
 		|| SOLSCalendar.Scale.YEAR.equals(scale) || SOLSCalendar.Scale.DAY.equals(scale)) {
 SOLSCalendar futureMonth = startCal.forwardMonth().justMonth();
 double rangeLength = Double.valueOf(startCal.getElapsedTime(endCal));
 double dayOffset = startCal.getDayOfMonth();
-double monthOffset = SOLSCalendarConstants.LENTHOFALUNARMONTH;
+double monthOffset = SOLSCalendarConstants.LENGTH_OF_A_LUNAR_MONTH;
 while (monthOffset - dayOffset < rangeLength) {
 if (0 == futureMonth.getMonth()) {%>
 				placeArrow("<%=futureMonth.getDisplayDate()%>", "<%=futureMonth.getMonthName()%>, <%=futureMonth.getYear()%>", <%=Math.round((monthOffset / rangeLength - (dayOffset / rangeLength)) * 100)%>)
-			<%} else if (rangeLength <= SOLSCalendarConstants.LENGTHOFYEAR * 3) {%>
+			<%} else if (rangeLength <= SOLSCalendarConstants.LENGTH_OF_YEAR * 3) {%>
 				placeArrow("<%=futureMonth.getDisplayDate()%>", "<%=futureMonth.getMonthName()%>", <%=Math.round((monthOffset / rangeLength - (dayOffset / rangeLength)) * 100)%>)
 			<%}
 futureMonth = futureMonth.forwardMonth();
-monthOffset = monthOffset + SOLSCalendarConstants.LENTHOFALUNARMONTH;
+monthOffset = monthOffset + SOLSCalendarConstants.LENGTH_OF_A_LUNAR_MONTH;
 }
 }
 

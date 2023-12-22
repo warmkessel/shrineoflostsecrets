@@ -3,151 +3,151 @@ package com.shrineoflostsecrets.util;
 import com.shrineoflostsecrets.constants.SOLSCalendarConstants;
 
 public class SOLSCalendar {
-	public enum Month {
-		JAN, FEB, MAR, APR, MAY, JUN, JUL, AUG, SEP, OCT, NOV, DEC
-	}
+    public enum Month {
+        JAN, FEB, MAR, APR, MAY, JUN, JUL, AUG, SEP, OCT, NOV, DEC
+    }
 
-	public enum Season {
-		WINTER, SPRING, SUMMER, FALL
-	}
+    public enum Season {
+        WINTER, SPRING, SUMMER, FALL
+    }
 
-	public enum Scale {
-		DAY, MONTH, SEASON, YEAR, DECADE, CENTURY
-	}
+    public enum Scale {
+        DAY, MONTH, SEASON, YEAR, DECADE, CENTURY
+    }
 
-	private final long time;
-	private Long century = null;
-	private Long decade = null;
-	private Long year = null;
-	private Long dayOfCentury = null;
-	private Long dayOfDecade = null;
-	private Long dayOfYear = null;
-	private Integer season = null;
-	private Integer dayOfSeason = null;
-	private Integer month = null;
-	private Integer dayOfMonth = null;
+    private final long time;
+    private Long century = null;
+    private Long decade = null;
+    private Long year = null;
+    private Long dayOfCentury = null;
+    private Long dayOfDecade = null;
+    private Long dayOfYear = null;
+    private Integer season = null;
+    private Integer dayOfSeason = null;
+    private Integer month = null;
+    private Integer dayOfMonth = null;
 
-	public SOLSCalendar(long time) {
-		this.time = time;
-	}
+    public SOLSCalendar(long time) {
+        this.time = time;
+    }
 
-	public SOLSCalendar random(long amount) {
-		return forward(Math.round(Math.random() * amount));
-	}
+    public SOLSCalendar random(long amount) {
+        return forward((long) (Math.random() * amount));
+    }
 
-	public SOLSCalendar backwardSeason() {
-		return backward(SOLSCalendarConstants.LENGTHOFSEASON);
-	}
+    public SOLSCalendar backwardSeason() {
+        return backward(SOLSCalendarConstants.LENGTH_OF_SEASON);
+    }
 
-	public SOLSCalendar forwardSeason() {
-		return forward(SOLSCalendarConstants.LENGTHOFSEASON);
-	}
+    public SOLSCalendar forwardSeason() {
+        return forward(SOLSCalendarConstants.LENGTH_OF_SEASON);
+    }
 
-	public SOLSCalendar backwardMonth() {
-		return backward(SOLSCalendarConstants.LENTHOFALUNARMONTH);
-	}
+    public SOLSCalendar backwardMonth() {
+        return backward(SOLSCalendarConstants.LENGTH_OF_A_LUNAR_MONTH);
+    }
 
-	public SOLSCalendar forwardMonth() {
-		return forward(SOLSCalendarConstants.LENTHOFALUNARMONTH);
-	}
+    public SOLSCalendar forwardMonth() {
+        return forward(SOLSCalendarConstants.LENGTH_OF_A_LUNAR_MONTH);
+    }
 
-	public SOLSCalendar backwardYear() {
-		return backward(SOLSCalendarConstants.LENGTHOFYEAR);
-	}
+    public SOLSCalendar backwardYear() {
+        return backward(SOLSCalendarConstants.LENGTH_OF_YEAR);
+    }
 
-	public SOLSCalendar forwardYear() {
-		return forward(SOLSCalendarConstants.LENGTHOFYEAR);
-	}
+    public SOLSCalendar forwardYear() {
+        return forward(SOLSCalendarConstants.LENGTH_OF_YEAR);
+    }
 
-	public SOLSCalendar forwardDecade() {
-		return forward(SOLSCalendarConstants.LENGTHOFDECADE);
-	}
+    public SOLSCalendar forwardDecade() {
+        return forward(SOLSCalendarConstants.LENGTH_OF_DECADE);
+    }
 
-	public SOLSCalendar backwardDecade() {
-		return backward(SOLSCalendarConstants.LENGTHOFDECADE);
-	}
+    public SOLSCalendar backwardDecade() {
+        return backward(SOLSCalendarConstants.LENGTH_OF_DECADE);
+    }
 
-	public SOLSCalendar forwardCentury() {
-		return forward(SOLSCalendarConstants.LENGTHOFCENTURY);
-	}
+    public SOLSCalendar forwardCentury() {
+        return forward(SOLSCalendarConstants.LENGTH_OF_CENTURY);
+    }
 
-	public SOLSCalendar backwardCentury() {
-		return backward(SOLSCalendarConstants.LENGTHOFCENTURY);
-	}
+    public SOLSCalendar backwardCentury() {
+        return backward(SOLSCalendarConstants.LENGTH_OF_CENTURY);
+    }
 
-	public SOLSCalendar forward(Scale scale) {
-		return forward(scale, true);
-	}
+    public SOLSCalendar forward(Scale scale) {
+        return forward(scale, true);
+    }
 
-	public SOLSCalendar backward(Scale scale) {
-		return forward(scale, false);
+    public SOLSCalendar backward(Scale scale) {
+        return forward(scale, false);
+    }
 
-	}
+    public SOLSCalendar forward(Scale scale, boolean forward) {
+        long amount = 0;
+        switch (scale) {
+            case DAY:
+                amount = 1;
+                break;
+            case MONTH:
+                amount = SOLSCalendarConstants.LENGTH_OF_A_LUNAR_MONTH;
+                break;
+            case SEASON:
+                amount = SOLSCalendarConstants.LENGTH_OF_SEASON;
+                break;
+            case YEAR:
+                amount = SOLSCalendarConstants.LENGTH_OF_YEAR;
+                break;
+            case DECADE:
+                amount = SOLSCalendarConstants.LENGTH_OF_DECADE;
+                break;
+            case CENTURY:
+                amount = SOLSCalendarConstants.LENGTH_OF_CENTURY;
+                break;
+        }
+        return forward(forward ? amount : -amount);
+    }
 
-	public SOLSCalendar forward(Scale scale, boolean forward) {
-		long theAmount = 0;
-		if (Scale.DAY.equals(scale)) {
-			theAmount = 1;
-		} else if (Scale.MONTH.equals(scale)) {
-			theAmount = SOLSCalendarConstants.LENTHOFALUNARMONTH;
-		} else if (Scale.SEASON.equals(scale)) {
-			theAmount = SOLSCalendarConstants.LENGTHOFSEASON;
-		} else if (Scale.YEAR.equals(scale)) {
-			theAmount = SOLSCalendarConstants.LENGTHOFYEAR;
-		} else if (Scale.DECADE.equals(scale)) {
-			theAmount = SOLSCalendarConstants.LENGTHOFDECADE;
-		} else if (Scale.CENTURY.equals(scale)) {
-			theAmount = SOLSCalendarConstants.LENGTHOFCENTURY;
-		}
-		if (!forward) {
-			theAmount = -theAmount / 2;
-		} else {
-			theAmount = theAmount / 2;
+    public SOLSCalendar forward(long amount) {
+        return new SOLSCalendar(this.time + amount);
+    }
 
-		}
-		return forward(theAmount);
-	}
+    public SOLSCalendar backward(long amount) {
+        return forward(-amount);
+    }
 
-	public SOLSCalendar forward(long amount) {
-		return new SOLSCalendar(getTime() + amount);
-	}
+    public SOLSCalendar justCentury() {
+        return new SOLSCalendar(this.time - getDayOfCentury());
+    }
 
-	public SOLSCalendar backward(long amount) {
-		return forward(-amount);
-	}
+    public SOLSCalendar justDecade() {
+        return new SOLSCalendar(this.time - getDayOfDecade());
+    }
 
-	public SOLSCalendar justCentury() {
-		return new SOLSCalendar(getTime() - getDayOfCentury());
-	}
+    public SOLSCalendar justYear() {
+        return new SOLSCalendar(this.time - getDayOfYear());
+    }
 
-	public SOLSCalendar justDecade() {
-		return new SOLSCalendar(getTime() - getDayOfDecade());
-	}
+    public SOLSCalendar justSeason() {
+        return new SOLSCalendar(this.time - getDayOfSeason());
+    }
 
-	public SOLSCalendar justYear() {
-		return new SOLSCalendar(getTime() - getDayOfYear());
-	}
+    public SOLSCalendar justMonth() {
+        return new SOLSCalendar(this.time - getDayOfMonth());
+    }
 
-	public SOLSCalendar justSeason() {
-		return new SOLSCalendar(getTime() - getDayOfSeason());
-	}
+    public SOLSCalendar getRandomDate(SOLSCalendar endDate) {
+        long range = endDate.getTime() - this.time;
+        return new SOLSCalendar(this.time + (long) (Math.random() * range));
+    }
 
-	public SOLSCalendar justMonth() {
-		return new SOLSCalendar(getTime() - getDayOfMonth());
-	}
-
-	public SOLSCalendar getRandomDate(SOLSCalendar endDate) {
-		double therange = endDate.getTime() - getTime();
-		return new SOLSCalendar(getTime() + Math.round(Math.random() * therange));
-	}
-
-	public long getTime() {
-		return time;
-	}
+    public long getTime() {
+        return this.time;
+    }
 
 	public long getCentury() {
 		if (null == century) {
-			century = Math.floorDiv(getTime(), SOLSCalendarConstants.LENGTHOFCENTURY);
+			century = Math.floorDiv(getTime(), SOLSCalendarConstants.LENGTH_OF_CENTURY);
 		}
 		return century;
 
@@ -155,7 +155,7 @@ public class SOLSCalendar {
 
 	public long getDecade() {
 		if (null == decade) {
-			decade = Math.floorDiv(getTime(), SOLSCalendarConstants.LENGTHOFDECADE);
+			decade = Math.floorDiv(getTime(), SOLSCalendarConstants.LENGTH_OF_DECADE);
 		}
 		return decade;
 
@@ -163,7 +163,7 @@ public class SOLSCalendar {
 
 	public long getYear() {
 		if (null == year) {
-			year = Math.floorDiv(getTime(), SOLSCalendarConstants.LENGTHOFYEAR);
+			year = Math.floorDiv(getTime(), SOLSCalendarConstants.LENGTH_OF_YEAR);
 		}
 		return year;
 
@@ -171,7 +171,7 @@ public class SOLSCalendar {
 
 	public int getDayOfCentury() {
 		if (null == dayOfCentury) {
-			dayOfCentury = Long.valueOf(Math.floorMod(Math.abs(getTime()), SOLSCalendarConstants.LENGTHOFCENTURY));
+			dayOfCentury = Long.valueOf(Math.floorMod(Math.abs(getTime()), SOLSCalendarConstants.LENGTH_OF_CENTURY));
 		}
 		return dayOfCentury.intValue();
 
@@ -179,7 +179,7 @@ public class SOLSCalendar {
 
 	public int getDayOfDecade() {
 		if (null == dayOfDecade) {
-			dayOfDecade = Math.floorMod(Math.abs(getTime()), SOLSCalendarConstants.LENGTHOFDECADE);
+			dayOfDecade = Math.floorMod(Math.abs(getTime()), SOLSCalendarConstants.LENGTH_OF_DECADE);
 		}
 		return dayOfDecade.intValue();
 
@@ -187,7 +187,7 @@ public class SOLSCalendar {
 
 	public int getDayOfYear() {
 		if (null == dayOfYear) {
-			dayOfYear = Math.floorMod(Math.abs(getTime()), SOLSCalendarConstants.LENGTHOFYEAR);
+			dayOfYear = Math.floorMod(Math.abs(getTime()), SOLSCalendarConstants.LENGTH_OF_YEAR);
 		}
 		return dayOfYear.intValue();
 
@@ -195,7 +195,7 @@ public class SOLSCalendar {
 
 	public int getSeason() {
 		if (null == season) {
-			season = Math.floorMod(Math.floorDiv(getTime(), SOLSCalendarConstants.LENGTHOFSEASON),
+			season = Math.floorMod(Math.floorDiv(getTime(), SOLSCalendarConstants.LENGTH_OF_SEASON),
 					Season.values().length);
 		}
 		return season.intValue();
@@ -204,15 +204,15 @@ public class SOLSCalendar {
 	public int getDayOfSeason() {
 		if (dayOfSeason == null) {
 			dayOfSeason = (int) Math.floorMod(
-					getTime() < 0 ? getTime() + SOLSCalendarConstants.LENGTHOFSEASON : getTime(),
-					SOLSCalendarConstants.LENGTHOFSEASON);
+					getTime() < 0 ? getTime() + SOLSCalendarConstants.LENGTH_OF_SEASON : getTime(),
+					SOLSCalendarConstants.LENGTH_OF_SEASON);
 		}
 		return dayOfSeason;
 	}
 
 	public int getMonth() {
 		if (month == null) {
-			month = Math.floorMod((int) Math.floorDiv(getTime(), SOLSCalendarConstants.LENTHOFALUNARMONTH),
+			month = Math.floorMod((int) Math.floorDiv(getTime(), SOLSCalendarConstants.LENGTH_OF_A_LUNAR_MONTH),
 					Month.values().length);
 		}
 		return month;
@@ -221,80 +221,79 @@ public class SOLSCalendar {
 	public int getDayOfMonth() {
 		if (dayOfMonth == null) {
 			dayOfMonth = (int) Math.floorMod(
-					getTime() < 0 ? getTime() + SOLSCalendarConstants.LENTHOFALUNARMONTH : getTime(),
-					SOLSCalendarConstants.LENTHOFALUNARMONTH);
+					getTime() < 0 ? getTime() + SOLSCalendarConstants.LENGTH_OF_A_LUNAR_MONTH : getTime(),
+					SOLSCalendarConstants.LENGTH_OF_A_LUNAR_MONTH);
 		}
 		return dayOfMonth;
 	}
 
 	public String getMonthName() {
-		if (getMonth() < 0 || getMonth() > 11) {
-			throw new IllegalArgumentException("Invalid month number: " + getMonth());
-		}
-		return Month.values()[getMonth()].toString();
-	}
+        int monthIndex = getMonth();
+        if (monthIndex < 0 || monthIndex >= Month.values().length) {
+            throw new IllegalArgumentException("Invalid month number: " + monthIndex);
+        }
+        return Month.values()[monthIndex].toString();
+    }
 
-	public String getSeasonName() {
-		if (getSeason() < 0 || getSeason() > 3) {
-			throw new IllegalArgumentException("Invalid season number: " + getSeason());
-		}
-		return Season.values()[getSeason()].toString();
-	}
+    public String getSeasonName() {
+        int seasonIndex = getSeason();
+        if (seasonIndex < 0 || seasonIndex >= Season.values().length) {
+            throw new IllegalArgumentException("Invalid season number: " + seasonIndex);
+        }
+        return Season.values()[seasonIndex].toString();
+    }
 
-	public String getShortDisplayDate() {
-		return getMonthName() + " " + (getDayOfMonth() + 1) + ", " + getYear();
-	}
+    public String getShortDisplayDate() {
+        return getMonthName() + " " + (getDayOfMonth() + 1) + ", " + getYear();
+    }
 
-	public String getDisplayDate() {
-		return getMonthName() + " " + (getDayOfMonth() + 1) + ", " + getYear() + " (" + getSeasonName() + ")";
-	}
+    public String getDisplayDate() {
+        return getShortDisplayDate() + " (" + getSeasonName() + ")";
+    }
 
-	public long getElapsedTime(SOLSCalendar endCal) {
-		return endCal.getTime() - getTime();
-	}
+    public long getElapsedTime(SOLSCalendar endCal) {
+        return endCal.getTime() - this.time;
+    }
 
-	public Scale getScale(SOLSCalendar endCal) {
-		if (getElapsedTime(endCal) > SOLSCalendarConstants.LENGTHOFCENTURY) {
-			return Scale.CENTURY;
-		} else if (getElapsedTime(endCal) > SOLSCalendarConstants.LENGTHOFDECADE) {
-			return Scale.DECADE;
-		} else if (getElapsedTime(endCal) > SOLSCalendarConstants.LENGTHOFYEAR) {
-			return Scale.YEAR;
-		} else if (getElapsedTime(endCal) > SOLSCalendarConstants.LENGTHOFSEASON) {
-			return Scale.SEASON;
-		} else if (getElapsedTime(endCal) > SOLSCalendarConstants.LENTHOFALUNARMONTH) {
-			return Scale.MONTH;
-		} else {
-			return Scale.DAY;
-		}
-	}
+    public Scale getScale(SOLSCalendar endCal) {
+        long elapsedTime = getElapsedTime(endCal);
+        if (elapsedTime > SOLSCalendarConstants.LENGTH_OF_CENTURY) {
+            return Scale.CENTURY;
+        } else if (elapsedTime > SOLSCalendarConstants.LENGTH_OF_DECADE) {
+            return Scale.DECADE;
+        } else if (elapsedTime > SOLSCalendarConstants.LENGTH_OF_YEAR) {
+            return Scale.YEAR;
+        } else if (elapsedTime > SOLSCalendarConstants.LENGTH_OF_SEASON) {
+            return Scale.SEASON;
+        } else if (elapsedTime > SOLSCalendarConstants.LENGTH_OF_A_LUNAR_MONTH) {
+            return Scale.MONTH;
+        } else {
+            return Scale.DAY;
+        }
+    }
 
-	public SOLSCalendar endMustBeAfter(SOLSCalendar endCal) {
-		if (getTime() >= endCal.getTime()) {
-			return forwardMonth();
-		} else {
-			return endCal;
-		}
+    public SOLSCalendar endMustBeAfter(SOLSCalendar endCal) {
+        if (this.time >= endCal.getTime()) {
+            return this.forwardMonth();
+        } else {
+            return endCal;
+        }
+    }
 
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!(obj instanceof SOLSCalendar)) {
+            return false;
+        }
+        SOLSCalendar other = (SOLSCalendar) obj;
+        return this.time == other.getTime();
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (obj == this) {
-			return true;
-		}
-
-		if (!(obj instanceof SOLSCalendar)) {
-			return false;
-		}
-
-		SOLSCalendar other = (SOLSCalendar) obj;
-		return this.getTime() == other.getTime();
-	}
-
-	@Override
-	public int hashCode() {
-		return Long.hashCode(getTime());
-	}
-
+    @Override
+    public int hashCode() {
+        return Long.hashCode(this.time);
+    }
 }
